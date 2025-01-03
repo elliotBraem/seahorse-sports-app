@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .bolt
+*.tsbuildinfo
 
 # Package manage (uncomment whichever one you use)
 
