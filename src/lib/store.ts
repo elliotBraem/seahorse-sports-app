@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { User } from './types';
 
 interface AuthState {
@@ -9,7 +10,9 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
   user: null,
   isAuthenticated: false,
   setUser: (user) => set({ user, isAuthenticated: !!user }),
@@ -26,4 +29,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user, isAuthenticated: true });
   },
   logout: () => set({ user: null, isAuthenticated: false }),
-}));
+    }),
+    {
+      name: 'auth-storage', // unique name for localStorage key
+      partialize: (state) => ({ 
+        user: state.user,
+        isAuthenticated: state.isAuthenticated 
+      }), // only persist these fields
+    }
+  )
+);

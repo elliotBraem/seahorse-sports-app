@@ -1,20 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useAuthStore } from '@/lib/store';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trophy } from 'lucide-react';
+import { createFileRoute } from '@tanstack/react-router'
+import { useAuthStore } from '@/lib/store'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Trophy } from 'lucide-react'
 
-export const Route = createFileRoute('/profile')({
+export const Route = createFileRoute('/_layout/_authenticated/profile')({
   component: Profile,
-});
+})
 
 function Profile() {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user)
 
-  if (!user) return null;
+  if (!user) return null
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-4xl space-y-8 px-4 md:px-6">
       <Card>
         <CardHeader>
           <div className="flex items-center space-x-4">
@@ -39,12 +45,16 @@ function Profile() {
       <Card>
         <CardHeader>
           <CardTitle>Achievements</CardTitle>
-          <CardDescription>Your progress towards Super Bowl tickets</CardDescription>
+          <CardDescription>
+            Your progress towards Super Bowl tickets
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {user.completedQuests.length === 0 ? (
-              <p className="text-muted-foreground">Complete quests to earn achievements!</p>
+              <p className="text-muted-foreground">
+                Complete quests to earn achievements!
+              </p>
             ) : (
               user.completedQuests.map((quest) => (
                 <div key={quest} className="flex items-center space-x-2">
@@ -57,5 +67,5 @@ function Profile() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

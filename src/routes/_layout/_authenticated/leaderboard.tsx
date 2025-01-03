@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { User } from '@/lib/types';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { createFileRoute } from '@tanstack/react-router'
+import { User } from '@/lib/types'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   id: `${i + 1}`,
@@ -10,18 +10,20 @@ const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   points: Math.floor(Math.random() * 1000),
   rank: i + 1,
   completedQuests: [],
-})).sort((a, b) => b.points - a.points);
+})).sort((a, b) => b.points - a.points)
 
-export const Route = createFileRoute('/leaderboard')({
+export const Route = createFileRoute('/_layout/_authenticated/leaderboard')({
   component: Leaderboard,
-});
+})
 
 function Leaderboard() {
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 md:px-6">
       <div>
         <h1 className="text-3xl font-bold">Leaderboard</h1>
-        <p className="text-muted-foreground">Top fans competing for Super Bowl tickets</p>
+        <p className="text-muted-foreground">
+          Top fans competing for Super Bowl tickets
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -37,11 +39,13 @@ function Leaderboard() {
             </Avatar>
             <div className="flex-1">
               <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-muted-foreground">{user.points} points</p>
+              <p className="text-sm text-muted-foreground">
+                {user.points} points
+              </p>
             </div>
           </div>
         ))}
       </div>
     </div>
-  );
+  )
 }

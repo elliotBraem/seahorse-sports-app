@@ -1,24 +1,49 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { RootLayout } from '@/components/layout/RootLayout';
-import { AuthLayout } from '@/components/layout/AuthLayout';
-import { useAuthStore } from '@/lib/store';
+import { NotFound } from "@/components/not-found";
+import { QueryClient } from "@tanstack/react-query";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import React from "react";
 
-export const Route = createRootRoute({
+export const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null
+    : React.lazy(() =>
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+        }))
+      );
+
+export const ReactQueryDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null
+    : React.lazy(() =>
+        import("@tanstack/react-query-devtools").then((d) => ({
+          default: d.ReactQueryDevtools,
+        }))
+      );
+
+export const Route = createRootRouteWithContext<{
+  auth: { userId: string };
+  queryClient: QueryClient;
+}>()({
   component: RootComponent,
+  beforeLoad: async ({ context }) => {
+    if (context.auth) {
+      return { auth: context.auth };
+    }
+    const auth = undefined;
+    return { auth };
+  },
+  notFoundComponent: NotFound,
 });
 
 function RootComponent() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
   return (
-    <RootLayout>
-      {isAuthenticated ? (
-        <AuthLayout>
-          <Outlet />
-        </AuthLayout>
-      ) : (
-        <Outlet />
-      )}
-    </RootLayout>
+    <>
+      <Outlet />
+      <React.Suspense>
+        <TanStackRouterDevtools position="bottom-left" />
+        <ReactQueryDevtools buttonPosition="bottom-left" />
+      </React.Suspense>
+    </>
   );
 }
