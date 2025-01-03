@@ -30,8 +30,14 @@ export const Route = createRootRouteWithContext<{
     if (context.auth) {
       return { auth: context.auth };
     }
-    const auth = undefined;
-    return { auth };
+    // Check for auth cookie
+    const cookies = document.cookie.split(';');
+    const authCookie = cookies.find(c => c.trim().startsWith('auth='));
+    if (authCookie) {
+      const userId = authCookie.split('=')[1];
+      return { auth: { userId } };
+    }
+    return { auth: undefined };
   },
   notFoundComponent: NotFound,
 });

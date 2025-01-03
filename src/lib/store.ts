@@ -26,9 +26,15 @@ export const useAuthStore = create<AuthState>()(
       points: 0,
       completedQuests: [],
     };
+    // Set auth cookie - in a real app this would be a secure, httpOnly cookie
+    document.cookie = `auth=${user.id};path=/;`;
     set({ user, isAuthenticated: true });
   },
-  logout: () => set({ user: null, isAuthenticated: false }),
+  logout: () => {
+    // Remove auth cookie
+    document.cookie = 'auth=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    set({ user: null, isAuthenticated: false });
+  },
     }),
     {
       name: 'auth-storage', // unique name for localStorage key
