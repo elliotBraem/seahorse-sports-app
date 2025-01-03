@@ -25,7 +25,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed border-2 bottom-0 left-0 right-0 z-50 bg-gradient-to-b from-background to-background/95 ">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-gray-800 bg-background shadow-[0_-4px_0_rgba(0,0,0,1)]">
       <div className="container mx-auto flex h-16 items-center justify-around px-4">
         {links.map((link) => {
           const Icon = link.icon;
