@@ -20,8 +20,8 @@ const QUESTS: Quest[] = [
     type: 'twitter',
     twitterIntent: {
       text: 'My favorite Super Bowl memory is...',
-      hashtags: ['SuperBowl', 'FanClub'],
-      via: 'FanClub',
+      hashtags: ['SuperBowl'],
+      via: 'test_curation',
     },
   },
   {

@@ -18,7 +18,7 @@ export function MainNav() {
       <div className="container mx-auto flex h-14 items-center justify-between px-4 md:px-6">
         <Link to="/" className="flex items-center space-x-2">
           <Trophy className="h-6 w-6" />
-          <span className="font-bold">FanClub</span>
+          <span className="font-bold">-------</span>
         </Link>
 
         {/* Mobile Menu */}
