@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { CopyLink } from "@/components/ui/copy-link";
+import { Container } from "@/components/ui/container";
 
 export const Route = createFileRoute("/_layout/_authenticated/profile")({
   component: Profile,
@@ -25,7 +26,7 @@ function Profile() {
   if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 md:px-6">
+    <Container title="Profile" description="Review your account details">
       <Card>
         <CardHeader>
           <div className="flex items-center space-x-4">
@@ -78,6 +79,6 @@ function Profile() {
         description="Earn points for referring friends. Achieved when your referral completes the quest"
         link={`${origin}/refer/${user.id}`}
       />
-    </div>
+    </Container>
   );
 }

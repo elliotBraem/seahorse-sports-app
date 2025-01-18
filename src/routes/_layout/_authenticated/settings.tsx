@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { ArrowRight, Loader2, Trash } from "lucide-react";
 import { AlertModal } from "@/components/Modals/alert-modal";
+import { Container } from "@/components/ui/container";
 
 export const Route = createFileRoute("/_layout/_authenticated/settings")({
   component: RouteComponent,
@@ -94,11 +95,7 @@ function RouteComponent() {
         onConfirm={onDelete}
         loading={loading}
       />
-      <div className="mx-auto max-w-4xl space-y-6 px-4 md:px-6">
-        <div>
-          <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-muted-foreground">Manage your account settings!</p>
-        </div>
+      <Container title="Settings" description="Manage your account settings!">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -149,7 +146,7 @@ function RouteComponent() {
             {loading ? <Loader2 className="animate-spin" /> : "Logout"}
           </Button>
         </div>
-      </div>
+      </Container>
     </>
   );
 }
