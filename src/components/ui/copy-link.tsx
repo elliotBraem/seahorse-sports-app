@@ -18,7 +18,7 @@ interface ReferLinkProps {
 export function CopyLink({ title, description, link }: ReferLinkProps) {
   const onCopy = () => {
     navigator.clipboard.writeText(link);
-    toast.success("API Route copied to the clipboard");
+    toast.success("Link copied!");
   };
   return (
     <Card>
