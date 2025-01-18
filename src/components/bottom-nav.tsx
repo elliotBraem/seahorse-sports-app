@@ -1,10 +1,9 @@
-import { Link, useRouter } from "@tanstack/react-router";
-import { Target, Trophy, User } from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Settings, Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
 
 export function BottomNav() {
-  const router = useRouter();
-  const currentPath = router.state.location.pathname;
+  const currentPath = useLocation().pathname;
 
   const links = [
     {
@@ -22,6 +21,11 @@ export function BottomNav() {
       icon: User,
       label: "Profile",
     },
+    {
+      to: "/settings",
+      icon: Settings,
+      label: "Settings",
+    },
   ];
 
   return (
@@ -36,7 +40,9 @@ export function BottomNav() {
               to={link.to}
               className={cn(
                 "flex flex-col items-center space-y-1",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary"
               )}
             >
               <Icon className="h-6 w-6" />
