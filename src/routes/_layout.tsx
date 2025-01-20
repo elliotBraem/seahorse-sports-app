@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Toaster } from "react-hot-toast";
 
 export const Route = createFileRoute("/_layout")({
   component: LayoutComponent,
@@ -16,6 +17,7 @@ function LayoutComponent() {
     >
       <div className="h-full w-full">
         <Outlet />
+        <Toaster />
       </div>
     </div>
   );

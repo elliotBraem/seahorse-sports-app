@@ -1,26 +1,32 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useAuthStore } from '@/lib/store'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { createFileRoute } from "@tanstack/react-router";
+import { useAuthStore } from "@/lib/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Trophy } from 'lucide-react'
+} from "@/components/ui/card";
+import { Trophy } from "lucide-react";
+import { CopyLink } from "@/components/ui/copy-link";
+import { Container } from "@/components/ui/container";
 
-export const Route = createFileRoute('/_layout/_authenticated/profile')({
+export const Route = createFileRoute("/_layout/_authenticated/profile")({
   component: Profile,
-})
+});
 
 function Profile() {
-  const user = useAuthStore((state) => state.user)
+  const user = useAuthStore((state) => state.user);
+  const origin =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : "";
 
-  if (!user) return null
+  if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 md:px-6">
+    <Container title="Profile" description="Review your account details">
       <Card>
         <CardHeader>
           <div className="flex items-center space-x-4">
@@ -29,7 +35,8 @@ function Profile() {
               <AvatarFallback>{user.name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl">{user.name}</CardTitle>
+              <CardTitle className="text-2xl ">{user.name}</CardTitle>
+
               <CardDescription>{user.email}</CardDescription>
             </div>
           </div>
@@ -66,6 +73,12 @@ function Profile() {
           </div>
         </CardContent>
       </Card>
-    </div>
-  )
+
+      <CopyLink
+        title="Refer a Friend"
+        description="Earn points for referring friends. Achieved when your referral completes the quest"
+        link={`${origin}/refer/${user.id}`}
+      />
+    </Container>
+  );
 }

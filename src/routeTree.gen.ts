@@ -16,6 +16,7 @@ import { Route as LayoutUnauthenticatedImport } from './routes/_layout/_unauthen
 import { Route as LayoutAuthenticatedImport } from './routes/_layout/_authenticated'
 import { Route as LayoutUnauthenticatedIndexImport } from './routes/_layout/_unauthenticated/index'
 import { Route as LayoutUnauthenticatedLoginImport } from './routes/_layout/_unauthenticated/login'
+import { Route as LayoutAuthenticatedSettingsImport } from './routes/_layout/_authenticated/settings'
 import { Route as LayoutAuthenticatedQuestsImport } from './routes/_layout/_authenticated/quests'
 import { Route as LayoutAuthenticatedProfileImport } from './routes/_layout/_authenticated/profile'
 import { Route as LayoutAuthenticatedLeaderboardImport } from './routes/_layout/_authenticated/leaderboard'
@@ -52,6 +53,13 @@ const LayoutUnauthenticatedLoginRoute = LayoutUnauthenticatedLoginImport.update(
     getParentRoute: () => LayoutUnauthenticatedRoute,
   } as any,
 )
+
+const LayoutAuthenticatedSettingsRoute =
+  LayoutAuthenticatedSettingsImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => LayoutAuthenticatedRoute,
+  } as any)
 
 const LayoutAuthenticatedQuestsRoute = LayoutAuthenticatedQuestsImport.update({
   id: '/quests',
@@ -120,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedQuestsImport
       parentRoute: typeof LayoutAuthenticatedImport
     }
+    '/_layout/_authenticated/settings': {
+      id: '/_layout/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof LayoutAuthenticatedSettingsImport
+      parentRoute: typeof LayoutAuthenticatedImport
+    }
     '/_layout/_unauthenticated/login': {
       id: '/_layout/_unauthenticated/login'
       path: '/login'
@@ -143,12 +158,14 @@ interface LayoutAuthenticatedRouteChildren {
   LayoutAuthenticatedLeaderboardRoute: typeof LayoutAuthenticatedLeaderboardRoute
   LayoutAuthenticatedProfileRoute: typeof LayoutAuthenticatedProfileRoute
   LayoutAuthenticatedQuestsRoute: typeof LayoutAuthenticatedQuestsRoute
+  LayoutAuthenticatedSettingsRoute: typeof LayoutAuthenticatedSettingsRoute
 }
 
 const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
   LayoutAuthenticatedLeaderboardRoute: LayoutAuthenticatedLeaderboardRoute,
   LayoutAuthenticatedProfileRoute: LayoutAuthenticatedProfileRoute,
   LayoutAuthenticatedQuestsRoute: LayoutAuthenticatedQuestsRoute,
+  LayoutAuthenticatedSettingsRoute: LayoutAuthenticatedSettingsRoute,
 }
 
 const LayoutAuthenticatedRouteWithChildren =
@@ -187,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
+  '/settings': typeof LayoutAuthenticatedSettingsRoute
   '/login': typeof LayoutUnauthenticatedLoginRoute
   '/': typeof LayoutUnauthenticatedIndexRoute
 }
@@ -196,6 +214,7 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
+  '/settings': typeof LayoutAuthenticatedSettingsRoute
   '/login': typeof LayoutUnauthenticatedLoginRoute
   '/': typeof LayoutUnauthenticatedIndexRoute
 }
@@ -208,15 +227,30 @@ export interface FileRoutesById {
   '/_layout/_authenticated/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
   '/_layout/_authenticated/profile': typeof LayoutAuthenticatedProfileRoute
   '/_layout/_authenticated/quests': typeof LayoutAuthenticatedQuestsRoute
+  '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRoute
   '/_layout/_unauthenticated/login': typeof LayoutUnauthenticatedLoginRoute
   '/_layout/_unauthenticated/': typeof LayoutUnauthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/leaderboard' | '/profile' | '/quests' | '/login' | '/'
+  fullPaths:
+    | ''
+    | '/leaderboard'
+    | '/profile'
+    | '/quests'
+    | '/settings'
+    | '/login'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/leaderboard' | '/profile' | '/quests' | '/login' | '/'
+  to:
+    | ''
+    | '/leaderboard'
+    | '/profile'
+    | '/quests'
+    | '/settings'
+    | '/login'
+    | '/'
   id:
     | '__root__'
     | '/_layout'
@@ -225,6 +259,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/leaderboard'
     | '/_layout/_authenticated/profile'
     | '/_layout/_authenticated/quests'
+    | '/_layout/_authenticated/settings'
     | '/_layout/_unauthenticated/login'
     | '/_layout/_unauthenticated/'
   fileRoutesById: FileRoutesById
@@ -264,7 +299,8 @@ export const routeTree = rootRoute
       "children": [
         "/_layout/_authenticated/leaderboard",
         "/_layout/_authenticated/profile",
-        "/_layout/_authenticated/quests"
+        "/_layout/_authenticated/quests",
+        "/_layout/_authenticated/settings"
       ]
     },
     "/_layout/_unauthenticated": {
@@ -285,6 +321,10 @@ export const routeTree = rootRoute
     },
     "/_layout/_authenticated/quests": {
       "filePath": "_layout/_authenticated/quests.tsx",
+      "parent": "/_layout/_authenticated"
+    },
+    "/_layout/_authenticated/settings": {
+      "filePath": "_layout/_authenticated/settings.tsx",
       "parent": "/_layout/_authenticated"
     },
     "/_layout/_unauthenticated/login": {
