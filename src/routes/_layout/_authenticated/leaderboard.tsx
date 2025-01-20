@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
+import { useEffect, useState } from "react";
 
 const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   id: `${i + 1}`,
@@ -21,10 +22,18 @@ export const Route = createFileRoute("/_layout/_authenticated/leaderboard")({
 });
 
 function Leaderboard() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Trigger fade-in animation after component mounts
+    setIsVisible(true);
+  }, []);
+
   return (
     <Container
       title="Leaderboard"
       description="Top fans competing for Super Bowl tickets"
+      isVisible={isVisible}
     >
       <div className="space-y-4">
         {USERS.map((user) => (

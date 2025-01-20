@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Settings, Target, Trophy, User } from "lucide-react";
+import { Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
 
 export function BottomNav() {
@@ -20,11 +20,6 @@ export function BottomNav() {
       to: "/profile",
       icon: User,
       label: "Profile",
-    },
-    {
-      to: "/settings",
-      icon: Settings,
-      label: "Settings",
     },
   ];
 

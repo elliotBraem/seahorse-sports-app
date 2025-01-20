@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/lib/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -8,15 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Trophy } from "lucide-react";
+import { Settings, Trophy } from "lucide-react";
 import { CopyLink } from "@/components/ui/copy-link";
 import { Container } from "@/components/ui/container";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_layout/_authenticated/profile")({
   component: Profile,
 });
 
 function Profile() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Trigger fade-in animation after component mounts
+    setIsVisible(true);
+  }, []);
+
   const user = useAuthStore((state) => state.user);
   const origin =
     typeof window !== "undefined" && window.location.origin
@@ -26,9 +35,13 @@ function Profile() {
   if (!user) return null;
 
   return (
-    <Container title="Profile" description="Review your account details">
+    <Container
+      title="Profile"
+      description="Review your account details"
+      isVisible={isVisible}
+    >
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row gap-4 items-center justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
               <AvatarImage src={user.avatar} alt={user.name} />
@@ -36,9 +49,18 @@ function Profile() {
             </Avatar>
             <div>
               <CardTitle className="text-2xl ">{user.name}</CardTitle>
-
               <CardDescription>{user.email}</CardDescription>
             </div>
+          </div>
+          <div className="flex items-end space-x-4">
+            <Link
+              key="/settings"
+              to="/settings"
+              title="Settings"
+              className={cn("text-xs text-muted-foreground hover:text-primary")}
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
           </div>
         </CardHeader>
         <CardContent>

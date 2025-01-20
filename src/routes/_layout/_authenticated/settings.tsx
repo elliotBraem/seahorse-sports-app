@@ -15,7 +15,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Loader2, Trash } from "lucide-react";
 import { AlertModal } from "@/components/Modals/alert-modal";
 import { Container } from "@/components/ui/container";
@@ -45,6 +45,12 @@ function RouteComponent() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Trigger fade-in animation after component mounts
+    setIsVisible(true);
+  }, []);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -95,7 +101,11 @@ function RouteComponent() {
         onConfirm={onDelete}
         loading={loading}
       />
-      <Container title="Settings" description="Manage your account settings!">
+      <Container
+        title="Settings"
+        description="Manage your account settings!"
+        isVisible={isVisible}
+      >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
