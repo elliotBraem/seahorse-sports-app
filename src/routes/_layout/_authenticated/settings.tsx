@@ -15,7 +15,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Loader2, Trash } from "lucide-react";
 import { AlertModal } from "@/components/Modals/alert-modal";
 import { Container } from "@/components/ui/container";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_layout/_authenticated/settings")({
   component: RouteComponent,
 });
 
-const formSchema = z.object({
+const FormSchema = z.object({
   email: z
     .string()
     .min(7, {
@@ -36,7 +36,7 @@ const formSchema = z.object({
 });
 
 // Define form data type using Zod's inferred type
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof FormSchema>;
 
 function RouteComponent() {
   const logout = useAuthStore((state) => state.logout);
@@ -45,9 +45,15 @@ function RouteComponent() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Trigger fade-in animation after component mounts
+    setIsVisible(true);
+  }, []);
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(FormSchema),
     defaultValues: { email: userData?.email },
   });
 
@@ -95,7 +101,11 @@ function RouteComponent() {
         onConfirm={onDelete}
         loading={loading}
       />
-      <Container title="Settings" description="Manage your account settings!">
+      <Container
+        title="Settings"
+        description="Manage your account settings!"
+        isVisible={isVisible}
+      >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -111,7 +121,7 @@ function RouteComponent() {
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="shadcn"
+                        placeholder="abc@.domain.com"
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)} // Custom handler
                       />
