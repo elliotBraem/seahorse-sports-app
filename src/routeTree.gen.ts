@@ -20,6 +20,7 @@ import { Route as LayoutAuthenticatedSettingsImport } from './routes/_layout/_au
 import { Route as LayoutAuthenticatedQuestsImport } from './routes/_layout/_authenticated/quests'
 import { Route as LayoutAuthenticatedProfileImport } from './routes/_layout/_authenticated/profile'
 import { Route as LayoutAuthenticatedPreferrancesImport } from './routes/_layout/_authenticated/preferrances'
+import { Route as LayoutAuthenticatedPollsImport } from './routes/_layout/_authenticated/polls'
 import { Route as LayoutAuthenticatedLeaderboardImport } from './routes/_layout/_authenticated/leaderboard'
 
 // Create/Update Routes
@@ -83,6 +84,12 @@ const LayoutAuthenticatedPreferrancesRoute =
     getParentRoute: () => LayoutAuthenticatedRoute,
   } as any)
 
+const LayoutAuthenticatedPollsRoute = LayoutAuthenticatedPollsImport.update({
+  id: '/polls',
+  path: '/polls',
+  getParentRoute: () => LayoutAuthenticatedRoute,
+} as any)
+
 const LayoutAuthenticatedLeaderboardRoute =
   LayoutAuthenticatedLeaderboardImport.update({
     id: '/leaderboard',
@@ -120,6 +127,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LayoutAuthenticatedLeaderboardImport
+      parentRoute: typeof LayoutAuthenticatedImport
+    }
+    '/_layout/_authenticated/polls': {
+      id: '/_layout/_authenticated/polls'
+      path: '/polls'
+      fullPath: '/polls'
+      preLoaderRoute: typeof LayoutAuthenticatedPollsImport
       parentRoute: typeof LayoutAuthenticatedImport
     }
     '/_layout/_authenticated/preferrances': {
@@ -171,6 +185,7 @@ declare module '@tanstack/react-router' {
 
 interface LayoutAuthenticatedRouteChildren {
   LayoutAuthenticatedLeaderboardRoute: typeof LayoutAuthenticatedLeaderboardRoute
+  LayoutAuthenticatedPollsRoute: typeof LayoutAuthenticatedPollsRoute
   LayoutAuthenticatedPreferrancesRoute: typeof LayoutAuthenticatedPreferrancesRoute
   LayoutAuthenticatedProfileRoute: typeof LayoutAuthenticatedProfileRoute
   LayoutAuthenticatedQuestsRoute: typeof LayoutAuthenticatedQuestsRoute
@@ -179,6 +194,7 @@ interface LayoutAuthenticatedRouteChildren {
 
 const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
   LayoutAuthenticatedLeaderboardRoute: LayoutAuthenticatedLeaderboardRoute,
+  LayoutAuthenticatedPollsRoute: LayoutAuthenticatedPollsRoute,
   LayoutAuthenticatedPreferrancesRoute: LayoutAuthenticatedPreferrancesRoute,
   LayoutAuthenticatedProfileRoute: LayoutAuthenticatedProfileRoute,
   LayoutAuthenticatedQuestsRoute: LayoutAuthenticatedQuestsRoute,
@@ -219,6 +235,7 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof LayoutUnauthenticatedRouteWithChildren
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/polls': typeof LayoutAuthenticatedPollsRoute
   '/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
@@ -230,6 +247,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof LayoutAuthenticatedRouteWithChildren
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/polls': typeof LayoutAuthenticatedPollsRoute
   '/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
@@ -244,6 +262,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated': typeof LayoutAuthenticatedRouteWithChildren
   '/_layout/_unauthenticated': typeof LayoutUnauthenticatedRouteWithChildren
   '/_layout/_authenticated/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/_layout/_authenticated/polls': typeof LayoutAuthenticatedPollsRoute
   '/_layout/_authenticated/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/_layout/_authenticated/profile': typeof LayoutAuthenticatedProfileRoute
   '/_layout/_authenticated/quests': typeof LayoutAuthenticatedQuestsRoute
@@ -257,6 +276,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/leaderboard'
+    | '/polls'
     | '/preferrances'
     | '/profile'
     | '/quests'
@@ -267,6 +287,7 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/leaderboard'
+    | '/polls'
     | '/preferrances'
     | '/profile'
     | '/quests'
@@ -279,6 +300,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated'
     | '/_layout/_unauthenticated'
     | '/_layout/_authenticated/leaderboard'
+    | '/_layout/_authenticated/polls'
     | '/_layout/_authenticated/preferrances'
     | '/_layout/_authenticated/profile'
     | '/_layout/_authenticated/quests'
@@ -321,6 +343,7 @@ export const routeTree = rootRoute
       "parent": "/_layout",
       "children": [
         "/_layout/_authenticated/leaderboard",
+        "/_layout/_authenticated/polls",
         "/_layout/_authenticated/preferrances",
         "/_layout/_authenticated/profile",
         "/_layout/_authenticated/quests",
@@ -337,6 +360,10 @@ export const routeTree = rootRoute
     },
     "/_layout/_authenticated/leaderboard": {
       "filePath": "_layout/_authenticated/leaderboard.tsx",
+      "parent": "/_layout/_authenticated"
+    },
+    "/_layout/_authenticated/polls": {
+      "filePath": "_layout/_authenticated/polls.tsx",
       "parent": "/_layout/_authenticated"
     },
     "/_layout/_authenticated/preferrances": {
