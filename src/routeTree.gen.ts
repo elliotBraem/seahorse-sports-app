@@ -19,6 +19,7 @@ import { Route as LayoutUnauthenticatedLoginImport } from './routes/_layout/_una
 import { Route as LayoutAuthenticatedSettingsImport } from './routes/_layout/_authenticated/settings'
 import { Route as LayoutAuthenticatedQuestsImport } from './routes/_layout/_authenticated/quests'
 import { Route as LayoutAuthenticatedProfileImport } from './routes/_layout/_authenticated/profile'
+import { Route as LayoutAuthenticatedPreferrancesImport } from './routes/_layout/_authenticated/preferrances'
 import { Route as LayoutAuthenticatedLeaderboardImport } from './routes/_layout/_authenticated/leaderboard'
 
 // Create/Update Routes
@@ -75,6 +76,13 @@ const LayoutAuthenticatedProfileRoute = LayoutAuthenticatedProfileImport.update(
   } as any,
 )
 
+const LayoutAuthenticatedPreferrancesRoute =
+  LayoutAuthenticatedPreferrancesImport.update({
+    id: '/preferrances',
+    path: '/preferrances',
+    getParentRoute: () => LayoutAuthenticatedRoute,
+  } as any)
+
 const LayoutAuthenticatedLeaderboardRoute =
   LayoutAuthenticatedLeaderboardImport.update({
     id: '/leaderboard',
@@ -112,6 +120,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LayoutAuthenticatedLeaderboardImport
+      parentRoute: typeof LayoutAuthenticatedImport
+    }
+    '/_layout/_authenticated/preferrances': {
+      id: '/_layout/_authenticated/preferrances'
+      path: '/preferrances'
+      fullPath: '/preferrances'
+      preLoaderRoute: typeof LayoutAuthenticatedPreferrancesImport
       parentRoute: typeof LayoutAuthenticatedImport
     }
     '/_layout/_authenticated/profile': {
@@ -156,6 +171,7 @@ declare module '@tanstack/react-router' {
 
 interface LayoutAuthenticatedRouteChildren {
   LayoutAuthenticatedLeaderboardRoute: typeof LayoutAuthenticatedLeaderboardRoute
+  LayoutAuthenticatedPreferrancesRoute: typeof LayoutAuthenticatedPreferrancesRoute
   LayoutAuthenticatedProfileRoute: typeof LayoutAuthenticatedProfileRoute
   LayoutAuthenticatedQuestsRoute: typeof LayoutAuthenticatedQuestsRoute
   LayoutAuthenticatedSettingsRoute: typeof LayoutAuthenticatedSettingsRoute
@@ -163,6 +179,7 @@ interface LayoutAuthenticatedRouteChildren {
 
 const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
   LayoutAuthenticatedLeaderboardRoute: LayoutAuthenticatedLeaderboardRoute,
+  LayoutAuthenticatedPreferrancesRoute: LayoutAuthenticatedPreferrancesRoute,
   LayoutAuthenticatedProfileRoute: LayoutAuthenticatedProfileRoute,
   LayoutAuthenticatedQuestsRoute: LayoutAuthenticatedQuestsRoute,
   LayoutAuthenticatedSettingsRoute: LayoutAuthenticatedSettingsRoute,
@@ -202,6 +219,7 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof LayoutUnauthenticatedRouteWithChildren
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
   '/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -212,6 +230,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof LayoutAuthenticatedRouteWithChildren
   '/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/profile': typeof LayoutAuthenticatedProfileRoute
   '/quests': typeof LayoutAuthenticatedQuestsRoute
   '/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -225,6 +244,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated': typeof LayoutAuthenticatedRouteWithChildren
   '/_layout/_unauthenticated': typeof LayoutUnauthenticatedRouteWithChildren
   '/_layout/_authenticated/leaderboard': typeof LayoutAuthenticatedLeaderboardRoute
+  '/_layout/_authenticated/preferrances': typeof LayoutAuthenticatedPreferrancesRoute
   '/_layout/_authenticated/profile': typeof LayoutAuthenticatedProfileRoute
   '/_layout/_authenticated/quests': typeof LayoutAuthenticatedQuestsRoute
   '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -237,6 +257,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/leaderboard'
+    | '/preferrances'
     | '/profile'
     | '/quests'
     | '/settings'
@@ -246,6 +267,7 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/leaderboard'
+    | '/preferrances'
     | '/profile'
     | '/quests'
     | '/settings'
@@ -257,6 +279,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated'
     | '/_layout/_unauthenticated'
     | '/_layout/_authenticated/leaderboard'
+    | '/_layout/_authenticated/preferrances'
     | '/_layout/_authenticated/profile'
     | '/_layout/_authenticated/quests'
     | '/_layout/_authenticated/settings'
@@ -298,6 +321,7 @@ export const routeTree = rootRoute
       "parent": "/_layout",
       "children": [
         "/_layout/_authenticated/leaderboard",
+        "/_layout/_authenticated/preferrances",
         "/_layout/_authenticated/profile",
         "/_layout/_authenticated/quests",
         "/_layout/_authenticated/settings"
@@ -313,6 +337,10 @@ export const routeTree = rootRoute
     },
     "/_layout/_authenticated/leaderboard": {
       "filePath": "_layout/_authenticated/leaderboard.tsx",
+      "parent": "/_layout/_authenticated"
+    },
+    "/_layout/_authenticated/preferrances": {
+      "filePath": "_layout/_authenticated/preferrances.tsx",
       "parent": "/_layout/_authenticated"
     },
     "/_layout/_authenticated/profile": {

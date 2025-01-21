@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_layout/_authenticated/settings")({
   component: RouteComponent,
 });
 
-const formSchema = z.object({
+const FormSchema = z.object({
   email: z
     .string()
     .min(7, {
@@ -36,7 +36,7 @@ const formSchema = z.object({
 });
 
 // Define form data type using Zod's inferred type
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof FormSchema>;
 
 function RouteComponent() {
   const logout = useAuthStore((state) => state.logout);
@@ -53,7 +53,7 @@ function RouteComponent() {
   }, []);
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(FormSchema),
     defaultValues: { email: userData?.email },
   });
 
@@ -121,7 +121,7 @@ function RouteComponent() {
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="shadcn"
+                        placeholder="abc@.domain.com"
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)} // Custom handler
                       />
