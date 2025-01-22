@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function NotFound() {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,7 +30,7 @@ export function NotFound() {
             <div className="text-center space-y-4">
               <h1 className="text-xl font-bold">404 Page Not Found</h1>
               <img
-                src="./images/404.gif"
+                src="/images/404.gif"
                 alt="404 Page Not Found"
                 width={500}
                 height={500}
@@ -40,7 +40,7 @@ export function NotFound() {
               </p>
             </div>
             <div>
-              <Link to="/">
+              <Link href="/">
                 <Button className="w-full" size="lg">
                   Go Back Home
                 </Button>

@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Quest } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,15 +35,10 @@ const QUESTS: Quest[] = [
   },
 ];
 
-export const Route = createFileRoute("/_layout/_authenticated/quests")({
-  component: Quests,
-});
-
-function Quests() {
+export default function QuestsPage() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Trigger fade-in animation after component mounts
     setIsVisible(true);
   }, []);
 

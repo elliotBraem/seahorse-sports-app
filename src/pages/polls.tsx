@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/container";
 import toast from "react-hot-toast";
@@ -22,11 +21,7 @@ const initialTeams = [
   },
 ];
 
-export const Route = createFileRoute("/_layout/_authenticated/polls")({
-  component: Polls_page,
-});
-
-function Polls_page() {
+export default function PollsPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [teams, setTeams] = useState(initialTeams);
   const [vote, setVote] = useState("");
@@ -37,15 +32,12 @@ function Polls_page() {
   }, []);
 
   const handleVote = (teamTitle: string) => {
-    // Increment points for the selected team
     setVote(teamTitle);
-    // Update points for the selected team on DB
     setTeams((prevTeams) =>
       prevTeams.map((team) =>
         team.title === teamTitle ? { ...team, points: team.points + 1 } : team
       )
     );
-    // flag user as voted
     setHasVoted(true);
     toast.success(`${teamTitle} voted successfully!`);
   };
@@ -84,7 +76,7 @@ function Polls_page() {
           <div
             className="absolute top-0 flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border-2 border-gray-300 text-lg font-extrabold text-red-500"
             style={{
-              left: `calc(${teamAWidth}% - 24px)`, // Dynamically position "VS" based on team A's width
+              left: `calc(${teamAWidth}% - 24px)`,
             }}
           >
             VS

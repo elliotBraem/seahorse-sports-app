@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 .bolt
 *.tsbuildinfo
+.next
 
 # Package manage (uncomment whichever one you use)
 
