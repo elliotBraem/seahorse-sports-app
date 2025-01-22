@@ -2,10 +2,7 @@ import { Wallet } from '@/near/wallet';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from './types';
-import { setCookie, removeCookie } from './utils/cookies';
-
-// 7 days in seconds
-const SESSION_DURATION = 7 * 24 * 60 * 60;
+import { setAuthCookie, removeAuthCookie } from '@/app/actions';
 
 interface AuthState {
   user: User | null;
@@ -34,24 +31,7 @@ export const useAuthStore = create<AuthState>()(
         if (!wallet) return;
 
         try {
-          const email = "test@example.com"
-          const user: User = {
-            id: '1',
-            email,
-            name: "test",
-            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-            points: 0,
-            completedQuests: [],
-          };
           await wallet.signIn();
-          // Set secure auth cookie
-          setCookie('auth', user.id, {
-            maxAge: SESSION_DURATION, // 7 days
-            secure: true,
-            httpOnly: true,
-            sameSite: 'Strict'
-          });
-          set({ user, isAuthenticated: true });
         } catch (error) {
           console.error('Failed to connect wallet:', error);
         }
@@ -62,12 +42,6 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           await wallet.signOut();
-          removeCookie('auth', {
-            secure: true,
-            httpOnly: true,
-            sameSite: 'Strict'
-          });
-          set({ accountId: null, user: null, isAuthenticated: false });
         } catch (error) {
           console.error('Failed to disconnect wallet:', error);
         }
