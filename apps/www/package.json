@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@renegade-fanclub/types": "workspace:*",
     "@hookform/resolvers": "^3.10.0",
     "@keypom/fastauth": "^0.1.6",
     "@near-wallet-selector/bitte-wallet": "^8.9.12",
