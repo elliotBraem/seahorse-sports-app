@@ -1,8 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
-import { useEffect, useState } from "react";
 
 const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   id: `${i + 1}`,
@@ -14,26 +12,14 @@ const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 USERS.sort((a, b) => b.points - a.points).forEach((user, i) => {
-  user.rank = i + 1; // Assign rank dynamically
+  user.rank = i + 1;
 });
 
-export const Route = createFileRoute("/_layout/_authenticated/leaderboard")({
-  component: Leaderboard,
-});
-
-function Leaderboard() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Trigger fade-in animation after component mounts
-    setIsVisible(true);
-  }, []);
-
+export default function LeaderboardPage() {
   return (
     <Container
       title="Leaderboard"
       description="Top fans competing for Super Bowl tickets"
-      isVisible={isVisible}
     >
       <div className="space-y-4">
         {USERS.map((user) => (
@@ -48,9 +34,7 @@ function Leaderboard() {
             </Avatar>
             <div className="flex-1">
               <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-muted-foreground">
-                {user.points} points
-              </p>
+              <p className="text-sm text-muted-foreground">{user.points} points</p>
             </div>
           </div>
         ))}

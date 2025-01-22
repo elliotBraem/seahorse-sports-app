@@ -1,10 +1,12 @@
-import { Link, useLocation } from "@tanstack/react-router";
+"use client";
+
 import { Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function BottomNav() {
-  const currentPath = useLocation().pathname;
-
+  const currentPath = usePathname();
   const links = [
     {
       to: "/quests",
@@ -32,7 +34,7 @@ export function BottomNav() {
           return (
             <Link
               key={link.to}
-              to={link.to}
+              href={link.to}
               className={cn(
                 "flex flex-col items-center space-y-1",
                 isActive

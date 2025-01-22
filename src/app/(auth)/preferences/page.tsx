@@ -1,12 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
-
 import { Container } from "@/components/ui/container";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const preferrances = [
+const preferences = [
   {
     sports: [
       {
@@ -85,17 +84,13 @@ const preferrances = [
   },
 ];
 
-export const Route = createFileRoute("/_layout/_authenticated/preferrances")({
-  component: Preferrances_Page,
-});
-
-function Preferrances_Page() {
+export default function PreferencesPage() {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: string[];
   }>({});
-  const navigate = useNavigate();
 
   const handleCheckboxChange = (category: string, title: string) => {
     setSelectedItems((prev) => {
@@ -110,7 +105,6 @@ function Preferrances_Page() {
   };
 
   useEffect(() => {
-    // Trigger fade-in animation after component mounts
     setIsVisible(true);
   }, []);
 
@@ -118,31 +112,29 @@ function Preferrances_Page() {
     setLoading(true);
 
     // Construct preferences object
-    const preferences = {
+    const userPreferences = {
       sports: selectedItems.sports || [],
       teams: selectedItems.teams || [],
       leagues: selectedItems.leagues || [],
       athletes: selectedItems.athletes || [],
     };
 
-    console.log("Selected preferences:", preferences);
+    console.log("Selected preferences:", userPreferences);
 
     // Save preferences to local storage or backend
-    localStorage.setItem("userPreferences", JSON.stringify(preferences));
-
-    // Update user preferences in store
+    localStorage.setItem("userPreferences", JSON.stringify(userPreferences));
 
     // Create query parameters for navigation
     const params = new URLSearchParams();
 
-    Object.entries(preferences).forEach(([key, values]) => {
+    Object.entries(userPreferences).forEach(([key, values]) => {
       values.forEach((value) => {
         params.append(key, value);
       });
     });
 
     // Navigate with params
-    navigate({ to: `/quests?${params.toString()}` });
+    router.push(`/quests?${params.toString()}`);
 
     // Notify success
     toast.success("Preferences updated successfully!");
@@ -151,12 +143,12 @@ function Preferrances_Page() {
 
   return (
     <Container
-      title="Preferrances"
-      description="Choose Favortie Sports, Teams, Leages, Athletes!"
+      title="Preferences"
+      description="Choose Favorite Sports, Teams, Leagues, Athletes!"
       isVisible={isVisible}
     >
       <div className="space-y-6">
-        {preferrances.map((categoryObj, index) => {
+        {preferences.map((categoryObj, index) => {
           const categoryKey = Object.keys(
             categoryObj
           )[0] as keyof typeof categoryObj;

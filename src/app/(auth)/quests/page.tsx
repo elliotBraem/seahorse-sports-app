@@ -1,5 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Quest } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,9 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Twitter } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { useEffect, useState } from "react";
+import { Quest } from "@/lib/types";
+import { Twitter } from "lucide-react";
 
 const QUESTS: Quest[] = [
   {
@@ -36,18 +34,7 @@ const QUESTS: Quest[] = [
   },
 ];
 
-export const Route = createFileRoute("/_layout/_authenticated/quests")({
-  component: Quests,
-});
-
-function Quests() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Trigger fade-in animation after component mounts
-    setIsVisible(true);
-  }, []);
-
+export default function QuestsPage() {
   const handleTwitterShare = (quest: Quest) => {
     if (quest.twitterIntent) {
       const { text, hashtags, via } = quest.twitterIntent;
@@ -63,7 +50,6 @@ function Quests() {
     <Container
       title="Quests"
       description="Complete quests to win Super Bowl tickets!"
-      isVisible={isVisible}
     >
       <div className="grid gap-6 w-full">
         {QUESTS.map((quest) => (
@@ -81,7 +67,7 @@ function Quests() {
                   {quest.points} points
                 </span>
                 {quest.type === "twitter" && quest.status === "active" && (
-                  <Button onClick={() => handleTwitterShare(quest)}>
+                  <Button>
                     <Twitter className="mr-2 h-4 w-4" />
                     Share on X
                   </Button>

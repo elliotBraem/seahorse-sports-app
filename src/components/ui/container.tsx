@@ -8,12 +8,11 @@ interface ContainerProps {
 export const Container = ({
   title,
   description,
-  isVisible,
   children,
 }: ContainerProps) => {
   return (
     <div
-      className={`mx-auto max-w-4xl space-y-8 px-2 md:px-6 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"}`}
+      className={`mx-auto max-w-4xl space-y-8 px-2 md:px-6`}
     >
       <div>
         <h1 className="text-3xl font-bold">{title}</h1>
