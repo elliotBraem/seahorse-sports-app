@@ -80,5 +80,8 @@ const preferences = [
 ];
 
 export default function PreferencesPage() {
+
   return <PreferencesComp preferences={preferences} />;
+
+ 
 }

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/container";
-import toast from "react-hot-toast";
 import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const initialTeams = [
   {
@@ -24,14 +24,9 @@ const initialTeams = [
 ];
 
 export default function PollsPage() {
-  const [isVisible, setIsVisible] = useState(false);
   const [teams, setTeams] = useState(initialTeams);
   const [vote, setVote] = useState("");
   const [hasVoted, setHasVoted] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const handleVote = (teamTitle: string) => {
     setVote(teamTitle);
@@ -49,11 +44,7 @@ export default function PollsPage() {
   const teamBWidth = (teams[1].points / totalPoints) * 100;
 
   return (
-    <Container
-      title="RNG"
-      description="Win SuperBowl LIX Tickets"
-      isVisible={isVisible}
-    >
+    <Container title="RNG" description="Win SuperBowl LIX Tickets">
       <div className="space-y-4">
         {/* Dynamic Bar */}
         <div className="relative bg-gray-200 rounded-lg h-12 overflow-hidden flex items-center">

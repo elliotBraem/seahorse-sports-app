@@ -1,20 +1,25 @@
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../store';
 
 export function useAuth() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { connectWallet, disconnectWallet } = useAuthStore();
 
   const login = async () => {
-    await connectWallet();
-    const returnUrl = searchParams.get('returnUrl') || '/quests';
-    router.push(decodeURIComponent(returnUrl));
+    try {
+      await connectWallet();
+    } catch (error) {
+      console.error('Login failed:', error);
+      // Stay on login page if there's an error
+    }
   };
 
   const logout = async () => {
-    await disconnectWallet();
-    router.push('/');
+    try {
+      await disconnectWallet();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return {

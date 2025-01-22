@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +12,7 @@ import {
 import { Container } from "@/components/ui/container";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-export default function LoginPage() {
+function LoginContent() {
   const { login } = useAuth();
 
   return (
@@ -45,5 +46,13 @@ export default function LoginPage() {
         </Card>
       </div>
     </Container>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-[100dvh] items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
