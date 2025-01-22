@@ -3,6 +3,9 @@
   "globalDependencies": ["**/.env"],
   "globalEnv": ["NODE_ENV"],
   "tasks": {
+    "init": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true

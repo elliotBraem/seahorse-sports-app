@@ -2,6 +2,7 @@
   "name": "renegade-fanclub",
   "private": true,
   "scripts": {
+    "init": "bun install && turbo run init",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
@@ -11,9 +12,9 @@
   },
   "devDependencies": {
     "prettier": "^3.3.3",
-    "turbo": "^2.3.3"
+    "turbo": "latest"
   },
-  "packageManager": "bun@1.0.26",
+  "packageManager": "bun@1.0.27",
   "workspaces": [
     "apps/*"
   ]

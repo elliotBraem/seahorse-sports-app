@@ -1,71 +1,69 @@
-# Fan Engagement App
+<!-- markdownlint-disable MD014 -->
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
+<!-- markdownlint-disable MD029 -->
 
-A modern web application for fan engagement built with React and TypeScript. This application provides features for user authentication, quests, leaderboards, and profile management.
+<div align="center">
 
-## Tech Stack
+<h1 style="font-size: 2.5rem; font-weight: bold;">RNG FanClub</h1>
 
-- **Framework:** React 18 with TypeScript
-- **Build Tool:** Vite
-- **Routing:** TanStack Router (file-based routing)
-- **State Management:** 
-  - Zustand for global state
-  - TanStack Query for server state
-- **Styling:** 
-  - TailwindCSS
-  - shadcn/ui components
-- **Form Handling:** React Hook Form with Zod validation
-- **Development:**
-  - ESLint for code linting
-  - TypeScript for type safety
+  <p>
+    <strong>connects athletes, fans, and brands to revolutionize sports</strong>
+  </p>
+
+</div>
+
+<details>
+  <summary>Table of Contents</summary>
+
+- [Getting Started](#getting-started)
+  - [Initializing the repository](#initializing-the-repository)
+  - [Running the app](#running-the-app)
+  - [Building for production](#building-for-production)
+- [Contributing](#contributing)
+
+</details>
 
 ## Getting Started
 
-### Prerequisites
+### Initializing the repository
 
-- Node.js (Latest LTS version recommended)
-- Bun package manager
+To bootstrap the [API](./apps/api)'s SQLite (Cloudflare) and install dependencies:
 
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
 ```bash
-bun install
+bun run init
 ```
 
-## Development
+You can rerun this command to reset the full database.
 
-Run the development server:
+### Running the app
+
+First, run the development server:
 
 ```bash
 bun run dev
 ```
 
-Other available commands:
-- `bun run build` - Build the production application
-- `bun run lint` - Run ESLint
-- `bun run preview` - Preview the production build locally
+This will run the Next.js app, and simulate a local Cloudflare worker.
 
-## Project Structure
+### Building for production
 
-```
-src/
-├── components/         # Reusable UI components
-│   ├── ui/            # Base UI components (shadcn/ui)
-│   └── ...           
-├── routes/            # File-based routing
-│   ├── _layout/       # Layout components
-│   │   ├── _authenticated/    # Protected routes
-│   │   └── _unauthenticated/  # Public routes
-├── lib/               # Utilities and shared code
-├── hooks/             # Custom React hooks
-└── main.tsx          # Application entry point
+```bash
+bun run build
 ```
 
-## Features
+## Contributing
 
-- **Authentication** - Protected and public routes
-- **Quests** - User engagement activities
-- **Leaderboard** - Competitive rankings
-- **Profile Management** - User profile customization
-- **Responsive Design** - Mobile-first approach with bottom navigation
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you're interested in contributing to this project, please read the [contribution guide](./CONTRIBUTING).
+
+<div align="right">
+<a href="https://nearbuilders.org" target="_blank">
+<img
+  src="https://builders.mypinata.cloud/ipfs/QmWt1Nm47rypXFEamgeuadkvZendaUvAkcgJ3vtYf1rBFj"
+  alt="Near Builders"
+  height="40"
+/>
+</a>
+</div>
