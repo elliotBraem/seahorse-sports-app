@@ -1,8 +1,10 @@
 import {
-  Game,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
+  CreateGameRequest,
+  UpdateGameRequest,
+  GameResponse,
+  GameStatus,
+} from "@renegade-fanclub/types";
+import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
@@ -35,7 +37,27 @@ export async function handleListGames(
 
     const games = await stmt.all();
 
-    return createSuccessResponse(games.results);
+    const gameResponses: GameResponse[] = games.results.map(g => ({
+      id: g.id as number,
+      campaignId: g.campaign_id as number,
+      sportId: g.sport_id as number,
+      homeTeamId: g.home_team_id as number,
+      awayTeamId: g.away_team_id as number,
+      startTime: g.start_time as string,
+      endTime: g.end_time as string | null,
+      winnerTeamId: g.winner_team_id as number | null,
+      gameType: g.game_type as string | null,
+      pointsValue: g.points_value as number,
+      status: g.status as GameStatus,
+      externalId: g.external_id as string | null,
+      apiMetadata: g.api_metadata as Record<string, unknown>,
+      createdAt: g.created_at as string,
+      homeTeamName: g.home_team_name as string,
+      awayTeamName: g.away_team_name as string,
+      sportName: g.sport_name as string,
+    }));
+
+    return createSuccessResponse(gameResponses);
   } catch (error) {
     console.error("[List Games Error]", error);
     return createErrorResponse("INTERNAL_ERROR", "Failed to fetch games", 500);
@@ -75,7 +97,27 @@ export async function handleGetGame(
       return createErrorResponse("NOT_FOUND", "Game not found", 404);
     }
 
-    return createSuccessResponse(game);
+    const gameResponse: GameResponse = {
+      id: game.id as number,
+      campaignId: game.campaign_id as number,
+      sportId: game.sport_id as number,
+      homeTeamId: game.home_team_id as number,
+      awayTeamId: game.away_team_id as number,
+      startTime: game.start_time as string,
+      endTime: game.end_time as string | null,
+      winnerTeamId: game.winner_team_id as number | null,
+      gameType: game.game_type as string | null,
+      pointsValue: game.points_value as number,
+      status: game.status as GameStatus,
+      externalId: game.external_id as string | null,
+      apiMetadata: game.api_metadata as Record<string, unknown>,
+      createdAt: game.created_at as string,
+      homeTeamName: game.home_team_name as string,
+      awayTeamName: game.away_team_name as string,
+      sportName: game.sport_name as string,
+    };
+
+    return createSuccessResponse(gameResponse);
   } catch (error) {
     console.error("[Get Game Error]", error);
     return createErrorResponse("INTERNAL_ERROR", "Failed to fetch game", 500);
@@ -112,7 +154,27 @@ export async function handleGetCurrentGames(
 
     const games = await stmt.all();
 
-    return createSuccessResponse(games.results);
+    const gameResponses: GameResponse[] = games.results.map(g => ({
+      id: g.id as number,
+      campaignId: g.campaign_id as number,
+      sportId: g.sport_id as number,
+      homeTeamId: g.home_team_id as number,
+      awayTeamId: g.away_team_id as number,
+      startTime: g.start_time as string,
+      endTime: g.end_time as string | null,
+      winnerTeamId: g.winner_team_id as number | null,
+      gameType: g.game_type as string | null,
+      pointsValue: g.points_value as number,
+      status: g.status as GameStatus,
+      externalId: g.external_id as string | null,
+      apiMetadata: g.api_metadata as Record<string, unknown>,
+      createdAt: g.created_at as string,
+      homeTeamName: g.home_team_name as string,
+      awayTeamName: g.away_team_name as string,
+      sportName: g.sport_name as string,
+    }));
+
+    return createSuccessResponse(gameResponses);
   } catch (error) {
     console.error("[Current Games Error]", error);
     return createErrorResponse(
@@ -132,16 +194,16 @@ export async function handleCreateGame(
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
-    const game: Omit<Game, "id" | "created_at"> = await request.json();
+    const game: CreateGameRequest = await request.json();
 
     // Validate required fields
     if (
-      !game.campaign_id ||
-      !game.sport_id ||
-      !game.home_team_id ||
-      !game.away_team_id ||
-      !game.start_time ||
-      !game.points_value
+      !game.campaignId ||
+      !game.sportId ||
+      !game.homeTeamId ||
+      !game.awayTeamId ||
+      !game.startTime ||
+      !game.pointsValue
     ) {
       return createErrorResponse("INVALID_PARAMS", "Missing required fields");
     }
@@ -156,17 +218,17 @@ export async function handleCreateGame(
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
     ).bind(
-      game.campaign_id,
-      game.sport_id,
-      game.home_team_id,
-      game.away_team_id,
-      game.start_time,
-      game.end_time || null,
-      game.game_type,
-      game.points_value,
+      game.campaignId,
+      game.sportId,
+      game.homeTeamId,
+      game.awayTeamId,
+      game.startTime,
+      game.endTime || null,
+      game.gameType,
+      game.pointsValue,
       game.status || "upcoming",
-      game.external_id || null,
-      game.api_metadata || "{}",
+      game.externalId || null,
+      game.apiMetadata || "{}",
     );
 
     const result = await stmt.run();
@@ -186,7 +248,7 @@ export async function handleUpdateGame(
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
     const id = request.url.split("/").pop();
-    const updates: Partial<Game> = await request.json();
+    const updates: UpdateGameRequest = await request.json();
 
     if (!id) {
       return createErrorResponse("INVALID_PARAMS", "Game ID is required");
@@ -198,7 +260,9 @@ export async function handleUpdateGame(
 
     Object.entries(updates).forEach(([key, value]) => {
       if (key !== "id" && key !== "created_at") {
-        updateFields.push(`${key} = ?`);
+        // Convert camelCase to snake_case for database
+        const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        updateFields.push(`${dbKey} = ?`);
         values.push(value);
       }
     });
@@ -220,7 +284,7 @@ export async function handleUpdateGame(
     await stmt.run();
 
     // If winner is set, update user predictions points
-    if (updates.winner_team_id && updates.status === "completed") {
+    if (updates.winnerTeamId && updates.status === "completed") {
       await env.DB.prepare(
         `
         UPDATE user_predictions
@@ -235,7 +299,7 @@ export async function handleUpdateGame(
         WHERE game_id = ?
       `,
       )
-        .bind(updates.winner_team_id, id, id)
+        .bind(updates.winnerTeamId, id, id)
         .run();
     }
 

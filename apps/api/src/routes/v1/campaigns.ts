@@ -1,8 +1,10 @@
 import {
-  Campaign,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
+  CreateCampaignRequest,
+  UpdateCampaignRequest,
+  CampaignResponse,
+  LeaderboardEntryResponse,
+} from "@renegade-fanclub/types";
+import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
@@ -28,7 +30,18 @@ export async function handleListCampaigns(
 
     const campaigns = await stmt.all();
 
-    return createSuccessResponse(campaigns.results);
+    const campaignResponses: CampaignResponse[] = campaigns.results.map(c => ({
+      id: c.id as number,
+      name: c.name as string,
+      description: c.description as string | null,
+      startDate: c.start_date as string,
+      endDate: c.end_date as string,
+      status: c.status as 'upcoming' | 'active' | 'completed',
+      rules: c.rules ? JSON.parse(c.rules as string) : {},
+      createdAt: c.created_at as string,
+    }));
+
+    return createSuccessResponse(campaignResponses);
   } catch (error) {
     console.error("[List Campaigns Error]", error);
     return createErrorResponse(
@@ -61,7 +74,18 @@ export async function handleGetCampaign(
       return createErrorResponse("NOT_FOUND", "Campaign not found", 404);
     }
 
-    return createSuccessResponse(campaign);
+    const campaignResponse: CampaignResponse = {
+      id: campaign.id as number,
+      name: campaign.name as string,
+      description: campaign.description as string | null,
+      startDate: campaign.start_date as string,
+      endDate: campaign.end_date as string,
+      status: campaign.status as 'upcoming' | 'active' | 'completed',
+      rules: campaign.rules ? JSON.parse(campaign.rules as string) : {},
+      createdAt: campaign.created_at as string,
+    };
+
+    return createSuccessResponse(campaignResponse);
   } catch (error) {
     console.error("[Get Campaign Error]", error);
     return createErrorResponse(
@@ -91,16 +115,32 @@ export async function handleGetCampaignLeaderboard(
 
     const stmt = env.DB.prepare(
       `
-      SELECT * FROM campaign_leaderboard 
-      WHERE campaign_id = ? 
-      ORDER BY total_points DESC 
+      SELECT 
+        cl.*,
+        u.username,
+        u.avatar,
+        ROW_NUMBER() OVER (ORDER BY cl.total_points DESC) as rank
+      FROM campaign_leaderboard cl
+      JOIN users u ON cl.user_id = u.id
+      WHERE cl.campaign_id = ? 
+      ORDER BY cl.total_points DESC 
       LIMIT ? OFFSET ?
     `,
     ).bind(id, limit, offset);
 
     const leaderboard = await stmt.all();
 
-    return createSuccessResponse(leaderboard.results);
+    const leaderboardResponses: LeaderboardEntryResponse[] = leaderboard.results.map(entry => ({
+      userId: entry.user_id as string,
+      username: entry.username as string,
+      avatar: entry.avatar as string | null,
+      totalPoints: entry.total_points as number,
+      predictionPoints: entry.prediction_points as number,
+      questPoints: entry.quest_points as number,
+      rank: entry.rank as number,
+    }));
+
+    return createSuccessResponse(leaderboardResponses);
   } catch (error) {
     console.error("[Campaign Leaderboard Error]", error);
     return createErrorResponse(
@@ -120,10 +160,10 @@ export async function handleCreateCampaign(
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
-    const campaign: Omit<Campaign, "id" | "created_at"> = await request.json();
+    const campaign: CreateCampaignRequest = await request.json();
 
     // Validate required fields
-    if (!campaign.name || !campaign.start_date || !campaign.end_date) {
+    if (!campaign.name || !campaign.startDate || !campaign.endDate) {
       return createErrorResponse("INVALID_PARAMS", "Missing required fields");
     }
 
@@ -135,10 +175,10 @@ export async function handleCreateCampaign(
     ).bind(
       campaign.name,
       campaign.description || null,
-      campaign.start_date,
-      campaign.end_date,
+      campaign.startDate,
+      campaign.endDate,
       campaign.status || "upcoming",
-      campaign.rules || "{}",
+      JSON.stringify(campaign.rules || {}),
     );
 
     const result = await stmt.run();
@@ -162,7 +202,7 @@ export async function handleUpdateCampaign(
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
     const id = request.url.split("/").pop();
-    const updates: Partial<Campaign> = await request.json();
+    const updates: UpdateCampaignRequest = await request.json();
 
     if (!id) {
       return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
@@ -173,9 +213,11 @@ export async function handleUpdateCampaign(
     const values: any[] = [];
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (key !== "id" && key !== "created_at") {
-        updateFields.push(`${key} = ?`);
-        values.push(value);
+      if (key !== "id" && key !== "createdAt") {
+        // Convert camelCase to snake_case for database
+        const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        updateFields.push(`${dbKey} = ?`);
+        values.push(key === "rules" ? JSON.stringify(value) : value);
       }
     });
 

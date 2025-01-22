@@ -60,15 +60,3 @@ export function createErrorResponse(
     },
   );
 }
-
-// Re-export database types from shared package
-export type {
-  Campaign,
-  Game,
-  Team,
-  User as UserProfile,
-  UserPrediction as Prediction,
-  Quest,
-  UserQuestCompletion,
-  UserPoints,
-} from '@renegade-fanclub/types';
