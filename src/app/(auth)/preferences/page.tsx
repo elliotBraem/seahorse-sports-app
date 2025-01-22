@@ -1,9 +1,11 @@
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from "react";
-import { Container } from "@/components/ui/container";
-import toast from "react-hot-toast";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Container } from "@/components/ui/container";
+import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const preferences = [
   {
@@ -86,7 +88,6 @@ const preferences = [
 
 export default function PreferencesPage() {
   const router = useRouter();
-  const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: string[];
@@ -103,10 +104,6 @@ export default function PreferencesPage() {
       };
     });
   };
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const handleSubmit = () => {
     setLoading(true);
@@ -145,7 +142,6 @@ export default function PreferencesPage() {
     <Container
       title="Preferences"
       description="Choose Favorite Sports, Teams, Leagues, Athletes!"
-      isVisible={isVisible}
     >
       <div className="space-y-6">
         {preferences.map((categoryObj, index) => {

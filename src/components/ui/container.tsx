@@ -1,7 +1,6 @@
 interface ContainerProps {
   title: string;
   description: string;
-  isVisible?: boolean;
   children?: React.ReactNode;
 }
 
