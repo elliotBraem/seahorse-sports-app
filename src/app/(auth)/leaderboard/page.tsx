@@ -1,6 +1,7 @@
 import { User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
+import { Card } from "@/components/ui/card";
 
 const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   id: `${i + 1}`,
@@ -21,11 +22,11 @@ export default function LeaderboardPage() {
       title="Leaderboard"
       description="Top fans competing for Super Bowl tickets"
     >
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4">
         {USERS.map((user) => (
-          <div
+          <Card
             key={user.id}
-            className="flex items-center space-x-4 rounded-lg bg-card p-4 shadow-sm"
+            className="flex items-center space-x-4 rounded-lg shadow-sm"
           >
             <span className="min-w-[2rem] text-2xl font-bold">{user.rank}</span>
             <Avatar>
@@ -34,9 +35,11 @@ export default function LeaderboardPage() {
             </Avatar>
             <div className="flex-1">
               <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-muted-foreground">{user.points} points</p>
+              <p className="text-sm text-muted-foreground">
+                {user.points} points
+              </p>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </Container>
