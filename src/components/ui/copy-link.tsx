@@ -27,7 +27,7 @@ export function CopyLink({ title, description, link }: ReferLinkProps) {
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex items-center mt-4 justify-between">
-        <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold  overflow-hidden whitespace-nowrap text-ellipsis">
+        <code className="relative rounded bg-[#ffffff1a] px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold  overflow-hidden whitespace-nowrap text-ellipsis">
           {link}
         </code>
         <Button
