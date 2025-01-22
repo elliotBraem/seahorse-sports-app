@@ -32,6 +32,21 @@ module.exports = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        purple: {
+          DEFAULT: "hsl(var(--purple))",
+        },
+        purpleDark: {
+          DEFAULT: "hsl(var(--purpleDark))",
+        },
+        orangeLight: {
+          DEFAULT: "hsl(var(--orangeLight))",
+        },
+        midnight: {
+          DEFAULT: "hsl(var(--midnight))",
+        },
+        rose: {
+          DEFAULT: "hsl(var(--rose))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",

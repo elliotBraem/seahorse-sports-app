@@ -47,8 +47,12 @@ export default function ProfilePage() {
               <AvatarFallback>{profile.name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl ">{profile.name}</CardTitle>
-              <CardDescription>{profile.email}</CardDescription>
+              <CardTitle className="text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+                {profile.name}
+              </CardTitle>
+              <CardDescription className="overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+                {profile.email}
+              </CardDescription>
             </div>
           </div>
           <div className="flex items-end space-x-4">

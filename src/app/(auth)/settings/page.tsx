@@ -115,6 +115,16 @@ export default function SettingsPage() {
           </Form>
         )}
 
+        <div className="flex items-center justify-between">
+          <a
+            href="/preferences"
+            className="flex items-center justify-between space-x-2 text-lg font-medium"
+          >
+            <span>Prefrences</span>
+            <SquarePen className="h-4 w-4" />
+          </a>
+        </div>
+
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -132,16 +142,6 @@ export default function SettingsPage() {
           <Button disabled={isLoading} onClick={disconnectWallet}>
             {isLoading ? <Loader2 className="animate-spin" /> : "Logout"}
           </Button>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <a
-            href="/preferences"
-            className="flex items-center justify-between space-x-2 text-lg font-medium"
-          >
-            <span>Prefrences</span>
-            <SquarePen className="h-4 w-4" />
-          </a>
         </div>
       </Container>
     </>
