@@ -65,4 +65,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .using-mouse * {
+    outline: none !important;
+  }
 }

@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 export function NotFound() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Trigger fade-in animation after component mounts
     setIsVisible(true);
   }, []);
