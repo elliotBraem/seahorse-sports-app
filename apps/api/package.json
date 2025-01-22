@@ -11,7 +11,7 @@
     "db:migrate:list": "wrangler d1 migrations list seahorse-sports-dev",
     "db:migrate:apply": "wrangler d1 migrations apply seahorse-sports-dev",
     "init:local": "bun run db:clean && bun run deploy:sql:local",
-    "db:clean": "rm -rf ./wrangler/state",
+    "db:clean": "rm -rf .wrangler/state",
     "deploy:sql:local": "bunx wrangler d1 execute seahorse-sports-dev --local --file=schema.sql",
     "deploy:sql:remote": "bunx wrangler d1 execute seahorse-sports-dev --remote --file=schema.sql",
     "init": "bun run init:local"
