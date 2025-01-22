@@ -6,13 +6,20 @@ import {
   type AddFavoriteTeamRequest,
   type CreatePredictionRequest,
   type AddSocialAccountRequest,
-} from '@renegade-fanclub/types';
-import { API_BASE_URL, type ApiResponse, type ApiOptions, handleApiResponse } from './types';
+} from "@renegade-fanclub/types";
+import {
+  API_BASE_URL,
+  type ApiResponse,
+  type ApiOptions,
+  handleApiResponse,
+} from "./types";
 
-export async function getUserProfile(options?: ApiOptions): Promise<ApiResponse<ProfileResponse>> {
+export async function getUserProfile(
+  options?: ApiOptions,
+): Promise<ApiResponse<ProfileResponse>> {
   const response = await fetch(`${API_BASE_URL}/user/profile`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<ProfileResponse>(response);
@@ -20,13 +27,13 @@ export async function getUserProfile(options?: ApiOptions): Promise<ApiResponse<
 
 export async function updateUserProfile(
   data: UpdateProfileRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<ProfileResponse>> {
   const response = await fetch(`${API_BASE_URL}/user/profile`, {
-    method: 'PATCH',
-    credentials: 'include',
+    method: "PATCH",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
     signal: options?.signal,
@@ -36,13 +43,13 @@ export async function updateUserProfile(
 
 export async function addFavoriteTeam(
   data: AddFavoriteTeamRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<ProfileResponse>> {
   const response = await fetch(`${API_BASE_URL}/user/favorites/teams`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
     signal: options?.signal,
@@ -52,25 +59,28 @@ export async function addFavoriteTeam(
 
 export async function removeFavoriteTeam(
   teamId: number,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<ProfileResponse>> {
-  const response = await fetch(`${API_BASE_URL}/user/favorites/teams/${teamId}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    signal: options?.signal,
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/user/favorites/teams/${teamId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      signal: options?.signal,
+    },
+  );
   return handleApiResponse<ProfileResponse>(response);
 }
 
 export async function createPrediction(
   data: CreatePredictionRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<PredictionResponse>> {
   const response = await fetch(`${API_BASE_URL}/predictions`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
     signal: options?.signal,
@@ -78,10 +88,12 @@ export async function createPrediction(
   return handleApiResponse<PredictionResponse>(response);
 }
 
-export async function getUserPredictions(options?: ApiOptions): Promise<ApiResponse<PredictionResponse[]>> {
+export async function getUserPredictions(
+  options?: ApiOptions,
+): Promise<ApiResponse<PredictionResponse[]>> {
   const response = await fetch(`${API_BASE_URL}/predictions/mine`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<PredictionResponse[]>(response);
@@ -89,11 +101,11 @@ export async function getUserPredictions(options?: ApiOptions): Promise<ApiRespo
 
 export async function getGamePrediction(
   gameId: number,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<PredictionResponse>> {
   const response = await fetch(`${API_BASE_URL}/predictions/${gameId}`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<PredictionResponse>(response);
@@ -101,13 +113,13 @@ export async function getGamePrediction(
 
 export async function addSocialAccount(
   data: AddSocialAccountRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<SocialAccountResponse>> {
   const response = await fetch(`${API_BASE_URL}/user/social`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
     signal: options?.signal,
@@ -117,22 +129,22 @@ export async function addSocialAccount(
 
 export async function removeSocialAccount(
   platform: string,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<void>> {
   const response = await fetch(`${API_BASE_URL}/user/social/${platform}`, {
-    method: 'DELETE',
-    credentials: 'include',
+    method: "DELETE",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<void>(response);
 }
 
 export async function getSocialAccounts(
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<SocialAccountResponse[]>> {
   const response = await fetch(`${API_BASE_URL}/user/social`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<SocialAccountResponse[]>(response);

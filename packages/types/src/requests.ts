@@ -29,7 +29,7 @@ export interface CreateGameRequest {
   endTime?: string;
   gameType?: string;
   pointsValue: number;
-  status?: 'upcoming' | 'active' | 'completed';
+  status?: "upcoming" | "active" | "completed";
   externalId?: string;
   apiMetadata?: Record<string, unknown>;
 }
@@ -44,7 +44,7 @@ export interface UpdateGameRequest {
   winnerTeamId?: number;
   gameType?: string;
   pointsValue?: number;
-  status?: 'upcoming' | 'active' | 'completed';
+  status?: "upcoming" | "active" | "completed";
   externalId?: string;
   apiMetadata?: Record<string, unknown>;
 }
@@ -54,7 +54,7 @@ export interface CreateCampaignRequest {
   description?: string;
   startDate: string;
   endDate: string;
-  status?: 'upcoming' | 'active' | 'completed';
+  status?: "upcoming" | "active" | "completed";
   rules?: Record<string, unknown>;
 }
 
@@ -63,7 +63,7 @@ export interface UpdateCampaignRequest {
   description?: string;
   startDate?: string;
   endDate?: string;
-  status?: 'upcoming' | 'active' | 'completed';
+  status?: "upcoming" | "active" | "completed";
   rules?: Record<string, unknown>;
 }
 

@@ -1,4 +1,4 @@
-export type GameStatus = 'upcoming' | 'active' | 'completed';
+export type GameStatus = "upcoming" | "active" | "completed";
 
 export interface Game {
   id: number;

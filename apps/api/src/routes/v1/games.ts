@@ -37,7 +37,7 @@ export async function handleListGames(
 
     const games = await stmt.all();
 
-    const gameResponses: GameResponse[] = games.results.map(g => ({
+    const gameResponses: GameResponse[] = games.results.map((g) => ({
       id: g.id as number,
       campaignId: g.campaign_id as number,
       sportId: g.sport_id as number,
@@ -154,7 +154,7 @@ export async function handleGetCurrentGames(
 
     const games = await stmt.all();
 
-    const gameResponses: GameResponse[] = games.results.map(g => ({
+    const gameResponses: GameResponse[] = games.results.map((g) => ({
       id: g.id as number,
       campaignId: g.campaign_id as number,
       sportId: g.sport_id as number,
@@ -261,7 +261,10 @@ export async function handleUpdateGame(
     Object.entries(updates).forEach(([key, value]) => {
       if (key !== "id" && key !== "created_at") {
         // Convert camelCase to snake_case for database
-        const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
         updateFields.push(`${dbKey} = ?`);
         values.push(value);
       }

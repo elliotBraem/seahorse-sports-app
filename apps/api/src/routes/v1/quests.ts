@@ -49,14 +49,16 @@ export async function handleListQuests(
     const stmt = env.DB.prepare(query).bind(...params);
     const quests = await stmt.all();
 
-    const questResponses: QuestResponse[] = quests.results.map(q => ({
+    const questResponses: QuestResponse[] = quests.results.map((q) => ({
       id: q.id as number,
       campaignId: q.campaign_id as number,
       name: q.name as string,
       description: q.description as string | null,
       pointsValue: q.points_value as number,
       verificationType: q.verification_type as string,
-      verificationData: q.verification_data ? JSON.parse(q.verification_data as string) : null,
+      verificationData: q.verification_data
+        ? JSON.parse(q.verification_data as string)
+        : null,
       startDate: q.start_date as string,
       endDate: q.end_date as string,
       createdAt: q.created_at as string,
@@ -80,7 +82,8 @@ export async function handleCompleteQuest(
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
     const questId = request.url.split("/")[3]; // quests/:questId/complete
-    const { verificationProof } = await request.json() as CompleteQuestRequest;
+    const { verificationProof } =
+      (await request.json()) as CompleteQuestRequest;
 
     if (!questId) {
       return createErrorResponse("INVALID_PARAMS", "Quest ID is required");
@@ -127,7 +130,12 @@ export async function handleCompleteQuest(
         VALUES (?, ?, ?, ?)
       `,
       )
-        .bind(userId, questId, quest.points_value, verificationProof ? JSON.stringify(verificationProof) : null)
+        .bind(
+          userId,
+          questId,
+          quest.points_value,
+          verificationProof ? JSON.stringify(verificationProof) : null,
+        )
         .run();
 
       // Update user points
@@ -206,18 +214,21 @@ export async function handleGetUserQuests(
 
     const completions = await stmt.all();
 
-    const completionResponses: QuestCompletionResponse[] = completions.results.map(c => ({
-      id: c.id as number,
-      userId: c.user_id as string,
-      questId: c.quest_id as number,
-      pointsEarned: c.points_earned as number,
-      completedAt: c.completed_at as string,
-      verificationProof: c.verification_proof ? JSON.parse(c.verification_proof as string) : null,
-      questName: c.quest_name as string,
-      questDescription: c.quest_description as string | null,
-      verificationType: c.verification_type as string,
-      campaignName: c.campaign_name as string,
-    }));
+    const completionResponses: QuestCompletionResponse[] =
+      completions.results.map((c) => ({
+        id: c.id as number,
+        userId: c.user_id as string,
+        questId: c.quest_id as number,
+        pointsEarned: c.points_earned as number,
+        completedAt: c.completed_at as string,
+        verificationProof: c.verification_proof
+          ? JSON.parse(c.verification_proof as string)
+          : null,
+        questName: c.quest_name as string,
+        questDescription: c.quest_description as string | null,
+        verificationType: c.verification_type as string,
+        campaignName: c.campaign_name as string,
+      }));
 
     return createSuccessResponse(completionResponses);
   } catch (error) {
@@ -303,7 +314,10 @@ export async function handleUpdateQuest(
     Object.entries(updates).forEach(([key, value]) => {
       if (key !== "id" && key !== "createdAt") {
         // Convert camelCase to snake_case for database
-        const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
         updateFields.push(`${dbKey} = ?`);
         values.push(key === "verificationData" ? JSON.stringify(value) : value);
       }

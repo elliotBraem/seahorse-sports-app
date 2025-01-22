@@ -50,7 +50,7 @@ export interface CampaignResponse {
   description: string | null;
   startDate: string;
   endDate: string;
-  status: 'upcoming' | 'active' | 'completed';
+  status: "upcoming" | "active" | "completed";
   rules: Record<string, unknown>;
   createdAt: string;
 }
@@ -149,7 +149,7 @@ export interface CampaignLeaderboardResponse {
   campaign: {
     id: number;
     name: string;
-    status: 'upcoming' | 'active' | 'completed';
+    status: "upcoming" | "active" | "completed";
   };
   rankings: LeaderboardRankingResponse[];
   total: number;

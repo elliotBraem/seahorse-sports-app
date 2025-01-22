@@ -9,10 +9,7 @@ import {
   UpdateProfileRequest,
 } from "@renegade-fanclub/types";
 import { requireAuth } from "../../middleware/auth";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "../../types/api";
+import { createErrorResponse, createSuccessResponse } from "../../types/api";
 import { Env } from "../../types/env";
 
 // GET /api/user/profile
@@ -56,7 +53,7 @@ export async function handleGetUserProfile(
       createdAt: profile.created_at as string,
       updatedAt: profile.updated_at as string,
       favoriteTeams: JSON.parse(profile.favorite_teams as string),
-      favoriteSports: JSON.parse(profile.favorite_sports as string)
+      favoriteSports: JSON.parse(profile.favorite_sports as string),
     };
     return createSuccessResponse(profileResponse);
   } catch (error) {
@@ -125,7 +122,7 @@ export async function handleAddFavoriteTeam(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const { teamId } = await request.json() as AddFavoriteTeamRequest;
+    const { teamId } = (await request.json()) as AddFavoriteTeamRequest;
 
     if (!teamId) {
       return createErrorResponse("INVALID_PARAMS", "Team ID is required");
@@ -193,7 +190,8 @@ export async function handleCreatePrediction(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const { gameId, predictedWinnerId } = await request.json() as CreatePredictionRequest;
+    const { gameId, predictedWinnerId } =
+      (await request.json()) as CreatePredictionRequest;
 
     if (!gameId || !predictedWinnerId) {
       return createErrorResponse(
@@ -286,20 +284,22 @@ export async function handleGetUserPredictions(
     const predictions = await stmt.all();
 
     // Transform database results to match PredictionResponse type
-    const predictionResponses: PredictionResponse[] = predictions.results.map(p => ({
-      id: p.id as number,
-      userId: p.user_id as string,
-      gameId: p.game_id as number,
-      predictedWinnerId: p.predicted_winner_id as number,
-      pointsEarned: p.points_earned as number | null,
-      createdAt: p.created_at as string,
-      gameStartTime: p.start_time as string,
-      gameStatus: p.game_status as GameStatus,
-      pointsValue: p.points_value as number,
-      homeTeamName: p.home_team_name as string,
-      awayTeamName: p.away_team_name as string,
-      predictedWinnerName: p.predicted_winner_name as string
-    }));
+    const predictionResponses: PredictionResponse[] = predictions.results.map(
+      (p) => ({
+        id: p.id as number,
+        userId: p.user_id as string,
+        gameId: p.game_id as number,
+        predictedWinnerId: p.predicted_winner_id as number,
+        pointsEarned: p.points_earned as number | null,
+        createdAt: p.created_at as string,
+        gameStartTime: p.start_time as string,
+        gameStatus: p.game_status as GameStatus,
+        pointsValue: p.points_value as number,
+        homeTeamName: p.home_team_name as string,
+        awayTeamName: p.away_team_name as string,
+        predictedWinnerName: p.predicted_winner_name as string,
+      }),
+    );
     return createSuccessResponse(predictionResponses);
   } catch (error) {
     console.error("[Get Predictions Error]", error);
@@ -363,7 +363,7 @@ export async function handleGetGamePrediction(
       pointsValue: prediction.points_value as number,
       homeTeamName: prediction.home_team_name as string,
       awayTeamName: prediction.away_team_name as string,
-      predictedWinnerName: prediction.predicted_winner_name as string
+      predictedWinnerName: prediction.predicted_winner_name as string,
     };
     return createSuccessResponse(predictionResponse);
   } catch (error) {
@@ -384,7 +384,8 @@ export async function handleAddSocialAccount(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const { platform, platformUserId, username } = await request.json() as AddSocialAccountRequest;
+    const { platform, platformUserId, username } =
+      (await request.json()) as AddSocialAccountRequest;
 
     if (!platform || !platformUserId) {
       return createErrorResponse(
@@ -468,13 +469,15 @@ export async function handleGetSocialAccounts(
     const accounts = await stmt.all();
 
     // Transform database results to match SocialAccountResponse type
-    const socialResponses: SocialAccountResponse[] = accounts.results.map(a => ({
-      platform: a.platform as string,
-      platformUserId: a.platform_user_id as string,
-      username: a.username as string | null,
-      verified: a.verified as boolean,
-      createdAt: a.created_at as string
-    }));
+    const socialResponses: SocialAccountResponse[] = accounts.results.map(
+      (a) => ({
+        platform: a.platform as string,
+        platformUserId: a.platform_user_id as string,
+        username: a.username as string | null,
+        verified: a.verified as boolean,
+        createdAt: a.created_at as string,
+      }),
+    );
     return createSuccessResponse(socialResponses);
   } catch (error) {
     console.error("[Get Social Accounts Error]", error);

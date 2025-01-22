@@ -30,16 +30,18 @@ export async function handleListCampaigns(
 
     const campaigns = await stmt.all();
 
-    const campaignResponses: CampaignResponse[] = campaigns.results.map(c => ({
-      id: c.id as number,
-      name: c.name as string,
-      description: c.description as string | null,
-      startDate: c.start_date as string,
-      endDate: c.end_date as string,
-      status: c.status as 'upcoming' | 'active' | 'completed',
-      rules: c.rules ? JSON.parse(c.rules as string) : {},
-      createdAt: c.created_at as string,
-    }));
+    const campaignResponses: CampaignResponse[] = campaigns.results.map(
+      (c) => ({
+        id: c.id as number,
+        name: c.name as string,
+        description: c.description as string | null,
+        startDate: c.start_date as string,
+        endDate: c.end_date as string,
+        status: c.status as "upcoming" | "active" | "completed",
+        rules: c.rules ? JSON.parse(c.rules as string) : {},
+        createdAt: c.created_at as string,
+      }),
+    );
 
     return createSuccessResponse(campaignResponses);
   } catch (error) {
@@ -80,7 +82,7 @@ export async function handleGetCampaign(
       description: campaign.description as string | null,
       startDate: campaign.start_date as string,
       endDate: campaign.end_date as string,
-      status: campaign.status as 'upcoming' | 'active' | 'completed',
+      status: campaign.status as "upcoming" | "active" | "completed",
       rules: campaign.rules ? JSON.parse(campaign.rules as string) : {},
       createdAt: campaign.created_at as string,
     };
@@ -130,15 +132,16 @@ export async function handleGetCampaignLeaderboard(
 
     const leaderboard = await stmt.all();
 
-    const leaderboardResponses: LeaderboardEntryResponse[] = leaderboard.results.map(entry => ({
-      userId: entry.user_id as string,
-      username: entry.username as string,
-      avatar: entry.avatar as string | null,
-      totalPoints: entry.total_points as number,
-      predictionPoints: entry.prediction_points as number,
-      questPoints: entry.quest_points as number,
-      rank: entry.rank as number,
-    }));
+    const leaderboardResponses: LeaderboardEntryResponse[] =
+      leaderboard.results.map((entry) => ({
+        userId: entry.user_id as string,
+        username: entry.username as string,
+        avatar: entry.avatar as string | null,
+        totalPoints: entry.total_points as number,
+        predictionPoints: entry.prediction_points as number,
+        questPoints: entry.quest_points as number,
+        rank: entry.rank as number,
+      }));
 
     return createSuccessResponse(leaderboardResponses);
   } catch (error) {
@@ -215,7 +218,10 @@ export async function handleUpdateCampaign(
     Object.entries(updates).forEach(([key, value]) => {
       if (key !== "id" && key !== "createdAt") {
         // Convert camelCase to snake_case for database
-        const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
         updateFields.push(`${dbKey} = ?`);
         values.push(key === "rules" ? JSON.stringify(value) : value);
       }

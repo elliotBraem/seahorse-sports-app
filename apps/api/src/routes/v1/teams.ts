@@ -47,7 +47,7 @@ export async function handleListTeams(
     const stmt = env.DB.prepare(query).bind(...params);
     const teams = await stmt.all();
 
-    const teamResponses: TeamResponse[] = teams.results.map(t => ({
+    const teamResponses: TeamResponse[] = teams.results.map((t) => ({
       id: t.id as number,
       sportId: t.sport_id as number,
       name: t.name as string,
@@ -123,7 +123,9 @@ export async function handleGetTeam(
       description: team.description as string | null,
       logo: team.logo as string | null,
       externalId: team.external_id as string | null,
-      apiMetadata: team.api_metadata ? JSON.parse(team.api_metadata as string) : {},
+      apiMetadata: team.api_metadata
+        ? JSON.parse(team.api_metadata as string)
+        : {},
       createdAt: team.created_at as string,
       sportName: team.sport_name as string,
       fanCount: team.fan_count as number,
@@ -189,7 +191,7 @@ export async function handleGetTeamFans(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    const fanResponses: TeamFanResponse[] = fans.results.map(f => ({
+    const fanResponses: TeamFanResponse[] = fans.results.map((f) => ({
       id: f.id as string,
       username: f.username as string,
       avatar: f.avatar as string | null,

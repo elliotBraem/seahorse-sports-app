@@ -3,13 +3,20 @@ import {
   type CreateCampaignRequest,
   type UpdateCampaignRequest,
   type CampaignLeaderboardResponse,
-} from '@renegade-fanclub/types';
-import { API_BASE_URL, type ApiResponse, type ApiOptions, handleApiResponse } from './types';
+} from "@renegade-fanclub/types";
+import {
+  API_BASE_URL,
+  type ApiResponse,
+  type ApiOptions,
+  handleApiResponse,
+} from "./types";
 
-export async function listCampaigns(options?: ApiOptions): Promise<ApiResponse<CampaignResponse[]>> {
+export async function listCampaigns(
+  options?: ApiOptions,
+): Promise<ApiResponse<CampaignResponse[]>> {
   const response = await fetch(`${API_BASE_URL}/campaigns`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<CampaignResponse[]>(response);
@@ -17,11 +24,11 @@ export async function listCampaigns(options?: ApiOptions): Promise<ApiResponse<C
 
 export async function getCampaign(
   campaignId: number,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<CampaignResponse>> {
   const response = await fetch(`${API_BASE_URL}/campaigns/${campaignId}`, {
-    method: 'GET',
-    credentials: 'include',
+    method: "GET",
+    credentials: "include",
     signal: options?.signal,
   });
   return handleApiResponse<CampaignResponse>(response);
@@ -29,13 +36,16 @@ export async function getCampaign(
 
 export async function getCampaignLeaderboardDetailed(
   campaignId: number,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<CampaignLeaderboardResponse>> {
-  const response = await fetch(`${API_BASE_URL}/campaigns/${campaignId}/leaderboard`, {
-    method: 'GET',
-    credentials: 'include',
-    signal: options?.signal,
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/campaigns/${campaignId}/leaderboard`,
+    {
+      method: "GET",
+      credentials: "include",
+      signal: options?.signal,
+    },
+  );
   return handleApiResponse<CampaignLeaderboardResponse>(response);
 }
 
@@ -43,13 +53,13 @@ export async function getCampaignLeaderboardDetailed(
 
 export async function createCampaign(
   data: CreateCampaignRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<CampaignResponse>> {
   const response = await fetch(`${API_BASE_URL}/admin/campaigns`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
     signal: options?.signal,
@@ -60,28 +70,34 @@ export async function createCampaign(
 export async function updateCampaign(
   campaignId: number,
   data: UpdateCampaignRequest,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<CampaignResponse>> {
-  const response = await fetch(`${API_BASE_URL}/admin/campaigns/${campaignId}`, {
-    method: 'PATCH',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `${API_BASE_URL}/admin/campaigns/${campaignId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      signal: options?.signal,
     },
-    body: JSON.stringify(data),
-    signal: options?.signal,
-  });
+  );
   return handleApiResponse<CampaignResponse>(response);
 }
 
 export async function deleteCampaign(
   campaignId: number,
-  options?: ApiOptions
+  options?: ApiOptions,
 ): Promise<ApiResponse<void>> {
-  const response = await fetch(`${API_BASE_URL}/admin/campaigns/${campaignId}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    signal: options?.signal,
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/admin/campaigns/${campaignId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      signal: options?.signal,
+    },
+  );
   return handleApiResponse<void>(response);
 }

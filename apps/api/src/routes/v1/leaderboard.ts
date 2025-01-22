@@ -37,16 +37,18 @@ export async function handleGetAllTimeLeaderboard(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(r => ({
-      userId: r.user_id as string,
-      username: r.username as string,
-      avatar: r.avatar as string | null,
-      totalPoints: r.total_points as number,
-      predictionPoints: r.prediction_points as number,
-      questPoints: r.quest_points as number,
-      rank: r.rank as number,
-      lastUpdated: r.last_updated as string,
-    }));
+    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(
+      (r) => ({
+        userId: r.user_id as string,
+        username: r.username as string,
+        avatar: r.avatar as string | null,
+        totalPoints: r.total_points as number,
+        predictionPoints: r.prediction_points as number,
+        questPoints: r.quest_points as number,
+        rank: r.rank as number,
+        lastUpdated: r.last_updated as string,
+      }),
+    );
 
     const response: AllTimeLeaderboardResponse = {
       rankings,
@@ -121,22 +123,24 @@ export async function handleGetCampaignLeaderboard(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(r => ({
-      userId: r.user_id as string,
-      username: r.username as string,
-      avatar: r.avatar as string | null,
-      totalPoints: r.total_points as number,
-      predictionPoints: r.prediction_points as number,
-      questPoints: r.quest_points as number,
-      rank: r.rank as number,
-      lastUpdated: r.last_updated as string,
-    }));
+    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(
+      (r) => ({
+        userId: r.user_id as string,
+        username: r.username as string,
+        avatar: r.avatar as string | null,
+        totalPoints: r.total_points as number,
+        predictionPoints: r.prediction_points as number,
+        questPoints: r.quest_points as number,
+        rank: r.rank as number,
+        lastUpdated: r.last_updated as string,
+      }),
+    );
 
     const response: CampaignLeaderboardResponse = {
       campaign: {
         id: campaign.id as number,
         name: campaign.name as string,
-        status: campaign.status as 'upcoming' | 'active' | 'completed',
+        status: campaign.status as "upcoming" | "active" | "completed",
       },
       rankings,
       total,
