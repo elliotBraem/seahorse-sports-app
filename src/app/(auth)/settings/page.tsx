@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import {
@@ -12,8 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/lib/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -32,16 +33,9 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function SettingsPage() {
-  const router = useRouter();
-  const { user, accountId, connectWallet, disconnectWallet } = useAuthStore();
+  const { user, accountId, disconnectWallet } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -72,9 +66,6 @@ export default function SettingsPage() {
     onChange(event);
   };
 
-  // Show loading state while auth is initializing
-  if (!isVisible) return null;
-
   // Show not found if no user is authenticated
   if (!user && !accountId) {
     return <div>Not authenticated</div>;
@@ -82,11 +73,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <Container
-        title="Settings"
-        description="Manage your account settings!"
-        isVisible={isVisible}
-      >
+      <Container title="Settings" description="Manage your account settings!">
         {user && (
           <Form {...form}>
             <form

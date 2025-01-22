@@ -2,6 +2,10 @@ import { Wallet } from '@/near/wallet';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from './types';
+import { setCookie, removeCookie } from './utils/cookies';
+
+// 7 days in seconds
+const SESSION_DURATION = 7 * 24 * 60 * 60;
 
 interface AuthState {
   user: User | null;
@@ -40,8 +44,13 @@ export const useAuthStore = create<AuthState>()(
             completedQuests: [],
           };
           await wallet.signIn();
-          // Set auth cookie - in a real app this would be a secure, httpOnly cookie
-          document.cookie = `auth=${user.id};path=/;`;
+          // Set secure auth cookie
+          setCookie('auth', user.id, {
+            maxAge: SESSION_DURATION, // 7 days
+            secure: true,
+            httpOnly: true,
+            sameSite: 'Strict'
+          });
           set({ user, isAuthenticated: true });
         } catch (error) {
           console.error('Failed to connect wallet:', error);
@@ -53,7 +62,11 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           await wallet.signOut();
-          document.cookie = 'auth=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          removeCookie('auth', {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'Strict'
+          });
           set({ accountId: null, user: null, isAuthenticated: false });
         } catch (error) {
           console.error('Failed to disconnect wallet:', error);

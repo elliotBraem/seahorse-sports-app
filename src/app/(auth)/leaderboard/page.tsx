@@ -1,7 +1,6 @@
 import { User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
-import { useEffect, useState } from "react";
 
 const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
   id: `${i + 1}`,
@@ -16,18 +15,11 @@ USERS.sort((a, b) => b.points - a.points).forEach((user, i) => {
   user.rank = i + 1;
 });
 
-export default function Leaderboard() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
+export default function LeaderboardPage() {
   return (
     <Container
       title="Leaderboard"
       description="Top fans competing for Super Bowl tickets"
-      isVisible={isVisible}
     >
       <div className="space-y-4">
         {USERS.map((user) => (

@@ -47,8 +47,6 @@ export function MainNav() {
 }
 
 export function NavLinks() {
-  const { logout } = useAuthStore();
-
   return (
     <>
       <Link
@@ -72,10 +70,6 @@ export function NavLinks() {
         <User className="h-4 w-4" />
         <span>Profile</span>
       </Link>
-      <Button variant="ghost" onClick={logout} className="space-x-2">
-        <LogOut className="h-4 w-4" />
-        <span>Logout</span>
-      </Button>
     </>
   );
 }

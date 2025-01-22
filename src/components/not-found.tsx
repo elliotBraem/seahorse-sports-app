@@ -1,30 +1,14 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export function NotFound() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Trigger fade-in animation after component mounts
-    setIsVisible(true);
-  }, []);
-
   return (
     <div
-      className={cn(
-        "min-h-[100dvh] w-full overflow-x-hidden",
-        "bg-gradient-to-br from-background to-muted",
-        "from-purple-600 to-blue-600"
-      )}
+      className={cn("min-h-[100dvh] w-full overflow-x-hidden", "bg-background")}
     >
-      <div
-        className={`flex min-h-[100vh] items-center justify-center p-6 transition-opacity duration-1000 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-      >
+      <div className={"flex min-h-[100vh] items-center justify-center p-6"}>
         <Card className="max-w-md w-full">
           <CardContent className="space-y-8 pt-6">
             <div className="text-center space-y-4">

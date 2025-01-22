@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { useAuthStore } from "@/lib/store";
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
@@ -8,27 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Settings, Trophy } from "lucide-react";
-import { CopyLink } from "@/components/ui/copy-link";
 import { Container } from "@/components/ui/container";
-import { useEffect, useState } from "react";
+import { CopyLink } from "@/components/ui/copy-link";
+import { useAuthStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { Settings, Trophy } from "lucide-react";
+import Link from "next/link";
 
 export default function ProfilePage() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
   const { user, accountId } = useAuthStore();
   const origin =
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin
       : "";
-
-  // Show loading state while auth is initializing
-  if (!isVisible) return null;
 
   // Show not found if no user is authenticated
   if (!user && !accountId) {
@@ -38,19 +30,15 @@ export default function ProfilePage() {
   // If we have accountId but no user, create a basic profile
   const profile = user || {
     id: accountId,
-    name: accountId || 'Anonymous',
-    email: accountId || '',
+    name: accountId || "Anonymous",
+    email: accountId || "",
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${accountId}`,
     points: 0,
-    completedQuests: []
+    completedQuests: [],
   };
 
   return (
-    <Container
-      title="Profile"
-      description="Review your account details"
-      isVisible={isVisible}
-    >
+    <Container title="Profile" description="Review your account details">
       <Card>
         <CardHeader className="flex flex-row gap-4 items-center justify-between">
           <div className="flex items-center space-x-4">

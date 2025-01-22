@@ -1,27 +1,35 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
+ 
 export function middleware(request: NextRequest) {
-  const isLoggedIn = request.cookies.get('near_account_id')
-  const isAuthPage = request.nextUrl.pathname === '/login'
+  // const path = request.nextUrl.pathname;
+  // const authCookie = request.cookies.get('auth');
+  // const isAuthenticated = !!authCookie?.value;
 
-  // If user is not logged in and trying to access protected route
-  if (!isLoggedIn && !isAuthPage) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
+  // // Public routes that don't require authentication
+  // const publicRoutes = ['/', '/login'];
+  // const isPublicRoute = publicRoutes.includes(path) || path === '/not-found';
 
-  // If user is logged in and trying to access login page
-  if (isLoggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url))
-  }
+  // // Handle authentication redirects
+  // if (isAuthenticated && path === '/login') {
+  //   // Redirect authenticated users away from login
+  //   return NextResponse.redirect(new URL('/quests', request.url));
+  // }
 
-  return NextResponse.next()
+  // if (!isAuthenticated && !isPublicRoute) {
+  //   // Protect all non-public routes
+  //   const returnUrl = encodeURIComponent(path);
+  //   return NextResponse.redirect(new URL(`/login?returnUrl=${returnUrl}`, request.url));
+  // }
+
+  return NextResponse.next();
 }
-
+ 
+// Match all routes except Next.js internals and static files
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
+     * Match all routes except:
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)

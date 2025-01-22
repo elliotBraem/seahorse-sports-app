@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/container";
 import toast from "react-hot-toast";

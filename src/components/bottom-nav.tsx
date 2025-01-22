@@ -1,11 +1,12 @@
+"use client";
+
 import { Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export function BottomNav() {
-  const currentPath = useRouter().pathname;
-
+  const currentPath = usePathname();
   const links = [
     {
       to: "/quests",

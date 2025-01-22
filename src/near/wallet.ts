@@ -4,7 +4,6 @@ import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { NetworkId, WalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
-import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { providers } from "near-api-js";
@@ -63,7 +62,6 @@ export class Wallet {
         setupHereWallet(),
         setupBitteWallet(),
         setupMeteorWallet(),
-        setupMintbaseWallet(),
       ],
     });
 
@@ -88,9 +86,9 @@ export class Wallet {
     return accountId;
   };
 
-   /**
-   * Displays a modal to login the user
-   */
+  /**
+  * Displays a modal to login the user
+  */
   signIn = async (): Promise<void> => {
     if (!this.selector) throw new Error("Wallet not initialized");
     const modal = setupModal(await this.selector, {
@@ -100,23 +98,23 @@ export class Wallet {
     modal.show();
   };
 
-    /**
-   * Logout the user
-   */
+  /**
+ * Logout the user
+ */
   signOut = async (): Promise<void> => {
     if (!this.selector) throw new Error("Wallet not initialized");
     const selectedWallet = await (await this.selector).wallet();
     await selectedWallet.signOut();
   };
 
-    /**
-   * Makes a read-only call to a contract
-   * @param {Object} options - the options for the call
-   * @param {string} options.contractId - the contract's account id
-   * @param {string} options.method - the method to call
-   * @param {Object} options.args - the arguments to pass to the method
-   * @returns {Promise<JSON.value>} - the result of the method call
-   */
+  /**
+ * Makes a read-only call to a contract
+ * @param {Object} options - the options for the call
+ * @param {string} options.contractId - the contract's account id
+ * @param {string} options.method - the method to call
+ * @param {Object} options.args - the arguments to pass to the method
+ * @returns {Promise<JSON.value>} - the result of the method call
+ */
   viewMethod = async ({ contractId, method, args = {} }: ViewMethodOptions): Promise<unknown> => {
     const url = `https://rpc.${this.networkId}.near.org`;
     const provider = new providers.JsonRpcProvider({ url });
@@ -151,7 +149,7 @@ export class Wallet {
     deposit = NO_DEPOSIT,
   }: CallMethodOptions): Promise<providers.FinalExecutionOutcome> => {
     if (!this.selector) throw new Error("Wallet not initialized");
-    
+
     const selectedWallet = await (await this.selector).wallet();
     const outcome = await selectedWallet.signAndSendTransaction({
       receiverId: contractId,
@@ -179,7 +177,7 @@ export class Wallet {
   */
   getTransactionResult = async (txhash: string): Promise<unknown> => {
     if (!this.selector) throw new Error("Wallet not initialized");
-    
+
     const walletSelector = await this.selector;
     const { network } = walletSelector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });

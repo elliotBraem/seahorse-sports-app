@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
-import { NearContext } from '../context/near';
-import { Wallet } from '../near/wallet';
-import { BottomNav } from '../components/bottom-nav';
-import type { AppProps } from 'next/app';
-import '../styles/globals.css';
+'use client';
+
+import { NearContext } from '@/near/context';
+import { Wallet } from '@/near/wallet';
 import { useAuthStore } from '@/lib/store';
+import { useEffect } from 'react';
 
 const GuestbookNearContract = "dev-1234567890123"; // Replace with actual contract ID
 const NetworkId = "testnet";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function NearProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { setWallet, setAccountId, accountId } = useAuthStore();
 
   useEffect(() => {
@@ -24,22 +27,12 @@ export default function App({ Component, pageProps }: AppProps) {
     });
   }, [setWallet, setAccountId]);
 
-  // Set cookie for middleware auth check
-  useEffect(() => {
-    if (accountId) {
-      document.cookie = `near_account_id=${accountId}; path=/`;
-    } else {
-      document.cookie = 'near_account_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-    }
-  }, [accountId]);
-
   // Get wallet instance for backward compatibility with NearContext
   const wallet = useAuthStore((state) => state.wallet);
 
   return (
     <NearContext.Provider value={{ wallet: wallet || {} as Wallet, signedAccountId: accountId || undefined }}>
-      {accountId && <BottomNav />}
-      <Component {...pageProps} />
+      {children}
     </NearContext.Provider>
   );
 }
