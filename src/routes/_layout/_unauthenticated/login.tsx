@@ -1,25 +1,23 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAuthStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/_unauthenticated/login")({
   component: LoginPage,
 });
 
 function LoginPage() {
-  const login = useAuthStore((state) => state.login);
-  const navigate = useNavigate();
+  const { auth } = useRouteContext({ from: "/_layout/_unauthenticated/login" });
 
   const handleLogin = async () => {
-    await login("demo@example.com");
-    navigate({ to: "/preferrances" });
+    await auth?.wallet.signIn();
+    // Navigation will be handled by App.tsx when auth state changes
   };
 
   return (
@@ -35,10 +33,10 @@ function LoginPage() {
         </CardHeader>
         <CardContent>
           <Button onClick={handleLogin} className="w-full" size="lg">
-            Login as Demo User
+            Connect NEAR Wallet
           </Button>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            Experience the platform with our demo account
+            Sign in with your NEAR wallet to access your account
           </p>
         </CardContent>
       </Card>

@@ -21,23 +21,23 @@ export const ReactQueryDevtools =
         }))
       );
 
+import { Wallet } from "@/near/wallet";
+
+interface NearAuth {
+  signedAccountId: string;
+  wallet: Wallet;
+}
+
 export const Route = createRootRouteWithContext<{
-  auth: { userId: string };
+  auth: NearAuth | undefined;
   queryClient: QueryClient;
 }>()({
   component: RootComponent,
-  beforeLoad: async ({ context }) => {
-    if (context.auth) {
-      return { auth: context.auth };
+  beforeLoad: ({ context }) => {
+    if (!context.auth?.signedAccountId) {
+      return { auth: undefined };
     }
-    // Check for auth cookie
-    const cookies = document.cookie.split(";");
-    const authCookie = cookies.find((c) => c.trim().startsWith("auth="));
-    if (authCookie) {
-      const userId = authCookie.split("=")[1];
-      return { auth: { userId } };
-    }
-    return { auth: undefined };
+    return { auth: context.auth };
   },
   notFoundComponent: NotFound,
 });
