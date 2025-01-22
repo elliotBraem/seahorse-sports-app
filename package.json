@@ -2,7 +2,7 @@
   "name": "renegade-fanclub",
   "private": true,
   "scripts": {
-    "init": "bun install && turbo run init",
+    "init": "turbo run init && bun install",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
