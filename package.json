@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -31,15 +32,17 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-toast": "^1.1.5",
     "@tanstack/react-query": "^5.62.11",
-    "@tanstack/react-router": "^1.16.6",
+    "@tanstack/react-router": "^1.97.3",
+    "@tanstack/react-router-with-query": "^1.97.3",
+    "@tanstack/start": "1.97.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.330.0",
+    "near-api-js": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.5.1",
-    "near-api-js": "^4.0.3",
     "rxjs": "^7.8.1",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
@@ -58,13 +61,12 @@
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
-    "vite": "^5.1.0",
-    "vite-plugin-node-polyfills": "^0.23.0"
+    "vinxi": "0.5.1",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

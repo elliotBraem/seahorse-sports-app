@@ -23,8 +23,8 @@
     /* for ShadCN */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["app/*"]
     }
   },
-  "include": ["src"]
+  "include": ["app"]
 }
