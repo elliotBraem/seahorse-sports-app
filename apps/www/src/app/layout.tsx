@@ -2,6 +2,7 @@ import NearProvider from "@/components/near-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
+
 import { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
@@ -12,6 +13,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://app.rngfan.club"),
+
+export const metadata: Metadata = {
   title: {
     default: "RNG Fan Club | Sports Prediction Platform",
     template: "%s | RNG Fan Club",
@@ -61,6 +64,7 @@ export const metadata: Metadata = {
     shortcut: "/images/favicon.jpg",
   },
   manifest: "/manifest.json",
+
 };
 
 export default function RootLayout({
