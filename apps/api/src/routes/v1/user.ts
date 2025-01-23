@@ -1,6 +1,7 @@
 import {
   AddFavoriteTeamRequest,
   AddSocialAccountRequest,
+  CreateProfileRequest,
   GameStatus,
   PredictionResponse,
   ProfileResponse,
@@ -10,6 +11,102 @@ import {
 import { requireAuth } from "../../middleware/auth";
 import { createErrorResponse, createSuccessResponse } from "../../types/api";
 import { Env } from "../../types/env";
+
+// POST /api/v1/user/profile
+export async function handleCreateUserProfile(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const userId = authenticatedRequest.user?.id;
+    const profile: CreateProfileRequest = await request.json();
+
+    // Validate required fields
+    if (!profile.username || !profile.email) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Username and email are required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    // Check if username or email already exists
+    const existingUser = await env.DB.prepare(
+      `SELECT id FROM users WHERE username = ? OR email = ?`,
+    )
+      .bind(profile.username, profile.email)
+      .first();
+
+    if (existingUser) {
+      return createErrorResponse(
+        "CONFLICT",
+        "Username or email already exists",
+        409,
+        corsHeaders,
+      );
+    }
+
+    // Insert new user
+    const stmt = env.DB.prepare(
+      `
+      INSERT INTO users (
+        id,
+        username, 
+        email, 
+        avatar,
+        profile_data,
+        created_at,
+        updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+      RETURNING *
+    `,
+    ).bind(
+      userId,
+      profile.username,
+      profile.email,
+      profile.avatar || null,
+      JSON.stringify(profile.profileData || {}),
+    );
+
+    const newUser = await stmt.first();
+
+    if (!newUser) {
+      return createErrorResponse(
+        "INTERNAL_ERROR",
+        "Failed to create user profile",
+        500,
+        corsHeaders,
+      );
+    }
+
+    // Transform database result to match ProfileResponse type
+    const profileResponse: ProfileResponse = {
+      id: newUser.id as string,
+      username: newUser.username as string,
+      email: newUser.email as string,
+      avatar: newUser.avatar as string | null,
+      profileData: newUser.profile_data as Record<string, unknown>,
+      createdAt: newUser.created_at as string,
+      updatedAt: newUser.updated_at as string,
+      favoriteTeams: [],
+      favoriteSports: [],
+    };
+
+    return createSuccessResponse(profileResponse, corsHeaders);
+  } catch (error) {
+    console.error("[Create Profile Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to create user profile",
+      500,
+      corsHeaders,
+    );
+  }
+}
 
 // GET /api/v1/user/profile
 export async function handleGetUserProfile(

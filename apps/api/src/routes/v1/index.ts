@@ -33,6 +33,7 @@ import {
 import { handleListTeams, handleGetTeam, handleGetTeamFans } from "./teams";
 import {
   handleGetUserProfile,
+  handleCreateUserProfile,
   handleUpdateUserProfile,
   handleAddFavoriteTeam,
   handleRemoveFavoriteTeam,
@@ -104,6 +105,9 @@ export async function handleV1Routes(
   // User Profile
   if (path === "/user/profile" && method === "GET") {
     return await handleGetUserProfile(request, env, corsHeaders);
+  }
+  if (path === "/user/profile" && method === "POST") {
+    return await handleCreateUserProfile(request, env, corsHeaders);
   }
   if (path === "/user/profile" && method === "PATCH") {
     return await handleUpdateUserProfile(request, env, corsHeaders);
