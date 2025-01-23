@@ -10,10 +10,6 @@ const nextConfig = {
     };
     return config;
   },
-  images: {
-    unoptimized: true,
-    domains: [],
-  },
 };
 
 module.exports = nextConfig;
