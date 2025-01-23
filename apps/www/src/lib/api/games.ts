@@ -5,76 +5,23 @@ import {
   type PredictionResponse,
   type CreatePredictionRequest,
 } from "@renegade-fanclub/types";
-import {
-  API_BASE_URL,
-  type ApiOptions,
-  handleApiResponse,
-  ApiError,
-} from "./types";
+import { type ApiOptions, apiRequest } from "./types";
 
 export async function listGames(options?: ApiOptions): Promise<GameResponse[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/games`, {
-      method: "GET",
-      credentials: "include",
-      headers: options?.accountId
-        ? {
-            Authorization: `Bearer ${options.accountId}`,
-          }
-        : undefined,
-      signal: options?.signal,
-    });
-    return handleApiResponse<GameResponse[]>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to fetch games");
-  }
+  return apiRequest("/games", { options, requiresAuth: false });
 }
 
 export async function getGame(
   gameId: number,
   options?: ApiOptions,
 ): Promise<GameResponse> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/games/${gameId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: options?.accountId
-        ? {
-            Authorization: `Bearer ${options.accountId}`,
-          }
-        : undefined,
-      signal: options?.signal,
-    });
-    return handleApiResponse<GameResponse>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to fetch game");
-  }
+  return apiRequest(`/games/${gameId}`, { options, requiresAuth: false });
 }
 
 export async function getCurrentGames(
   options?: ApiOptions,
 ): Promise<GameResponse[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/games/current`, {
-      method: "GET",
-      credentials: "include",
-      headers: options?.accountId
-        ? {
-            Authorization: `Bearer ${options.accountId}`,
-          }
-        : undefined,
-      signal: options?.signal,
-    });
-    return handleApiResponse<GameResponse[]>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to fetch current games");
-  }
+  return apiRequest("/games/current", { options, requiresAuth: false });
 }
 
 export async function createPrediction(
@@ -82,51 +29,18 @@ export async function createPrediction(
   data: CreatePredictionRequest,
   options?: ApiOptions,
 ): Promise<PredictionResponse> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/games/${gameId}/predict`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options?.accountId && {
-          Authorization: `Bearer ${options.accountId}`,
-        }),
-      },
-      body: JSON.stringify(data),
-      signal: options?.signal,
-    });
-    return handleApiResponse<PredictionResponse>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to create prediction");
-  }
+  return apiRequest(`/games/${gameId}/predict`, {
+    method: "POST",
+    body: data,
+    options,
+  });
 }
 
 export async function getGamePredictions(
   gameId: number,
   options?: ApiOptions,
 ): Promise<PredictionResponse[]> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/games/${gameId}/predictions`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: options?.accountId
-          ? {
-              Authorization: `Bearer ${options.accountId}`,
-            }
-          : undefined,
-        signal: options?.signal,
-      },
-    );
-    return handleApiResponse<PredictionResponse[]>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to fetch game predictions");
-  }
+  return apiRequest(`/games/${gameId}/predictions`, { options });
 }
 
 // Admin endpoints
@@ -135,25 +49,11 @@ export async function createGame(
   data: CreateGameRequest,
   options?: ApiOptions,
 ): Promise<GameResponse> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/games`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options?.accountId && {
-          Authorization: `Bearer ${options.accountId}`,
-        }),
-      },
-      body: JSON.stringify(data),
-      signal: options?.signal,
-    });
-    return handleApiResponse<GameResponse>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to create game");
-  }
+  return apiRequest("/admin/games", {
+    method: "POST",
+    body: data,
+    options,
+  });
 }
 
 export async function updateGame(
@@ -161,46 +61,19 @@ export async function updateGame(
   data: UpdateGameRequest,
   options?: ApiOptions,
 ): Promise<GameResponse> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/games/${gameId}`, {
-      method: "PATCH",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options?.accountId && {
-          Authorization: `Bearer ${options.accountId}`,
-        }),
-      },
-      body: JSON.stringify(data),
-      signal: options?.signal,
-    });
-    return handleApiResponse<GameResponse>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to update game");
-  }
+  return apiRequest(`/admin/games/${gameId}`, {
+    method: "PATCH",
+    body: data,
+    options,
+  });
 }
 
 export async function deleteGame(
   gameId: number,
   options?: ApiOptions,
 ): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/games/${gameId}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: options?.accountId
-        ? {
-            Authorization: `Bearer ${options.accountId}`,
-          }
-        : undefined,
-      signal: options?.signal,
-    });
-    return handleApiResponse<void>(response);
-  } catch (error) {
-    throw error instanceof ApiError
-      ? error
-      : new ApiError("UNKNOWN_ERROR", "Failed to delete game");
-  }
+  return apiRequest(`/admin/games/${gameId}`, {
+    method: "DELETE",
+    options,
+  });
 }

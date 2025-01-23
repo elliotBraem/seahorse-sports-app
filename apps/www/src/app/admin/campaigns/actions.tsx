@@ -9,7 +9,6 @@ import {
   deleteCampaign,
   updateCampaign,
 } from "@/lib/api/campaigns";
-import { useAuthStore } from "@/lib/store";
 import { Campaign } from "@renegade-fanclub/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -23,7 +22,6 @@ export function CampaignActions({ campaign }: CampaignActionsProps) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { accountId } = useAuthStore();
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +38,7 @@ export function CampaignActions({ campaign }: CampaignActionsProps) {
         rules: {},
       };
 
-      await createCampaign(newCampaign, { accountId });
+      await createCampaign(newCampaign);
       setIsCreateOpen(false);
       router.refresh();
     } catch (err) {
@@ -64,13 +62,10 @@ export function CampaignActions({ campaign }: CampaignActionsProps) {
         status: formData.get("status") as "upcoming" | "active" | "completed",
       };
 
-      const response = await updateCampaign(campaign.id, updates);
-      if (response.success) {
-        setIsEditOpen(false);
-        router.refresh();
-      } else {
-        setError("Failed to update campaign");
-      }
+      await updateCampaign(campaign.id, updates);
+
+      setIsEditOpen(false);
+      router.refresh();
     } catch (err) {
       setError("Failed to update campaign");
     }
@@ -81,12 +76,9 @@ export function CampaignActions({ campaign }: CampaignActionsProps) {
 
     try {
       setError(null);
-      const response = await deleteCampaign(campaign.id, { accountId });
-      if (response.success) {
-        router.refresh();
-      } else {
-        setError("Failed to delete campaign");
-      }
+      await deleteCampaign(campaign.id);
+
+      router.refresh();
     } catch (err) {
       setError("Failed to delete campaign");
     }

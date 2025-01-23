@@ -11,6 +11,7 @@ import { requireAuth } from "../../middleware/auth";
 export async function handleListTeams(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -61,10 +62,10 @@ export async function handleListTeams(
       socialAccounts: {},
     }));
 
-    return createSuccessResponse(teamResponses);
+    return createSuccessResponse(teamResponses, corsHeaders);
   } catch (error) {
     console.error("[List Teams Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch teams", 500);
+    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch teams", 500, corsHeaders);
   }
 }
 
@@ -72,13 +73,14 @@ export async function handleListTeams(
 export async function handleGetTeam(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
     }
 
     const stmt = env.DB.prepare(
@@ -99,7 +101,7 @@ export async function handleGetTeam(
     const team = await stmt.first();
 
     if (!team) {
-      return createErrorResponse("NOT_FOUND", "Team not found", 404);
+      return createErrorResponse("NOT_FOUND", "Team not found", 404, corsHeaders);
     }
 
     // Parse social accounts
@@ -132,10 +134,10 @@ export async function handleGetTeam(
       socialAccounts,
     };
 
-    return createSuccessResponse(teamResponse);
+    return createSuccessResponse(teamResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Team Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch team", 500);
+    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch team", 500, corsHeaders);
   }
 }
 
@@ -143,6 +145,7 @@ export async function handleGetTeam(
 export async function handleGetTeamFans(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -151,7 +154,7 @@ export async function handleGetTeamFans(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
     }
 
     const offset = (page - 1) * limit;
@@ -207,13 +210,14 @@ export async function handleGetTeamFans(
       pages: Math.ceil(total / limit),
     };
 
-    return createSuccessResponse(response);
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[Team Fans Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch team fans",
       500,
+      corsHeaders
     );
   }
 }

@@ -10,6 +10,7 @@ import { Env } from "../../types/env";
 export async function handleGetAllTimeLeaderboard(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -58,13 +59,14 @@ export async function handleGetAllTimeLeaderboard(
       pages: Math.ceil(total / limit),
     };
 
-    return createSuccessResponse(response);
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[All-Time Leaderboard Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch all-time leaderboard",
       500,
+      corsHeaders
     );
   }
 }
@@ -73,6 +75,7 @@ export async function handleGetAllTimeLeaderboard(
 export async function handleGetCampaignLeaderboard(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -81,7 +84,7 @@ export async function handleGetCampaignLeaderboard(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!campaignId) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
     }
 
     const offset = (page - 1) * limit;
@@ -98,7 +101,7 @@ export async function handleGetCampaignLeaderboard(
     const campaign = await campaignStmt.first();
 
     if (!campaign) {
-      return createErrorResponse("NOT_FOUND", "Campaign not found", 404);
+      return createErrorResponse("NOT_FOUND", "Campaign not found", 404, corsHeaders);
     }
 
     // Get leaderboard
@@ -149,13 +152,14 @@ export async function handleGetCampaignLeaderboard(
       pages: Math.ceil(total / limit),
     };
 
-    return createSuccessResponse(response);
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[Campaign Leaderboard Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch campaign leaderboard",
       500,
+      corsHeaders
     );
   }
 }

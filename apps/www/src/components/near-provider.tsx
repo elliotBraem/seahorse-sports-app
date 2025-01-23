@@ -38,7 +38,7 @@ export default function NearProvider({
 
         try {
           // Check onboarding status
-          const profile = await getUserProfile({ accountId });
+          const profile = await getUserProfile();
 
           useAuthStore.setState({ user: profile });
 
