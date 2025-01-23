@@ -6,21 +6,23 @@ import {
   ApiError,
 } from "./types";
 
-export async function listSports(
-  options?: ApiOptions,
-): Promise<Sport[]> {
+export async function listSports(options?: ApiOptions): Promise<Sport[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/sports`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<Sport[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch sports");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch sports");
   }
 }
 
@@ -32,13 +34,17 @@ export async function getSport(
     const response = await fetch(`${API_BASE_URL}/sports/${sportId}`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<Sport>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch sport");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch sport");
   }
 }

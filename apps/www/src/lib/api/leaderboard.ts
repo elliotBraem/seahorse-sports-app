@@ -25,15 +25,19 @@ export async function getAllTimeLeaderboard(
       {
         method: "GET",
         credentials: "include",
-        headers: options?.accountId ? {
-          Authorization: `Bearer ${options.accountId}`
-        } : undefined,
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
         signal: options?.signal,
       },
     );
     return handleApiResponse<AllTimeLeaderboardResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch leaderboard");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch leaderboard");
   }
 }
 
@@ -54,14 +58,18 @@ export async function getCampaignLeaderboard(
       {
         method: "GET",
         credentials: "include",
-        headers: options?.accountId ? {
-          Authorization: `Bearer ${options.accountId}`
-        } : undefined,
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
         signal: options?.signal,
       },
     );
     return handleApiResponse<CampaignLeaderboardResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign leaderboard");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign leaderboard");
   }
 }

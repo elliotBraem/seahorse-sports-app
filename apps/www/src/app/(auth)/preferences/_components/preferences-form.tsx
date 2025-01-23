@@ -33,7 +33,9 @@ function isCategoryKey(key: string): key is CategoryKey {
 export default function PreferencesForm({ preferences }: PreferencesFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<Record<string, string[]>>({});
+  const [selectedItems, setSelectedItems] = useState<Record<string, string[]>>(
+    {},
+  );
 
   const handleCheckboxChange = (category: string, id: string) => {
     setSelectedItems((prev) => {
@@ -55,8 +57,8 @@ export default function PreferencesForm({ preferences }: PreferencesFormProps) {
       if (selectedItems.teams?.length) {
         await Promise.all(
           selectedItems.teams.map((teamId) =>
-            addFavoriteTeam({ teamId: parseInt(teamId, 10) })
-          )
+            addFavoriteTeam({ teamId: parseInt(teamId, 10) }),
+          ),
         );
       }
 

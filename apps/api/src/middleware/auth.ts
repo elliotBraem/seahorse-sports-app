@@ -24,13 +24,15 @@ export async function authenticateUser(
     const accountId = token; // In production, this would come from verified JWT payload
 
     // Check if user is in admin whitelist
-    const adminWhitelist = env.ADMIN_WHITELIST.split(',').map(id => id.trim());
+    const adminWhitelist = env.ADMIN_WHITELIST.split(",").map((id) =>
+      id.trim(),
+    );
     const isAdmin = adminWhitelist.includes(accountId);
     // Add user data to request
     const authenticatedRequest = request as AuthenticatedRequest;
     authenticatedRequest.user = {
       id: accountId,
-      isAdmin
+      isAdmin,
     };
 
     return authenticatedRequest;

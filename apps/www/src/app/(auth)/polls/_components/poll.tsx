@@ -54,8 +54,10 @@ export default function Poll({ gameId, initialTeams }: PollProps) {
   };
 
   const totalPoints = teams.reduce((sum, team) => sum + team.points, 0);
-  const teamAWidth = totalPoints === 0 ? 50 : (teams[0].points / totalPoints) * 100;
-  const teamBWidth = totalPoints === 0 ? 50 : (teams[1].points / totalPoints) * 100;
+  const teamAWidth =
+    totalPoints === 0 ? 50 : (teams[0].points / totalPoints) * 100;
+  const teamBWidth =
+    totalPoints === 0 ? 50 : (teams[1].points / totalPoints) * 100;
 
   return (
     <Container title="Game Prediction" description="Win Super Bowl LIX Tickets">

@@ -29,8 +29,12 @@ export default async function CampaignsAdminPage() {
                     {campaign.description}
                   </p>
                   <div className="mt-2 text-sm">
-                    <p>Start: {new Date(campaign.startDate).toLocaleDateString()}</p>
-                    <p>End: {new Date(campaign.endDate).toLocaleDateString()}</p>
+                    <p>
+                      Start: {new Date(campaign.startDate).toLocaleDateString()}
+                    </p>
+                    <p>
+                      End: {new Date(campaign.endDate).toLocaleDateString()}
+                    </p>
                     <p className="capitalize">Status: {campaign.status}</p>
                   </div>
                 </div>

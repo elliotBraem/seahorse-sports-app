@@ -19,11 +19,14 @@ import { notFound } from "next/navigation";
 export default async function ProfilePage() {
   const [profile, completedQuests] = await Promise.all([
     getUserProfile(),
-    getUserQuests()
+    getUserQuests(),
   ]);
 
   const origin = headers().get("origin") || "";
-  const totalPoints = completedQuests.reduce((sum, quest) => sum + quest.pointsEarned, 0);
+  const totalPoints = completedQuests.reduce(
+    (sum, quest) => sum + quest.pointsEarned,
+    0,
+  );
 
   return (
     <Container title="Profile" description="Review your account details">
@@ -31,7 +34,10 @@ export default async function ProfilePage() {
         <CardHeader className="flex flex-row gap-4 items-center justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={profile.avatar ?? undefined} alt={profile.username} />
+              <AvatarImage
+                src={profile.avatar ?? undefined}
+                alt={profile.username}
+              />
               <AvatarFallback>{profile.username[0]}</AvatarFallback>
             </Avatar>
             <div>

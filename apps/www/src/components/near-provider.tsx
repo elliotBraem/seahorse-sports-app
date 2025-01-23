@@ -30,7 +30,7 @@ export default function NearProvider({
       if (accountId) {
         // User is signed in
         const url = new URL(window.location.href);
-        const email = url.searchParams.get("email") || accountId; 
+        const email = url.searchParams.get("email") || accountId;
 
         // Set auth cookie using server action
         await setAuthCookie(accountId);
@@ -42,12 +42,11 @@ export default function NearProvider({
 
           useAuthStore.setState({ user: profile });
 
-          
           if (!profile.profileData.onboardingComplete) {
             window.location.href = "/onboarding";
             return;
           }
-          
+
           // If onboarding is complete, handle returnUrl or go to quests
           const returnUrl = url.searchParams.get("returnUrl");
           if (returnUrl && !returnUrl.startsWith("http")) {

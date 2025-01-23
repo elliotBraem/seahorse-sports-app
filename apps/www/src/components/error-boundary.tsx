@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ interface ErrorBoundaryProps {
 export default function ErrorBoundary({
   error,
   reset,
-  title = 'Something went wrong!',
+  title = "Something went wrong!",
 }: ErrorBoundaryProps) {
   const errorMessage = error instanceof ApiError ? error.message : title;
 

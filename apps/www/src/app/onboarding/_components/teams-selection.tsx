@@ -12,7 +12,11 @@ interface TeamsSelectionProps {
   onBack: () => void;
 }
 
-export function TeamsSelection({ selectedSports, onNext, onBack }: TeamsSelectionProps) {
+export function TeamsSelection({
+  selectedSports,
+  onNext,
+  onBack,
+}: TeamsSelectionProps) {
   const [teams, setTeams] = useState<TeamResponse[]>([]);
   const [selectedTeams, setSelectedTeams] = useState<TeamResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +27,7 @@ export function TeamsSelection({ selectedSports, onNext, onBack }: TeamsSelectio
         const teamsList = await listTeams();
         // Filter teams by selected sports
         const filteredTeams = teamsList.filter((team) =>
-          selectedSports.some((sport) => sport.id === team.sportId)
+          selectedSports.some((sport) => sport.id === team.sportId),
         );
         setTeams(filteredTeams);
       } catch (error) {
@@ -50,9 +54,7 @@ export function TeamsSelection({ selectedSports, onNext, onBack }: TeamsSelectio
     try {
       // Add all selected teams as favorites
       await Promise.all(
-        selectedTeams.map((team) =>
-          addFavoriteTeam({ teamId: team.id })
-        )
+        selectedTeams.map((team) => addFavoriteTeam({ teamId: team.id })),
       );
       onNext();
     } catch (error) {
@@ -68,7 +70,9 @@ export function TeamsSelection({ selectedSports, onNext, onBack }: TeamsSelectio
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold">Select Your Favorite Teams</h2>
-        <p className="text-muted-foreground">Choose the teams you want to follow</p>
+        <p className="text-muted-foreground">
+          Choose the teams you want to follow
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -97,10 +101,7 @@ export function TeamsSelection({ selectedSports, onNext, onBack }: TeamsSelectio
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button
-          onClick={handleNext}
-          disabled={selectedTeams.length === 0}
-        >
+        <Button onClick={handleNext} disabled={selectedTeams.length === 0}>
           Next
         </Button>
       </div>

@@ -48,7 +48,9 @@ export function SportsSelection({ onNext }: SportsSelectionProps) {
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold">Select Your Favorite Sports</h2>
-        <p className="text-muted-foreground">Choose the sports you want to follow</p>
+        <p className="text-muted-foreground">
+          Choose the sports you want to follow
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import ErrorBoundary from "@/components/error-boundary";
 
@@ -9,5 +9,11 @@ export default function PreferencesError({
   error: Error;
   reset: () => void;
 }) {
-  return <ErrorBoundary error={error} reset={reset} title="Failed to load preferences" />;
+  return (
+    <ErrorBoundary
+      error={error}
+      reset={reset}
+      title="Failed to load preferences"
+    />
+  );
 }

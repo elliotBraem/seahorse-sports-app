@@ -67,7 +67,12 @@ export async function handleGetCampaign(
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare("SELECT * FROM campaigns WHERE id = ?").bind(
@@ -76,7 +81,12 @@ export async function handleGetCampaign(
     const campaign = await stmt.first();
 
     if (!campaign) {
-      return createErrorResponse("NOT_FOUND", "Campaign not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Campaign not found",
+        404,
+        corsHeaders,
+      );
     }
 
     const campaignResponse: CampaignResponse = {
@@ -115,7 +125,12 @@ export async function handleGetCampaignLeaderboard(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -169,12 +184,22 @@ export async function handleCreateCampaign(
   corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true, corsHeaders);
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
     const campaign: CreateCampaignRequest = await request.json();
 
     // Validate required fields
     if (!campaign.name || !campaign.startDate || !campaign.endDate) {
-      return createErrorResponse("INVALID_PARAMS", "Missing required fields", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Missing required fields",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -212,12 +237,22 @@ export async function handleUpdateCampaign(
   corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true, corsHeaders);
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
     const id = request.url.split("/").pop();
     const updates: UpdateCampaignRequest = await request.json();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // Build dynamic update query
@@ -237,7 +272,12 @@ export async function handleUpdateCampaign(
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(id); // Add id for WHERE clause
@@ -271,11 +311,21 @@ export async function handleDeleteCampaign(
   corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true, corsHeaders);
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
     const id = request.url.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare("DELETE FROM campaigns WHERE id = ?").bind(id);

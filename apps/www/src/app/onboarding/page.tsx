@@ -27,14 +27,16 @@ export default function OnboardingPage() {
 
     const checkOnboardingStatus = async () => {
       try {
-        const profile = await getUserProfile(accountId ? { accountId } : undefined);
-        
+        const profile = await getUserProfile(
+          accountId ? { accountId } : undefined,
+        );
+
         // If user has completed onboarding steps, redirect to quests
         if (profile.profileData.onboardingComplete) {
           router.replace("/quests");
           return;
         }
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Failed to check onboarding status:", error);
@@ -58,9 +60,12 @@ export default function OnboardingPage() {
   const handleTeamsNext = async () => {
     try {
       // Mark onboarding as complete
-      await updateUserProfile({
-        profileData: { onboardingComplete: true }
-      }, accountId ? { accountId } : undefined);
+      await updateUserProfile(
+        {
+          profileData: { onboardingComplete: true },
+        },
+        accountId ? { accountId } : undefined,
+      );
       router.replace("/quests");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);

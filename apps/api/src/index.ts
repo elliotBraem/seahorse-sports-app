@@ -6,8 +6,8 @@ import { handleV1Routes } from "./routes/v1";
 const getCorsHeaders = (request: Request, env: Env): Record<string, string> => {
   const origin = request.headers.get("Origin");
 
-  const allowedOrigins = env.ALLOWED_ORIGINS.split(",").map(o => o.trim());
-  
+  const allowedOrigins = env.ALLOWED_ORIGINS.split(",").map((o) => o.trim());
+
   const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": "",
     "Access-Control-Allow-Methods": "",
@@ -18,12 +18,13 @@ const getCorsHeaders = (request: Request, env: Env): Record<string, string> => {
 
   if (origin && allowedOrigins.includes(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS";
+    headers["Access-Control-Allow-Methods"] =
+      "GET, POST, PATCH, DELETE, OPTIONS";
     headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
     headers["Access-Control-Allow-Credentials"] = "true";
     headers["Access-Control-Max-Age"] = "86400";
   }
-  
+
   return headers;
 };
 
@@ -65,7 +66,12 @@ export default {
           ? (error as any).code
           : "INTERNAL_ERROR";
 
-      return createErrorResponse(errorCode, errorMessage, 500, getCorsHeaders(request, env));
+      return createErrorResponse(
+        errorCode,
+        errorMessage,
+        500,
+        getCorsHeaders(request, env),
+      );
     }
   },
 } satisfies ExportedHandler<Env>;

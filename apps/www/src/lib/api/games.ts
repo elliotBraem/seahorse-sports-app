@@ -12,21 +12,23 @@ import {
   ApiError,
 } from "./types";
 
-export async function listGames(
-  options?: ApiOptions,
-): Promise<GameResponse[]> {
+export async function listGames(options?: ApiOptions): Promise<GameResponse[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/games`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch games");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch games");
   }
 }
 
@@ -38,14 +40,18 @@ export async function getGame(
     const response = await fetch(`${API_BASE_URL}/games/${gameId}`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch game");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch game");
   }
 }
 
@@ -56,14 +62,18 @@ export async function getCurrentGames(
     const response = await fetch(`${API_BASE_URL}/games/current`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch current games");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch current games");
   }
 }
 
@@ -78,14 +88,18 @@ export async function createPrediction(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create prediction");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to create prediction");
   }
 }
 
@@ -94,17 +108,24 @@ export async function getGamePredictions(
   options?: ApiOptions,
 ): Promise<PredictionResponse[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/games/${gameId}/predictions`, {
-      method: "GET",
-      credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
-      signal: options?.signal,
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/games/${gameId}/predictions`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
+        signal: options?.signal,
+      },
+    );
     return handleApiResponse<PredictionResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch game predictions");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch game predictions");
   }
 }
 
@@ -120,14 +141,18 @@ export async function createGame(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create game");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to create game");
   }
 }
 
@@ -142,14 +167,18 @@ export async function updateGame(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to update game");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to update game");
   }
 }
 
@@ -161,13 +190,17 @@ export async function deleteGame(
     const response = await fetch(`${API_BASE_URL}/admin/games/${gameId}`, {
       method: "DELETE",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to delete game");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to delete game");
   }
 }

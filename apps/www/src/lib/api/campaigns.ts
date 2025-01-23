@@ -18,14 +18,18 @@ export async function listCampaigns(
     const response = await fetch(`${API_BASE_URL}/campaigns`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<CampaignResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaigns");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaigns");
   }
 }
 
@@ -37,14 +41,18 @@ export async function getCampaign(
     const response = await fetch(`${API_BASE_URL}/campaigns/${campaignId}`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<CampaignResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign");
   }
 }
 
@@ -58,15 +66,19 @@ export async function getCampaignLeaderboardDetailed(
       {
         method: "GET",
         credentials: "include",
-        headers: options?.accountId ? {
-          Authorization: `Bearer ${options.accountId}`
-        } : undefined,
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
         signal: options?.signal,
       },
     );
     return handleApiResponse<CampaignLeaderboardResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign leaderboard");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign leaderboard");
   }
 }
 
@@ -82,14 +94,18 @@ export async function createCampaign(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<CampaignResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create campaign");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to create campaign");
   }
 }
 
@@ -106,7 +122,9 @@ export async function updateCampaign(
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+          ...(options?.accountId && {
+            Authorization: `Bearer ${options.accountId}`,
+          }),
         },
         body: JSON.stringify(data),
         signal: options?.signal,
@@ -114,7 +132,9 @@ export async function updateCampaign(
     );
     return handleApiResponse<CampaignResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to update campaign");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to update campaign");
   }
 }
 
@@ -128,14 +148,18 @@ export async function deleteCampaign(
       {
         method: "DELETE",
         credentials: "include",
-        headers: options?.accountId ? {
-          Authorization: `Bearer ${options.accountId}`
-        } : undefined,
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
         signal: options?.signal,
       },
     );
     return handleApiResponse<void>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to delete campaign");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to delete campaign");
   }
 }

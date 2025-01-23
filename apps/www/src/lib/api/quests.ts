@@ -19,14 +19,18 @@ export async function listQuests(
     const response = await fetch(`${API_BASE_URL}/quests`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<QuestResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch quests");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch quests");
   }
 }
 
@@ -37,14 +41,18 @@ export async function getUserQuests(
     const response = await fetch(`${API_BASE_URL}/quests/mine`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<QuestCompletionResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch user quests");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch user quests");
   }
 }
 
@@ -59,14 +67,18 @@ export async function completeQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<QuestCompletionResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to complete quest");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to complete quest");
   }
 }
 
@@ -82,14 +94,18 @@ export async function createQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<QuestResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create quest");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to create quest");
   }
 }
 
@@ -104,14 +120,18 @@ export async function updateQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<QuestResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to update quest");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to update quest");
   }
 }
 
@@ -123,13 +143,17 @@ export async function deleteQuest(
     const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
       method: "DELETE",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to delete quest");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to delete quest");
   }
 }

@@ -6,7 +6,7 @@ import { LeaderboardRankingResponse } from "@renegade-fanclub/types";
 
 export default async function LeaderboardPage() {
   const leaderboard = await getAllTimeLeaderboard(1, 10);
-  
+
   return (
     <Container
       title="Leaderboard"
@@ -18,9 +18,14 @@ export default async function LeaderboardPage() {
             key={ranking.userId}
             className="flex items-center space-x-4 rounded-lg shadow-sm"
           >
-            <span className="min-w-[2rem] text-2xl font-bold">{ranking.rank}</span>
+            <span className="min-w-[2rem] text-2xl font-bold">
+              {ranking.rank}
+            </span>
             <Avatar>
-              <AvatarImage src={ranking.avatar ?? undefined} alt={ranking.username} />
+              <AvatarImage
+                src={ranking.avatar ?? undefined}
+                alt={ranking.username}
+              />
               <AvatarFallback>{ranking.username[0]}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
@@ -29,7 +34,8 @@ export default async function LeaderboardPage() {
                 {ranking.totalPoints} points
               </p>
               <p className="text-xs text-muted-foreground">
-                Predictions: {ranking.predictionPoints} · Quests: {ranking.questPoints}
+                Predictions: {ranking.predictionPoints} · Quests:{" "}
+                {ranking.questPoints}
               </p>
             </div>
           </Card>

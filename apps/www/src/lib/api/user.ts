@@ -21,14 +21,18 @@ export async function getUserProfile(
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<ProfileResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch user profile");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch user profile");
   }
 }
 
@@ -42,14 +46,18 @@ export async function updateUserProfile(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<ProfileResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to update user profile");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to update user profile");
   }
 }
 
@@ -63,14 +71,18 @@ export async function addFavoriteTeam(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<ProfileResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to add favorite team");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to add favorite team");
   }
 }
 
@@ -84,15 +96,19 @@ export async function removeFavoriteTeam(
       {
         method: "DELETE",
         credentials: "include",
-        headers: options?.accountId ? {
-          Authorization: `Bearer ${options.accountId}`
-        } : undefined,
+        headers: options?.accountId
+          ? {
+              Authorization: `Bearer ${options.accountId}`,
+            }
+          : undefined,
         signal: options?.signal,
       },
     );
     return handleApiResponse<ProfileResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to remove favorite team");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to remove favorite team");
   }
 }
 
@@ -106,14 +122,18 @@ export async function createPrediction(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create prediction");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to create prediction");
   }
 }
 
@@ -124,14 +144,18 @@ export async function getUserPredictions(
     const response = await fetch(`${API_BASE_URL}/predictions/mine`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch user predictions");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch user predictions");
   }
 }
 
@@ -143,14 +167,18 @@ export async function getGamePrediction(
     const response = await fetch(`${API_BASE_URL}/predictions/${gameId}`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch game prediction");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch game prediction");
   }
 }
 
@@ -164,14 +192,18 @@ export async function addSocialAccount(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
+        ...(options?.accountId && {
+          Authorization: `Bearer ${options.accountId}`,
+        }),
       },
       body: JSON.stringify(data),
       signal: options?.signal,
     });
     return handleApiResponse<SocialAccountResponse>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to add social account");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to add social account");
   }
 }
 
@@ -183,14 +215,18 @@ export async function removeSocialAccount(
     const response = await fetch(`${API_BASE_URL}/user/social/${platform}`, {
       method: "DELETE",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to remove social account");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to remove social account");
   }
 }
 
@@ -201,13 +237,17 @@ export async function getSocialAccounts(
     const response = await fetch(`${API_BASE_URL}/user/social`, {
       method: "GET",
       credentials: "include",
-      headers: options?.accountId ? {
-        Authorization: `Bearer ${options.accountId}`
-      } : undefined,
+      headers: options?.accountId
+        ? {
+            Authorization: `Bearer ${options.accountId}`,
+          }
+        : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<SocialAccountResponse[]>(response);
   } catch (error) {
-    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch social accounts");
+    throw error instanceof ApiError
+      ? error
+      : new ApiError("UNKNOWN_ERROR", "Failed to fetch social accounts");
   }
 }
