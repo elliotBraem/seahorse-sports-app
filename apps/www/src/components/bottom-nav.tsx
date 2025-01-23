@@ -1,6 +1,6 @@
 "use client";
 
-import { Target, Trophy, User } from "lucide-react";
+import { Gamepad2, Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +8,11 @@ import Link from "next/link";
 export function BottomNav() {
   const currentPath = usePathname();
   const links = [
+    {
+      to: "/games",
+      icon: Gamepad2,
+      label: "Games",
+    },
     {
       to: "/quests",
       icon: Target,
