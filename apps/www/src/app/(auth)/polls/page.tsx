@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCurrentGames, getGamePredictions } from "@/lib/api/games";
 import { getTeam } from "@/lib/api/teams";
 import { notFound } from "next/navigation";

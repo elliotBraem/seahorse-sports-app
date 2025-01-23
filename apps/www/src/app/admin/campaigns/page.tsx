@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listCampaigns } from "@/lib/api/campaigns";
 import { Card } from "@/components/ui/card";
 import { Campaign } from "@renegade-fanclub/types";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listSports } from "@/lib/api/sports";
 import { listTeams } from "@/lib/api/teams";
 import PreferencesForm from "./_components/preferences-form";

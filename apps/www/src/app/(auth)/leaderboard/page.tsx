@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
 import { Card } from "@/components/ui/card";
