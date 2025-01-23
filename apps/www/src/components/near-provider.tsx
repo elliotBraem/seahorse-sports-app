@@ -1,11 +1,11 @@
 "use client";
 
+import { removeAuthCookie, setAuthCookie } from "@/app/actions";
+import { useAuthStore } from "@/lib/store";
 import { NearContext } from "@/near/context";
 import { Wallet } from "@/near/wallet";
-import { useAuthStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { setAuthCookie, removeAuthCookie } from "@/app/actions";
-import { getUserProfile } from "@/lib/api/user";
 
 const GuestbookNearContract = "dev-1234567890123"; // Replace with actual contract ID
 const NetworkId = "testnet";
@@ -16,6 +16,7 @@ export default function NearProvider({
   children: React.ReactNode;
 }) {
   const { setWallet, setAccountId, accountId } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     const wallet = new Wallet({
@@ -28,34 +29,25 @@ export default function NearProvider({
       setAccountId(accountId || null);
 
       if (accountId) {
-        // User is signed in
-        const url = new URL(window.location.href);
-        const email = url.searchParams.get("email") || accountId;
-
         // Set auth cookie using server action
         await setAuthCookie(accountId);
-        useAuthStore.setState({ isAuthenticated: true });
 
-        try {
-          // Check onboarding status
-          const profile = await getUserProfile();
+        useAuthStore.setState({
+          isAuthenticated: true,
+        });
 
-          useAuthStore.setState({ user: profile });
-
-          // If onboarding is complete, handle returnUrl or go to quests
-          const returnUrl = url.searchParams.get("returnUrl");
-          if (returnUrl && !returnUrl.startsWith("http")) {
-            window.location.href = decodeURIComponent(returnUrl);
-          } else {
-            window.location.href = "/quests";
-          }
-        } catch (error) {
-          console.error("Failed to check onboarding status:", error);
-        }
+        // Redirect to /quests (middleware will handle onboarding check)
+        router.push("/quests");
       } else {
         // User is signed out
         await removeAuthCookie();
-        useAuthStore.setState({ user: null, isAuthenticated: false });
+        useAuthStore.setState({
+          user: null,
+          isAuthenticated: false,
+        });
+
+        // Redirect to home
+        router.push("/");
       }
     });
   }, [setWallet, setAccountId]);

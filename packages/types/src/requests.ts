@@ -1,3 +1,10 @@
+export interface CreateProfileRequest {
+  username: string;
+  email: string;
+  avatar?: string | null;
+  profileData?: Record<string, unknown>;
+}
+
 export interface UpdateProfileRequest {
   username?: string;
   email?: string;

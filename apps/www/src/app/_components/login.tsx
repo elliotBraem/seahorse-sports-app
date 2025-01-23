@@ -1,12 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
 import { useAuth } from "@/lib/hooks/use-auth";
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
 import { useAuthStore } from "@/lib/store";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export function Login() {
   const { login } = useAuth();

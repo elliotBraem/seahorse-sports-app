@@ -1,33 +1,49 @@
+import { getUserProfile } from "@/lib/api/user";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getAuthCookie } from "./app/actions";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const isAuthenticated = request.cookies.has("auth");
   const pathname = request.nextUrl.pathname;
 
   // Admin route protection
   if (pathname.startsWith("/admin")) {
     if (!isAuthenticated) {
-      const url = new URL("/login", request.url);
-      url.searchParams.set("returnUrl", pathname);
+      const url = new URL("/", request.url);
       return NextResponse.redirect(url);
     }
-    const accountId = request.cookies.get("auth")?.value;
-    if (accountId !== "efiz.testnet") {
+    const accountId = await getAuthCookie();
+    if (accountId !== "efiz.testnet") { // not an admin
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
-  // Redirect to login for any route except login and home when not authenticated
-  if (!isAuthenticated && pathname !== "/login" && pathname !== "/") {
-    const url = new URL("/login", request.url);
-    url.searchParams.set("returnUrl", pathname);
-    return NextResponse.redirect(url);
-  }
+  if (pathname !== "/") {
+    // Redirect to home for any route except home when not authenticated
+    if (!isAuthenticated) {
+      const url = new URL("/", request.url);
+      return NextResponse.redirect(url);
+    } else {
+      // Redirect to onboarding if incomplete or missing profile
+      try {
+        const profile = await getUserProfile();
 
-  // Redirect to home if accessing login while authenticated
-  if (pathname === "/login" && isAuthenticated) {
-    return NextResponse.redirect(new URL("/quests", request.url));
+        // Check if profile exists and has required fields
+        const isProfileComplete = profile &&
+          profile.username &&
+          profile.email;
+
+        if (!isProfileComplete && pathname !== '/onboarding') {
+          return NextResponse.redirect(new URL('/onboarding', request.url));
+        }
+      } catch (error) {
+        // If we can't fetch the profile, redirect to onboarding
+        if (pathname !== '/onboarding') {
+          return NextResponse.redirect(new URL('/onboarding', request.url));
+        }
+      }
+    }
   }
 
   return NextResponse.next();
