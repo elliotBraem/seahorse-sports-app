@@ -24,6 +24,8 @@ import {
   handleListGames,
   handleGetGame,
   handleGetCurrentGames,
+  handleCreatePrediction,
+  handleGetGamePredictions,
   handleCreateGame,
   handleUpdateGame,
   handleDeleteGame,
@@ -34,7 +36,6 @@ import {
   handleUpdateUserProfile,
   handleAddFavoriteTeam,
   handleRemoveFavoriteTeam,
-  handleCreatePrediction,
   handleGetUserPredictions,
   handleGetGamePrediction,
   handleAddSocialAccount,
@@ -114,10 +115,15 @@ export async function handleV1Routes(
     return await handleRemoveFavoriteTeam(request, env, corsHeaders);
   }
 
-  // Predictions
-  if (path === "/predictions" && method === "POST") {
+  // Game Predictions
+  if (path.match(/^\/games\/\d+\/predict$/) && method === "POST") {
     return await handleCreatePrediction(request, env, corsHeaders);
   }
+  if (path.match(/^\/games\/\d+\/predictions$/) && method === "GET") {
+    return await handleGetGamePredictions(request, env, corsHeaders);
+  }
+
+  // User Predictions
   if (path === "/predictions/mine" && method === "GET") {
     return await handleGetUserPredictions(request, env, corsHeaders);
   }

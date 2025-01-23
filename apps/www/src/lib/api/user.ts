@@ -1,7 +1,6 @@
 import {
   type AddFavoriteTeamRequest,
   type AddSocialAccountRequest,
-  type CreatePredictionRequest,
   type PredictionResponse,
   type ProfileResponse,
   type SocialAccountResponse,
@@ -43,17 +42,6 @@ export async function removeFavoriteTeam(
 ): Promise<ProfileResponse> {
   return apiRequest(`/user/favorites/teams/${teamId}`, {
     method: "DELETE",
-    options,
-  });
-}
-
-export async function createPrediction(
-  data: CreatePredictionRequest,
-  options?: ApiOptions,
-): Promise<PredictionResponse> {
-  return apiRequest("/predictions", {
-    method: "POST",
-    body: data,
     options,
   });
 }

@@ -4,8 +4,7 @@ import { Campaign } from "@renegade-fanclub/types";
 import { CampaignActions } from "./actions";
 
 export default async function CampaignsAdminPage() {
-  const response = await listCampaigns();
-  const campaigns = response.success ? response.data : [];
+  const campaigns = await listCampaigns();
 
   return (
     <div className="space-y-6">

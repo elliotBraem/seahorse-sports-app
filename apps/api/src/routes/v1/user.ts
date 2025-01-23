@@ -1,7 +1,6 @@
 import {
   AddFavoriteTeamRequest,
   AddSocialAccountRequest,
-  CreatePredictionRequest,
   GameStatus,
   PredictionResponse,
   ProfileResponse,
@@ -204,86 +203,6 @@ export async function handleRemoveFavoriteTeam(
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to remove favorite team",
-      500,
-      corsHeaders,
-    );
-  }
-}
-
-// POST /api/predictions
-export async function handleCreatePrediction(
-  request: Request,
-  env: Env,
-  corsHeaders: Record<string, string>,
-): Promise<Response> {
-  try {
-    const authenticatedRequest = await requireAuth(request, env);
-    const userId = authenticatedRequest.user?.id;
-    const { gameId, predictedWinnerId } =
-      (await request.json()) as CreatePredictionRequest;
-
-    if (!gameId || !predictedWinnerId) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Game ID and predicted winner ID are required",
-        400,
-        corsHeaders,
-      );
-    }
-
-    // Verify game is still upcoming
-    const gameStmt = env.DB.prepare(
-      `
-      SELECT status, start_time 
-      FROM games 
-      WHERE id = ?
-    `,
-    ).bind(gameId);
-
-    const game = await gameStmt.first();
-
-    if (!game) {
-      return createErrorResponse(
-        "NOT_FOUND",
-        "Game not found",
-        404,
-        corsHeaders,
-      );
-    }
-
-    if (game.status !== "upcoming") {
-      return createErrorResponse(
-        "INVALID_REQUEST",
-        "Cannot predict on non-upcoming games",
-        400,
-        corsHeaders,
-      );
-    }
-
-    if (new Date(game.start_time as string) <= new Date()) {
-      return createErrorResponse(
-        "INVALID_REQUEST",
-        "Game has already started",
-        400,
-        corsHeaders,
-      );
-    }
-
-    const stmt = env.DB.prepare(
-      `
-      INSERT INTO user_predictions (user_id, game_id, predicted_winner_id)
-      VALUES (?, ?, ?)
-    `,
-    ).bind(userId, gameId, predictedWinnerId);
-
-    await stmt.run();
-
-    return createSuccessResponse({ success: true }, corsHeaders);
-  } catch (error) {
-    console.error("[Create Prediction Error]", error);
-    return createErrorResponse(
-      "INTERNAL_ERROR",
-      "Failed to create prediction",
       500,
       corsHeaders,
     );

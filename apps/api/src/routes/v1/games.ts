@@ -3,6 +3,8 @@ import {
   UpdateGameRequest,
   GameResponse,
   GameStatus,
+  CreatePredictionRequest,
+  PredictionResponse,
 } from "@renegade-fanclub/types";
 import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
@@ -209,6 +211,8 @@ export async function handleGetCurrentGames(
   }
 }
 
+// POST /api/games/
+
 // Admin Routes
 
 // POST /api/admin/games
@@ -358,6 +362,156 @@ export async function handleUpdateGame(
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to update game",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
+// POST /api/games/:id/predict
+export async function handleCreatePrediction(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const userId = authenticatedRequest.user?.id;
+    const gameId = request.url.split("/").pop()?.split("/")[0];
+    const { predictedWinnerId } = (await request.json()) as CreatePredictionRequest;
+
+    if (!gameId || !predictedWinnerId) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID and predicted winner ID are required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    // Verify game is still upcoming
+    const gameStmt = env.DB.prepare(
+      `
+      SELECT status, start_time 
+      FROM games 
+      WHERE id = ?
+    `,
+    ).bind(gameId);
+
+    const game = await gameStmt.first();
+
+    if (!game) {
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Game not found",
+        404,
+        corsHeaders,
+      );
+    }
+
+    if (game.status !== "upcoming") {
+      return createErrorResponse(
+        "INVALID_REQUEST",
+        "Cannot predict on non-upcoming games",
+        400,
+        corsHeaders,
+      );
+    }
+
+    if (new Date(game.start_time as string) <= new Date()) {
+      return createErrorResponse(
+        "INVALID_REQUEST",
+        "Game has already started",
+        400,
+        corsHeaders,
+      );
+    }
+
+    const stmt = env.DB.prepare(
+      `
+      INSERT INTO user_predictions (user_id, game_id, predicted_winner_id)
+      VALUES (?, ?, ?)
+    `,
+    ).bind(userId, gameId, predictedWinnerId);
+
+    await stmt.run();
+
+    return createSuccessResponse({ success: true }, corsHeaders);
+  } catch (error) {
+    console.error("[Create Prediction Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to create prediction",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
+// GET /api/games/:id/predictions
+export async function handleGetGamePredictions(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const gameId = request.url.split("/").pop()?.split("/")[0];
+
+    if (!gameId) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    const stmt = env.DB.prepare(
+      `
+      SELECT 
+        up.*,
+        g.start_time,
+        g.status as game_status,
+        g.points_value,
+        ht.name as home_team_name,
+        at.name as away_team_name,
+        wt.name as predicted_winner_name
+      FROM user_predictions up
+      JOIN games g ON up.game_id = g.id
+      JOIN teams ht ON g.home_team_id = ht.id
+      JOIN teams at ON g.away_team_id = at.id
+      JOIN teams wt ON up.predicted_winner_id = wt.id
+      WHERE up.game_id = ?
+      ORDER BY up.created_at DESC
+    `,
+    ).bind(gameId);
+
+    const predictions = await stmt.all();
+
+    // Transform database results to match PredictionResponse type
+    const predictionResponses: PredictionResponse[] = predictions.results.map(
+      (p) => ({
+        id: p.id as number,
+        userId: p.user_id as string,
+        gameId: p.game_id as number,
+        predictedWinnerId: p.predicted_winner_id as number,
+        pointsEarned: p.points_earned as number | null,
+        createdAt: p.created_at as string,
+        gameStartTime: p.start_time as string,
+        gameStatus: p.game_status as GameStatus,
+        pointsValue: p.points_value as number,
+        homeTeamName: p.home_team_name as string,
+        awayTeamName: p.away_team_name as string,
+        predictedWinnerName: p.predicted_winner_name as string,
+      }),
+    );
+    return createSuccessResponse(predictionResponses, corsHeaders);
+  } catch (error) {
+    console.error("[Get Game Predictions Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch game predictions",
       500,
       corsHeaders,
     );
