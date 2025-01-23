@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { listTeams, addFavoriteTeam } from "@/lib/api/teams";
+import { listTeams } from "@/lib/api/teams";
 import { Sport, TeamResponse } from "@renegade-fanclub/types";
+import { addFavoriteTeam } from "@/lib/api";
 
 interface TeamsSelectionProps {
   selectedSports: Sport[];

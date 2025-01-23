@@ -1,12 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Container } from "@/components/ui/container";
-import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { addFavoriteTeam } from "@/lib/api/teams";
+import { Container } from "@/components/ui/container";
+import { addFavoriteTeam } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface PreferenceItem {
   id: string;

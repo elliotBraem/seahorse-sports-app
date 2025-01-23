@@ -1,33 +1,11 @@
 import {
-  type TeamResponse,
   type TeamFansPageResponse,
-  type AddFavoriteTeamRequest,
+  type TeamResponse,
 } from "@renegade-fanclub/types";
 import { type ApiOptions, apiRequest } from "./types";
 
 export async function listTeams(options?: ApiOptions): Promise<TeamResponse[]> {
   return apiRequest("/teams", { options, requiresAuth: false });
-}
-
-export async function addFavoriteTeam(
-  data: AddFavoriteTeamRequest,
-  options?: ApiOptions,
-): Promise<TeamResponse> {
-  return apiRequest("/teams/favorites", {
-    method: "POST",
-    body: data,
-    options,
-  });
-}
-
-export async function removeFavoriteTeam(
-  teamId: number,
-  options?: ApiOptions,
-): Promise<void> {
-  return apiRequest(`/teams/favorites/${teamId}`, {
-    method: "DELETE",
-    options,
-  });
 }
 
 export async function getTeam(

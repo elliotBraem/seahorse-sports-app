@@ -378,7 +378,8 @@ export async function handleCreatePrediction(
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
     const gameId = request.url.split("/").pop()?.split("/")[0];
-    const { predictedWinnerId } = (await request.json()) as CreatePredictionRequest;
+    const { predictedWinnerId } =
+      (await request.json()) as CreatePredictionRequest;
 
     if (!gameId || !predictedWinnerId) {
       return createErrorResponse(
