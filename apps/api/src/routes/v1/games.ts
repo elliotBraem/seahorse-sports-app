@@ -10,7 +10,7 @@ import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
-// GET /api/games
+// GET /api/v1/games
 export async function handleListGames(
   request: Request,
   env: Env,
@@ -72,7 +72,7 @@ export async function handleListGames(
   }
 }
 
-// GET /api/games/:id
+// GET /api/v1/games/:id
 export async function handleGetGame(
   request: Request,
   env: Env,
@@ -148,7 +148,7 @@ export async function handleGetGame(
   }
 }
 
-// GET /api/games/current
+// GET /api/v1/games/current
 export async function handleGetCurrentGames(
   request: Request,
   env: Env,
@@ -211,11 +211,11 @@ export async function handleGetCurrentGames(
   }
 }
 
-// POST /api/games/
+// POST /api/v1/games/
 
 // Admin Routes
 
-// POST /api/admin/games
+// POST /api/v1/admin/games
 export async function handleCreateGame(
   request: Request,
   env: Env,
@@ -279,7 +279,7 @@ export async function handleCreateGame(
   }
 }
 
-// PATCH /api/admin/games/:id
+// PATCH /api/v1/admin/games/:id
 export async function handleUpdateGame(
   request: Request,
   env: Env,
@@ -368,7 +368,7 @@ export async function handleUpdateGame(
   }
 }
 
-// POST /api/games/:id/predict
+// POST /api/v1/games/:id/predict
 export async function handleCreatePrediction(
   request: Request,
   env: Env,
@@ -449,7 +449,7 @@ export async function handleCreatePrediction(
   }
 }
 
-// GET /api/games/:id/predictions
+// GET /api/v1/games/:id/predictions
 export async function handleGetGamePredictions(
   request: Request,
   env: Env,
@@ -519,7 +519,7 @@ export async function handleGetGamePredictions(
   }
 }
 
-// DELETE /api/admin/games/:id
+// DELETE /api/v1/admin/games/:id
 export async function handleDeleteGame(
   request: Request,
   env: Env,

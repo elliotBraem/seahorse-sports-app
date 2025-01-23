@@ -6,7 +6,7 @@ import {
 import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 
-// GET /api/leaderboard/all-time
+// GET /api/v1/leaderboard/all-time
 export async function handleGetAllTimeLeaderboard(
   request: Request,
   env: Env,
@@ -71,7 +71,7 @@ export async function handleGetAllTimeLeaderboard(
   }
 }
 
-// GET /api/leaderboard/:campaignId
+// GET /api/v1/leaderboard/:campaignId
 export async function handleGetCampaignLeaderboard(
   request: Request,
   env: Env,

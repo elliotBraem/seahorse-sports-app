@@ -8,7 +8,7 @@ import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
-// GET /api/campaigns
+// GET /api/v1/campaigns
 export async function handleListCampaigns(
   request: Request,
   env: Env,
@@ -56,7 +56,7 @@ export async function handleListCampaigns(
   }
 }
 
-// GET /api/campaigns/:id
+// GET /api/v1/campaigns/:id
 export async function handleGetCampaign(
   request: Request,
   env: Env,
@@ -112,7 +112,7 @@ export async function handleGetCampaign(
   }
 }
 
-// GET /api/campaigns/:id/leaderboard
+// GET /api/v1/campaigns/:id/leaderboard
 export async function handleGetCampaignLeaderboard(
   request: Request,
   env: Env,
@@ -177,7 +177,7 @@ export async function handleGetCampaignLeaderboard(
 
 // Admin Routes
 
-// POST /api/admin/campaigns
+// POST /api/v1/admin/campaigns
 export async function handleCreateCampaign(
   request: Request,
   env: Env,
@@ -230,7 +230,7 @@ export async function handleCreateCampaign(
   }
 }
 
-// PATCH /api/admin/campaigns/:id
+// PATCH /api/v1/admin/campaigns/:id
 export async function handleUpdateCampaign(
   request: Request,
   env: Env,
@@ -304,7 +304,7 @@ export async function handleUpdateCampaign(
   }
 }
 
-// DELETE /api/admin/campaigns/:id
+// DELETE /api/v1/admin/campaigns/:id
 export async function handleDeleteCampaign(
   request: Request,
   env: Env,

@@ -11,7 +11,7 @@ import { requireAuth } from "../../middleware/auth";
 import { createErrorResponse, createSuccessResponse } from "../../types/api";
 import { Env } from "../../types/env";
 
-// GET /api/user/profile
+// GET /api/v1/user/profile
 export async function handleGetUserProfile(
   request: Request,
   env: Env,
@@ -72,7 +72,7 @@ export async function handleGetUserProfile(
   }
 }
 
-// PATCH /api/user/profile
+// PATCH /api/v1/user/profile
 export async function handleUpdateUserProfile(
   request: Request,
   env: Env,
@@ -127,7 +127,7 @@ export async function handleUpdateUserProfile(
   }
 }
 
-// POST /api/user/favorites/teams
+// POST /api/v1/user/favorites/teams
 export async function handleAddFavoriteTeam(
   request: Request,
   env: Env,
@@ -168,7 +168,7 @@ export async function handleAddFavoriteTeam(
   }
 }
 
-// DELETE /api/user/favorites/teams/:teamId
+// DELETE /api/v1/user/favorites/teams/:teamId
 export async function handleRemoveFavoriteTeam(
   request: Request,
   env: Env,
@@ -209,7 +209,7 @@ export async function handleRemoveFavoriteTeam(
   }
 }
 
-// GET /api/predictions/mine
+// GET /api/v1/predictions/mine
 export async function handleGetUserPredictions(
   request: Request,
   env: Env,
@@ -276,7 +276,7 @@ export async function handleGetUserPredictions(
   }
 }
 
-// GET /api/predictions/:gameId
+// GET /api/v1/predictions/:gameId
 export async function handleGetGamePrediction(
   request: Request,
   env: Env,
@@ -353,7 +353,7 @@ export async function handleGetGamePrediction(
   }
 }
 
-// POST /api/user/social
+// POST /api/v1/user/social
 export async function handleAddSocialAccount(
   request: Request,
   env: Env,
@@ -395,7 +395,7 @@ export async function handleAddSocialAccount(
   }
 }
 
-// DELETE /api/user/social/:platform
+// DELETE /api/v1/user/social/:platform
 export async function handleRemoveSocialAccount(
   request: Request,
   env: Env,
@@ -436,7 +436,7 @@ export async function handleRemoveSocialAccount(
   }
 }
 
-// GET /api/user/social
+// GET /api/v1/user/social
 export async function handleGetSocialAccounts(
   request: Request,
   env: Env,

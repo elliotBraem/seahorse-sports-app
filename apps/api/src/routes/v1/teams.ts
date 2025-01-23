@@ -7,7 +7,7 @@ import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
-// GET /api/teams
+// GET /api/v1/teams
 export async function handleListTeams(
   request: Request,
   env: Env,
@@ -74,7 +74,7 @@ export async function handleListTeams(
   }
 }
 
-// GET /api/teams/:id
+// GET /api/v1/teams/:id
 export async function handleGetTeam(
   request: Request,
   env: Env,
@@ -161,7 +161,7 @@ export async function handleGetTeam(
   }
 }
 
-// GET /api/teams/:id/fans
+// GET /api/v1/teams/:id/fans
 export async function handleGetTeamFans(
   request: Request,
   env: Env,

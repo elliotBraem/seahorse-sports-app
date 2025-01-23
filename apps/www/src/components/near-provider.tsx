@@ -42,11 +42,6 @@ export default function NearProvider({
 
           useAuthStore.setState({ user: profile });
 
-          if (!profile.profileData.onboardingComplete) {
-            window.location.href = "/onboarding";
-            return;
-          }
-
           // If onboarding is complete, handle returnUrl or go to quests
           const returnUrl = url.searchParams.get("returnUrl");
           if (returnUrl && !returnUrl.startsWith("http")) {
@@ -56,8 +51,6 @@ export default function NearProvider({
           }
         } catch (error) {
           console.error("Failed to check onboarding status:", error);
-          // If we can't determine onboarding status, assume it's needed
-          window.location.href = "/onboarding";
         }
       } else {
         // User is signed out

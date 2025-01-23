@@ -9,7 +9,7 @@ import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
-// GET /api/quests
+// GET /api/v1/quests
 export async function handleListQuests(
   request: Request,
   env: Env,
@@ -79,7 +79,7 @@ export async function handleListQuests(
   }
 }
 
-// POST /api/quests/:questId/complete
+// POST /api/v1/quests/:questId/complete
 export async function handleCompleteQuest(
   request: Request,
   env: Env,
@@ -212,7 +212,7 @@ export async function handleCompleteQuest(
   }
 }
 
-// GET /api/quests/mine
+// GET /api/v1/quests/mine
 export async function handleGetUserQuests(
   request: Request,
   env: Env,
@@ -276,7 +276,7 @@ export async function handleGetUserQuests(
 
 // Admin Routes
 
-// POST /api/admin/quests
+// POST /api/v1/admin/quests
 export async function handleCreateQuest(
   request: Request,
   env: Env,
@@ -337,7 +337,7 @@ export async function handleCreateQuest(
   }
 }
 
-// PATCH /api/admin/quests/:id
+// PATCH /api/v1/admin/quests/:id
 export async function handleUpdateQuest(
   request: Request,
   env: Env,
@@ -406,7 +406,7 @@ export async function handleUpdateQuest(
   }
 }
 
-// DELETE /api/admin/quests/:id
+// DELETE /api/v1/admin/quests/:id
 export async function handleDeleteQuest(
   request: Request,
   env: Env,
