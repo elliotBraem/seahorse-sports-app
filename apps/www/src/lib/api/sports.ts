@@ -13,6 +13,9 @@ export async function listSports(
     const response = await fetch(`${API_BASE_URL}/sports`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<Sport[]>(response);
@@ -29,6 +32,9 @@ export async function getSport(
     const response = await fetch(`${API_BASE_URL}/sports/${sportId}`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<Sport>(response);

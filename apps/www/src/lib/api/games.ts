@@ -19,6 +19,9 @@ export async function listGames(
     const response = await fetch(`${API_BASE_URL}/games`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse[]>(response);
@@ -35,6 +38,9 @@ export async function getGame(
     const response = await fetch(`${API_BASE_URL}/games/${gameId}`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse>(response);
@@ -50,6 +56,9 @@ export async function getCurrentGames(
     const response = await fetch(`${API_BASE_URL}/games/current`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<GameResponse[]>(response);
@@ -69,6 +78,7 @@ export async function createPrediction(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -87,6 +97,9 @@ export async function getGamePredictions(
     const response = await fetch(`${API_BASE_URL}/games/${gameId}/predictions`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse[]>(response);
@@ -107,6 +120,7 @@ export async function createGame(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -128,6 +142,7 @@ export async function updateGame(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -146,6 +161,9 @@ export async function deleteGame(
     const response = await fetch(`${API_BASE_URL}/admin/games/${gameId}`, {
       method: "DELETE",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);

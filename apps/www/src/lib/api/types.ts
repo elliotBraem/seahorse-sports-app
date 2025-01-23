@@ -3,6 +3,7 @@ export const API_BASE_URL = `${API_URL}/api/v1`;
 
 export type ApiOptions = {
   signal?: AbortSignal;
+  accountId?: string;
 };
 
 export class ApiError extends Error {
@@ -15,14 +16,22 @@ export class ApiError extends Error {
 export async function handleApiResponse<T>(
   response: Response,
 ): Promise<T> {
-  if (!response.ok) {
-    const error = await response.json();
+  const data = await response.json();
+  
+  if (!response.ok || data.success === false) {
+    const error = data.error || {};
     throw new ApiError(
       error.code || "UNKNOWN_ERROR",
       error.message || "An unknown error occurred"
     );
   }
 
-  const data = await response.json();
-  return data;
+  if (!data.success) {
+    throw new ApiError(
+      "INVALID_RESPONSE",
+      "Invalid API response format"
+    );
+  }
+
+  return data.data;
 }

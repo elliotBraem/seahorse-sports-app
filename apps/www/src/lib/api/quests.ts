@@ -19,6 +19,9 @@ export async function listQuests(
     const response = await fetch(`${API_BASE_URL}/quests`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<QuestResponse[]>(response);
@@ -34,6 +37,9 @@ export async function getUserQuests(
     const response = await fetch(`${API_BASE_URL}/quests/mine`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<QuestCompletionResponse[]>(response);
@@ -53,6 +59,7 @@ export async function completeQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -75,6 +82,7 @@ export async function createQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -96,6 +104,7 @@ export async function updateQuest(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -114,6 +123,9 @@ export async function deleteQuest(
     const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
       method: "DELETE",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);

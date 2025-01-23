@@ -17,6 +17,9 @@ export async function listTeams(
     const response = await fetch(`${API_BASE_URL}/teams`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<TeamResponse[]>(response);
@@ -35,6 +38,7 @@ export async function addFavoriteTeam(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -53,6 +57,9 @@ export async function removeFavoriteTeam(
     const response = await fetch(`${API_BASE_URL}/teams/favorites/${teamId}`, {
       method: "DELETE",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);
@@ -69,6 +76,9 @@ export async function getTeam(
     const response = await fetch(`${API_BASE_URL}/teams/${teamId}`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<TeamResponse>(response);
@@ -94,6 +104,9 @@ export async function getTeamFans(
       {
         method: "GET",
         credentials: "include",
+        headers: options?.accountId ? {
+          Authorization: `Bearer ${options.accountId}`
+        } : undefined,
         signal: options?.signal,
       },
     );

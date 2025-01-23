@@ -21,6 +21,9 @@ export async function getUserProfile(
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<ProfileResponse>(response);
@@ -39,6 +42,7 @@ export async function updateUserProfile(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -59,6 +63,7 @@ export async function addFavoriteTeam(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -79,6 +84,9 @@ export async function removeFavoriteTeam(
       {
         method: "DELETE",
         credentials: "include",
+        headers: options?.accountId ? {
+          Authorization: `Bearer ${options.accountId}`
+        } : undefined,
         signal: options?.signal,
       },
     );
@@ -98,6 +106,7 @@ export async function createPrediction(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -115,6 +124,9 @@ export async function getUserPredictions(
     const response = await fetch(`${API_BASE_URL}/predictions/mine`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse[]>(response);
@@ -131,6 +143,9 @@ export async function getGamePrediction(
     const response = await fetch(`${API_BASE_URL}/predictions/${gameId}`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<PredictionResponse>(response);
@@ -149,6 +164,7 @@ export async function addSocialAccount(
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(options?.accountId && { Authorization: `Bearer ${options.accountId}` })
       },
       body: JSON.stringify(data),
       signal: options?.signal,
@@ -167,6 +183,9 @@ export async function removeSocialAccount(
     const response = await fetch(`${API_BASE_URL}/user/social/${platform}`, {
       method: "DELETE",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<void>(response);
@@ -182,6 +201,9 @@ export async function getSocialAccounts(
     const response = await fetch(`${API_BASE_URL}/user/social`, {
       method: "GET",
       credentials: "include",
+      headers: options?.accountId ? {
+        Authorization: `Bearer ${options.accountId}`
+      } : undefined,
       signal: options?.signal,
     });
     return handleApiResponse<SocialAccountResponse[]>(response);

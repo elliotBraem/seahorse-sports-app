@@ -25,6 +25,9 @@ export async function getAllTimeLeaderboard(
       {
         method: "GET",
         credentials: "include",
+        headers: options?.accountId ? {
+          Authorization: `Bearer ${options.accountId}`
+        } : undefined,
         signal: options?.signal,
       },
     );
@@ -51,6 +54,9 @@ export async function getCampaignLeaderboard(
       {
         method: "GET",
         credentials: "include",
+        headers: options?.accountId ? {
+          Authorization: `Bearer ${options.accountId}`
+        } : undefined,
         signal: options?.signal,
       },
     );

@@ -32,6 +32,7 @@ export function createSuccessResponse<T>(
   extraHeaders: Record<string, string> = {},
 ): Response {
   return new Response(JSON.stringify({ success: true, data }), {
+    status: 200,
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "public, max-age=60",
