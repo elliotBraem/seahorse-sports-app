@@ -1,5 +1,28 @@
 import { Card } from "@/components/ui/card";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Admin Dashboard | RNG Fan Club",
+  description: "Manage campaigns, teams, and quests for RNG Fan Club",
+  openGraph: {
+    title: "Admin Dashboard | RNG Fan Club",
+    description: "Manage campaigns, teams, and quests for RNG Fan Club",
+    images: [
+      {
+        url: "/images/rngfanclub-logo-white.png",
+        width: 1200,
+        height: 630,
+        alt: "RNG Fan Club Logo",
+      },
+    ],
+  },
+  twitter: {
+    title: "Admin Dashboard | RNG Fan Club",
+    description: "Manage campaigns, teams, and quests for RNG Fan Club",
+    images: ["/images/rngfanclub-logo-white.png"],
+  },
+};
 
 export default function AdminPage() {
   const sections = [
