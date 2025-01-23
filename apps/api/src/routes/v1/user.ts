@@ -35,8 +35,10 @@ export async function handleCreateUserProfile(
 
     // Check if username or email already exists
     const existingUser = await env.DB.prepare(
-      `SELECT id FROM users WHERE username = ? OR email = ?`
-    ).bind(profile.username, profile.email).first();
+      `SELECT id FROM users WHERE username = ? OR email = ?`,
+    )
+      .bind(profile.username, profile.email)
+      .first();
 
     if (existingUser) {
       return createErrorResponse(
@@ -61,13 +63,13 @@ export async function handleCreateUserProfile(
       )
       VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
       RETURNING *
-    `
+    `,
     ).bind(
       userId,
       profile.username,
       profile.email,
       profile.avatar || null,
-      JSON.stringify(profile.profileData || {})
+      JSON.stringify(profile.profileData || {}),
     );
 
     const newUser = await stmt.first();
