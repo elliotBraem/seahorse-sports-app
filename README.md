@@ -73,7 +73,8 @@ erDiagram
         integer id PK
         varchar name
         text description
-        varchar api_identifier
+        varchar abbreviation
+        varchar external_id
         text api_metadata
     }
 

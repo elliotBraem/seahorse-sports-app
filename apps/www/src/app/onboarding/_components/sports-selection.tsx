@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { listSports } from "@/lib/api/sports";
 import { Sport } from "@renegade-fanclub/types";
+import { useEffect, useState } from "react";
 
 interface SportsSelectionProps {
   onNext: (selectedSports: Sport[]) => void;
@@ -18,7 +18,9 @@ export function SportsSelection({ onNext }: SportsSelectionProps) {
   useEffect(() => {
     const fetchSports = async () => {
       try {
+        console.log("getting sports...");
         const sportsList = await listSports();
+        console.log("got sports", sportsList);
         setSports(sportsList);
       } catch (error) {
         console.error("Failed to fetch sports:", error);

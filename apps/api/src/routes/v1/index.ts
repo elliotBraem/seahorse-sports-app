@@ -31,6 +31,7 @@ import {
   handleDeleteGame,
 } from "./games";
 import { handleListTeams, handleGetTeam, handleGetTeamFans } from "./teams";
+import { handleListSports, handleGetSport } from "./sports";
 import {
   handleGetUserProfile,
   handleCreateUserProfile,
@@ -79,6 +80,14 @@ export async function handleV1Routes(
   }
   if (path === "/games/current" && method === "GET") {
     return await handleGetCurrentGames(request, env, corsHeaders);
+  }
+
+  // Sports
+  if (path === "/sports" && method === "GET") {
+    return await handleListSports(request, env, corsHeaders);
+  }
+  if (path.match(/^\/sports\/\d+$/) && method === "GET") {
+    return await handleGetSport(request, env, corsHeaders);
   }
 
   // Teams
