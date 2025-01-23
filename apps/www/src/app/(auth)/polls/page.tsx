@@ -1,6 +1,33 @@
 export const dynamic = "force-dynamic";
 
+import { Metadata } from "next";
 import { getCurrentGames, getGamePredictions } from "@/lib/api/games";
+
+export const metadata: Metadata = {
+  title: "Game Predictions | RNG Fan Club",
+  description:
+    "Make predictions on current games and see what other fans are thinking. Vote for your favorite team and earn points!",
+  openGraph: {
+    title: "Game Predictions | RNG Fan Club",
+    description:
+      "Make predictions on current games and see what other fans are thinking. Vote for your favorite team and earn points!",
+    images: [
+      {
+        url: "/images/rngfanclub-logo-white.png",
+        width: 1200,
+        height: 630,
+        alt: "RNG Fan Club Logo",
+      },
+    ],
+  },
+  twitter: {
+    title: "Game Predictions | RNG Fan Club",
+    description:
+      "Make predictions on current games and see what other fans are thinking. Vote for your favorite team and earn points!",
+    images: ["/images/rngfanclub-logo-white.png"],
+  },
+};
+
 import { getTeam } from "@/lib/api/teams";
 import { notFound } from "next/navigation";
 import Poll from "./_components/poll";
