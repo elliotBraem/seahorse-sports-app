@@ -1,15 +1,21 @@
 import {
-  UserProfile,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
-import { Env } from "../../types/env";
+  AddFavoriteTeamRequest,
+  AddSocialAccountRequest,
+  GameStatus,
+  PredictionResponse,
+  ProfileResponse,
+  SocialAccountResponse,
+  UpdateProfileRequest,
+} from "@renegade-fanclub/types";
 import { requireAuth } from "../../middleware/auth";
+import { createErrorResponse, createSuccessResponse } from "../../types/api";
+import { Env } from "../../types/env";
 
 // GET /api/user/profile
 export async function handleGetUserProfile(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -34,16 +40,34 @@ export async function handleGetUserProfile(
     const profile = await stmt.first();
 
     if (!profile) {
-      return createErrorResponse("NOT_FOUND", "User profile not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "User profile not found",
+        404,
+        corsHeaders,
+      );
     }
 
-    return createSuccessResponse(profile);
+    // Transform database result to match ProfileResponse type
+    const profileResponse: ProfileResponse = {
+      id: profile.id as string,
+      username: profile.username as string,
+      email: profile.email as string,
+      avatar: profile.avatar as string | null,
+      profileData: profile.profile_data as Record<string, unknown>,
+      createdAt: profile.created_at as string,
+      updatedAt: profile.updated_at as string,
+      favoriteTeams: JSON.parse(profile.favorite_teams as string),
+      favoriteSports: JSON.parse(profile.favorite_sports as string),
+    };
+    return createSuccessResponse(profileResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Profile Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch user profile",
       500,
+      corsHeaders,
     );
   }
 }
@@ -52,11 +76,12 @@ export async function handleGetUserProfile(
 export async function handleUpdateUserProfile(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const updates: Partial<UserProfile> = await request.json();
+    const updates: UpdateProfileRequest = await request.json();
 
     // Build dynamic update query
     const updateFields: string[] = [];
@@ -70,7 +95,12 @@ export async function handleUpdateUserProfile(
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(userId); // Add id for WHERE clause
@@ -85,13 +115,14 @@ export async function handleUpdateUserProfile(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Update Profile Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to update user profile",
       500,
+      corsHeaders,
     );
   }
 }
@@ -100,14 +131,20 @@ export async function handleUpdateUserProfile(
 export async function handleAddFavoriteTeam(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const { teamId } = (await request.json()) as { teamId: number };
+    const { teamId } = (await request.json()) as AddFavoriteTeamRequest;
 
     if (!teamId) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -119,13 +156,14 @@ export async function handleAddFavoriteTeam(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Add Favorite Team Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to add favorite team",
       500,
+      corsHeaders,
     );
   }
 }
@@ -134,6 +172,7 @@ export async function handleAddFavoriteTeam(
 export async function handleRemoveFavoriteTeam(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -141,7 +180,12 @@ export async function handleRemoveFavoriteTeam(
     const teamId = request.url.split("/").pop();
 
     if (!teamId) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -153,79 +197,14 @@ export async function handleRemoveFavoriteTeam(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Remove Favorite Team Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to remove favorite team",
       500,
-    );
-  }
-}
-
-// POST /api/predictions
-export async function handleCreatePrediction(
-  request: Request,
-  env: Env,
-): Promise<Response> {
-  try {
-    const authenticatedRequest = await requireAuth(request, env);
-    const userId = authenticatedRequest.user?.id;
-    const { gameId, predictedWinnerId } = (await request.json()) as {
-      gameId: number;
-      predictedWinnerId: number;
-    };
-
-    if (!gameId || !predictedWinnerId) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Game ID and predicted winner ID are required",
-      );
-    }
-
-    // Verify game is still upcoming
-    const gameStmt = env.DB.prepare(
-      `
-      SELECT status, start_time 
-      FROM games 
-      WHERE id = ?
-    `,
-    ).bind(gameId);
-
-    const game = await gameStmt.first();
-
-    if (!game) {
-      return createErrorResponse("NOT_FOUND", "Game not found", 404);
-    }
-
-    if (game.status !== "upcoming") {
-      return createErrorResponse(
-        "INVALID_REQUEST",
-        "Cannot predict on non-upcoming games",
-      );
-    }
-
-    if (new Date(game.start_time as string) <= new Date()) {
-      return createErrorResponse("INVALID_REQUEST", "Game has already started");
-    }
-
-    const stmt = env.DB.prepare(
-      `
-      INSERT INTO user_predictions (user_id, game_id, predicted_winner_id)
-      VALUES (?, ?, ?)
-    `,
-    ).bind(userId, gameId, predictedWinnerId);
-
-    await stmt.run();
-
-    return createSuccessResponse({ success: true });
-  } catch (error) {
-    console.error("[Create Prediction Error]", error);
-    return createErrorResponse(
-      "INTERNAL_ERROR",
-      "Failed to create prediction",
-      500,
+      corsHeaders,
     );
   }
 }
@@ -234,6 +213,7 @@ export async function handleCreatePrediction(
 export async function handleGetUserPredictions(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -267,13 +247,31 @@ export async function handleGetUserPredictions(
 
     const predictions = await stmt.all();
 
-    return createSuccessResponse(predictions.results);
+    // Transform database results to match PredictionResponse type
+    const predictionResponses: PredictionResponse[] = predictions.results.map(
+      (p) => ({
+        id: p.id as number,
+        userId: p.user_id as string,
+        gameId: p.game_id as number,
+        predictedWinnerId: p.predicted_winner_id as number,
+        pointsEarned: p.points_earned as number | null,
+        createdAt: p.created_at as string,
+        gameStartTime: p.start_time as string,
+        gameStatus: p.game_status as GameStatus,
+        pointsValue: p.points_value as number,
+        homeTeamName: p.home_team_name as string,
+        awayTeamName: p.away_team_name as string,
+        predictedWinnerName: p.predicted_winner_name as string,
+      }),
+    );
+    return createSuccessResponse(predictionResponses, corsHeaders);
   } catch (error) {
     console.error("[Get Predictions Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch predictions",
       500,
+      corsHeaders,
     );
   }
 }
@@ -282,6 +280,7 @@ export async function handleGetUserPredictions(
 export async function handleGetGamePrediction(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -289,7 +288,12 @@ export async function handleGetGamePrediction(
     const gameId = request.url.split("/").pop();
 
     if (!gameId) {
-      return createErrorResponse("INVALID_PARAMS", "Game ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -314,16 +318,37 @@ export async function handleGetGamePrediction(
     const prediction = await stmt.first();
 
     if (!prediction) {
-      return createErrorResponse("NOT_FOUND", "Prediction not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Prediction not found",
+        404,
+        corsHeaders,
+      );
     }
 
-    return createSuccessResponse(prediction);
+    // Transform database result to match PredictionResponse type
+    const predictionResponse: PredictionResponse = {
+      id: prediction.id as number,
+      userId: prediction.user_id as string,
+      gameId: prediction.game_id as number,
+      predictedWinnerId: prediction.predicted_winner_id as number,
+      pointsEarned: prediction.points_earned as number | null,
+      createdAt: prediction.created_at as string,
+      gameStartTime: prediction.start_time as string,
+      gameStatus: prediction.game_status as GameStatus,
+      pointsValue: prediction.points_value as number,
+      homeTeamName: prediction.home_team_name as string,
+      awayTeamName: prediction.away_team_name as string,
+      predictedWinnerName: prediction.predicted_winner_name as string,
+    };
+    return createSuccessResponse(predictionResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Game Prediction Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch game prediction",
       500,
+      corsHeaders,
     );
   }
 }
@@ -332,20 +357,20 @@ export async function handleGetGamePrediction(
 export async function handleAddSocialAccount(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const { platform, platformUserId, username } = (await request.json()) as {
-      platform: string;
-      platformUserId: string;
-      username?: string;
-    };
+    const { platform, platformUserId, username } =
+      (await request.json()) as AddSocialAccountRequest;
 
     if (!platform || !platformUserId) {
       return createErrorResponse(
         "INVALID_PARAMS",
         "Platform and platform user ID are required",
+        400,
+        corsHeaders,
       );
     }
 
@@ -358,13 +383,14 @@ export async function handleAddSocialAccount(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Add Social Account Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to add social account",
       500,
+      corsHeaders,
     );
   }
 }
@@ -373,6 +399,7 @@ export async function handleAddSocialAccount(
 export async function handleRemoveSocialAccount(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -380,7 +407,12 @@ export async function handleRemoveSocialAccount(
     const platform = request.url.split("/").pop();
 
     if (!platform) {
-      return createErrorResponse("INVALID_PARAMS", "Platform is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Platform is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -392,13 +424,14 @@ export async function handleRemoveSocialAccount(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Remove Social Account Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to remove social account",
       500,
+      corsHeaders,
     );
   }
 }
@@ -407,6 +440,7 @@ export async function handleRemoveSocialAccount(
 export async function handleGetSocialAccounts(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -423,13 +457,24 @@ export async function handleGetSocialAccounts(
 
     const accounts = await stmt.all();
 
-    return createSuccessResponse(accounts.results);
+    // Transform database results to match SocialAccountResponse type
+    const socialResponses: SocialAccountResponse[] = accounts.results.map(
+      (a) => ({
+        platform: a.platform as string,
+        platformUserId: a.platform_user_id as string,
+        username: a.username as string | null,
+        verified: a.verified as boolean,
+        createdAt: a.created_at as string,
+      }),
+    );
+    return createSuccessResponse(socialResponses, corsHeaders);
   } catch (error) {
     console.error("[Get Social Accounts Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch social accounts",
       500,
+      corsHeaders,
     );
   }
 }

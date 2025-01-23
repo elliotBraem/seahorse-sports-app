@@ -1,8 +1,7 @@
 import { Wallet } from "@/near/wallet";
+import { User } from "@renegade-fanclub/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User } from "./types";
-import { setAuthCookie, removeAuthCookie } from "@/app/actions";
 
 interface AuthState {
   user: User | null;

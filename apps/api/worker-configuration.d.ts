@@ -2,4 +2,9 @@
 
 interface Env {
   DB: D1Database;
+  JWT_SECRET: string;
+  ADMIN_WHITELIST: string; // Comma-separated list of admin account IDs
+
+  // CORS Configuration
+  ALLOWED_ORIGINS: string; // Comma-separated list of allowed origins
 }

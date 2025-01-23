@@ -32,6 +32,7 @@ export function createSuccessResponse<T>(
   extraHeaders: Record<string, string> = {},
 ): Response {
   return new Response(JSON.stringify({ success: true, data }), {
+    status: 200,
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "public, max-age=60",
@@ -60,15 +61,3 @@ export function createErrorResponse(
     },
   );
 }
-
-// Re-export database types from shared package
-export type {
-  Campaign,
-  Game,
-  Team,
-  User as UserProfile,
-  UserPrediction as Prediction,
-  Quest,
-  UserQuestCompletion,
-  UserPoints,
-} from '@renegade-fanclub/types';

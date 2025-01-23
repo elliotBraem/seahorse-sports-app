@@ -6,7 +6,6 @@ export async function authenticateUser(
   env: Env,
 ): Promise<AuthenticatedRequest> {
   const authHeader = request.headers.get("Authorization");
-
   if (!authHeader?.startsWith("Bearer ")) {
     throw new Error("UNAUTHORIZED");
   }
@@ -20,11 +19,20 @@ export async function authenticateUser(
       throw new Error("INVALID_TOKEN");
     }
 
+    // Verify the token and get the accountId
+    // This should be replaced with actual JWT verification
+    const accountId = token; // In production, this would come from verified JWT payload
+
+    // Check if user is in admin whitelist
+    const adminWhitelist = env.ADMIN_WHITELIST.split(",").map((id) =>
+      id.trim(),
+    );
+    const isAdmin = adminWhitelist.includes(accountId);
     // Add user data to request
     const authenticatedRequest = request as AuthenticatedRequest;
     authenticatedRequest.user = {
-      id: "user_id", // Replace with actual user ID from token
-      isAdmin: false, // Replace with actual admin status from token
+      id: accountId,
+      isAdmin,
     };
 
     return authenticatedRequest;
@@ -37,6 +45,7 @@ export async function requireAuth(
   request: Request,
   env: Env,
   requireAdmin: boolean = false,
+  corsHeaders: Record<string, string> = {},
 ): Promise<AuthenticatedRequest> {
   try {
     const authenticatedRequest = await authenticateUser(request, env);
@@ -55,6 +64,7 @@ export async function requireAuth(
         ? "Admin access required"
         : "Authentication required",
       errorMessage === "FORBIDDEN" ? 403 : 401,
+      corsHeaders,
     );
   }
 }

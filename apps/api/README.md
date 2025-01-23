@@ -159,21 +159,3 @@ Response includes:
   }
 }
 ```
-
-## Environment Variables
-
-Required environment variables in `wrangler.toml`:
-
-```toml
-[vars]
-JWT_SECRET = "your-jwt-secret"
-ENVIRONMENT = "development"
-
-[[kv_namespaces]]
-binding = "CACHE"
-id = "your-kv-namespace-id"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "renegade-fanclub"
-database_id = "your-d1-database-id"

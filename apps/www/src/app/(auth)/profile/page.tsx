@@ -1,4 +1,4 @@
-"use client";
+export const dynamic = "force-dynamic";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -10,32 +10,25 @@ import {
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { CopyLink } from "@/components/ui/copy-link";
-import { useAuthStore } from "@/lib/store";
+import { getUserProfile } from "@/lib/api/user";
+import { getUserQuests } from "@/lib/api/quests";
 import { cn } from "@/lib/utils";
 import { Settings, Trophy } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 
-export default function ProfilePage() {
-  const { user, accountId } = useAuthStore();
-  const origin =
-    typeof window !== "undefined" && window.location.origin
-      ? window.location.origin
-      : "";
+export default async function ProfilePage() {
+  const [profile, completedQuests] = await Promise.all([
+    getUserProfile(),
+    getUserQuests(),
+  ]);
 
-  // Show not found if no user is authenticated
-  if (!user && !accountId) {
-    return <div>Not authenticated</div>;
-  }
-
-  // If we have accountId but no user, create a basic profile
-  const profile = user || {
-    id: accountId,
-    name: accountId || "Anonymous",
-    email: accountId || "",
-    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${accountId}`,
-    points: 0,
-    completedQuests: [],
-  };
+  const origin = headers().get("origin") || "";
+  const totalPoints = completedQuests.reduce(
+    (sum, quest) => sum + quest.pointsEarned,
+    0,
+  );
 
   return (
     <Container title="Profile" description="Review your account details">
@@ -43,12 +36,15 @@ export default function ProfilePage() {
         <CardHeader className="flex flex-row gap-4 items-center justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={profile.avatar} alt={profile.name} />
-              <AvatarFallback>{profile.name[0]}</AvatarFallback>
+              <AvatarImage
+                src={profile.avatar ?? undefined}
+                alt={profile.username}
+              />
+              <AvatarFallback>{profile.username[0]}</AvatarFallback>
             </Avatar>
             <div>
               <CardTitle className="text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-                {profile.name}
+                {profile.username}
               </CardTitle>
               <CardDescription className="overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
                 {profile.email}
@@ -67,7 +63,7 @@ export default function ProfilePage() {
         <CardContent>
           <div className="flex items-center space-x-4">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            <span className="font-medium">{profile.points} points</span>
+            <span className="font-medium">{totalPoints} points</span>
           </div>
         </CardContent>
       </Card>
@@ -81,15 +77,18 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {profile.completedQuests.length === 0 ? (
+            {completedQuests.length === 0 ? (
               <p className="text-muted-foreground">
                 Complete quests to earn achievements!
               </p>
             ) : (
-              profile.completedQuests.map((quest) => (
-                <div key={quest} className="flex items-center space-x-2">
+              completedQuests.map((quest) => (
+                <div key={quest.id} className="flex items-center space-x-2">
                   <Trophy className="h-4 w-4 text-yellow-500" />
-                  <span>{quest}</span>
+                  <span>{quest.questName}</span>
+                  <span className="text-sm text-muted-foreground">
+                    +{quest.pointsEarned} points
+                  </span>
                 </div>
               ))
             )}

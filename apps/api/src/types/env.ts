@@ -4,7 +4,10 @@ export interface Env {
 
   // Environment variables
   JWT_SECRET: string;
-  ENVIRONMENT: "development" | "production";
+  ADMIN_WHITELIST: string; // Comma-separated list of admin account IDs
+
+  // CORS Configuration
+  ALLOWED_ORIGINS: string; // Comma-separated list of allowed origins (e.g. http://localhost:3000,https://app.rngfan.club)
 
   // KV Namespaces (if needed)
   CACHE: KVNamespace;

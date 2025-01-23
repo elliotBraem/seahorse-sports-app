@@ -1,3 +1,8 @@
+import {
+  LeaderboardRankingResponse,
+  AllTimeLeaderboardResponse,
+  CampaignLeaderboardResponse,
+} from "@renegade-fanclub/types";
 import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 
@@ -5,6 +10,7 @@ import { Env } from "../../types/env";
 export async function handleGetAllTimeLeaderboard(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -32,19 +38,35 @@ export async function handleGetAllTimeLeaderboard(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    return createSuccessResponse({
-      rankings: leaderboard.results,
+    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(
+      (r) => ({
+        userId: r.user_id as string,
+        username: r.username as string,
+        avatar: r.avatar as string | null,
+        totalPoints: r.total_points as number,
+        predictionPoints: r.prediction_points as number,
+        questPoints: r.quest_points as number,
+        rank: r.rank as number,
+        lastUpdated: r.last_updated as string,
+      }),
+    );
+
+    const response: AllTimeLeaderboardResponse = {
+      rankings,
       total,
       page,
       limit,
       pages: Math.ceil(total / limit),
-    });
+    };
+
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[All-Time Leaderboard Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch all-time leaderboard",
       500,
+      corsHeaders,
     );
   }
 }
@@ -53,6 +75,7 @@ export async function handleGetAllTimeLeaderboard(
 export async function handleGetCampaignLeaderboard(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -61,7 +84,12 @@ export async function handleGetCampaignLeaderboard(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!campaignId) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -78,7 +106,12 @@ export async function handleGetCampaignLeaderboard(
     const campaign = await campaignStmt.first();
 
     if (!campaign) {
-      return createErrorResponse("NOT_FOUND", "Campaign not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Campaign not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Get leaderboard
@@ -103,24 +136,40 @@ export async function handleGetCampaignLeaderboard(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    return createSuccessResponse({
+    const rankings: LeaderboardRankingResponse[] = leaderboard.results.map(
+      (r) => ({
+        userId: r.user_id as string,
+        username: r.username as string,
+        avatar: r.avatar as string | null,
+        totalPoints: r.total_points as number,
+        predictionPoints: r.prediction_points as number,
+        questPoints: r.quest_points as number,
+        rank: r.rank as number,
+        lastUpdated: r.last_updated as string,
+      }),
+    );
+
+    const response: CampaignLeaderboardResponse = {
       campaign: {
-        id: campaign.id,
-        name: campaign.name,
-        status: campaign.status,
+        id: campaign.id as number,
+        name: campaign.name as string,
+        status: campaign.status as "upcoming" | "active" | "completed",
       },
-      rankings: leaderboard.results,
+      rankings,
       total,
       page,
       limit,
       pages: Math.ceil(total / limit),
-    });
+    };
+
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[Campaign Leaderboard Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch campaign leaderboard",
       500,
+      corsHeaders,
     );
   }
 }

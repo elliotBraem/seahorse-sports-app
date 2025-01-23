@@ -1,30 +1,56 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { Container } from "@/components/ui/container";
-import { CheckCircle2 } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import PollsPageComp from "./components/poll_page";
+import { getCurrentGames, getGamePredictions } from "@/lib/api/games";
+import { getTeam } from "@/lib/api/teams";
+import { notFound } from "next/navigation";
+import Poll from "./_components/poll";
 
-const initialTeams = [
-  {
-    id: 1,
-    title: "Team A",
-    description: "The Team A are a professional American football team.",
-    logo: "/images/team-a.png",
-    points: 10,
-    color: "#cd9d00",
-  },
-  {
-    id: 2,
-    title: "Team B",
-    description: "The Team B are a professional American football team.",
-    logo: "/images/team-b.png",
-    points: 19,
-    color: "#00b5a3",
-  },
-];
+export default async function PollsPage() {
+  // Get current games
+  const currentGames = await getCurrentGames();
 
-export default function PollsPage() {
-  return <PollsPageComp initialTeams={initialTeams} />;
+  if (!currentGames.length) {
+    notFound();
+  }
+
+  // Get the first active game
+  const game = currentGames[0];
+
+  // Get teams data
+  const [homeTeam, awayTeam] = await Promise.all([
+    getTeam(game.homeTeamId),
+    getTeam(game.awayTeamId),
+  ]);
+
+  // Get predictions for this game
+  const predictions = await getGamePredictions(game.id);
+
+  // Calculate points (predictions) for each team
+  const homeTeamPredictions = predictions.filter(
+    (p) => p.predictedWinnerId === game.homeTeamId,
+  ).length;
+  const awayTeamPredictions = predictions.filter(
+    (p) => p.predictedWinnerId === game.awayTeamId,
+  ).length;
+
+  const teams = [
+    {
+      id: homeTeam.id,
+      title: homeTeam.name,
+      description: homeTeam.description || `${homeTeam.name} team`,
+      logo: homeTeam.logo || "/images/team-a.png", // Fallback to default image
+      points: homeTeamPredictions,
+      color: "#cd9d00", // Default color
+    },
+    {
+      id: awayTeam.id,
+      title: awayTeam.name,
+      description: awayTeam.description || `${awayTeam.name} team`,
+      logo: awayTeam.logo || "/images/team-b.png", // Fallback to default image
+      points: awayTeamPredictions,
+      color: "#00b5a3", // Default color
+    },
+  ];
+
+  return <Poll gameId={game.id} initialTeams={teams} />;
 }

@@ -1,8 +1,11 @@
 import {
-  Quest,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
+  CreateQuestRequest,
+  UpdateQuestRequest,
+  CompleteQuestRequest,
+  QuestResponse,
+  QuestCompletionResponse,
+} from "@renegade-fanclub/types";
+import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
@@ -10,6 +13,7 @@ import { requireAuth } from "../../middleware/auth";
 export async function handleListQuests(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -46,10 +50,32 @@ export async function handleListQuests(
     const stmt = env.DB.prepare(query).bind(...params);
     const quests = await stmt.all();
 
-    return createSuccessResponse(quests.results);
+    const questResponses: QuestResponse[] = quests.results.map((q) => ({
+      id: q.id as number,
+      campaignId: q.campaign_id as number,
+      name: q.name as string,
+      description: q.description as string | null,
+      pointsValue: q.points_value as number,
+      verificationType: q.verification_type as string,
+      verificationData: q.verification_data
+        ? JSON.parse(q.verification_data as string)
+        : null,
+      startDate: q.start_date as string,
+      endDate: q.end_date as string,
+      createdAt: q.created_at as string,
+      campaignName: q.campaign_name as string,
+      completionCount: q.completion_count as number,
+    }));
+
+    return createSuccessResponse(questResponses, corsHeaders);
   } catch (error) {
     console.error("[List Quests Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch quests", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch quests",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -57,17 +83,22 @@ export async function handleListQuests(
 export async function handleCompleteQuest(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
     const questId = request.url.split("/")[3]; // quests/:questId/complete
-    const { verificationProof } = (await request.json()) as {
-      verificationProof?: string;
-    };
+    const { verificationProof } =
+      (await request.json()) as CompleteQuestRequest;
 
     if (!questId) {
-      return createErrorResponse("INVALID_PARAMS", "Quest ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Quest ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // Verify quest exists and is active
@@ -83,11 +114,21 @@ export async function handleCompleteQuest(
     const quest = await questStmt.first();
 
     if (!quest) {
-      return createErrorResponse("NOT_FOUND", "Quest not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Quest not found",
+        404,
+        corsHeaders,
+      );
     }
 
     if (quest.campaign_status !== "active") {
-      return createErrorResponse("INVALID_REQUEST", "Campaign is not active");
+      return createErrorResponse(
+        "INVALID_REQUEST",
+        "Campaign is not active",
+        400,
+        corsHeaders,
+      );
     }
 
     const now = new Date();
@@ -95,7 +136,12 @@ export async function handleCompleteQuest(
     const endDate = new Date(quest.end_date as string);
 
     if (now < startDate || now > endDate) {
-      return createErrorResponse("INVALID_REQUEST", "Quest is not active");
+      return createErrorResponse(
+        "INVALID_REQUEST",
+        "Quest is not active",
+        400,
+        corsHeaders,
+      );
     }
 
     // Start transaction
@@ -111,7 +157,12 @@ export async function handleCompleteQuest(
         VALUES (?, ?, ?, ?)
       `,
       )
-        .bind(userId, questId, quest.points_value, verificationProof || null)
+        .bind(
+          userId,
+          questId,
+          quest.points_value,
+          verificationProof ? JSON.stringify(verificationProof) : null,
+        )
         .run();
 
       // Update user points
@@ -139,10 +190,13 @@ export async function handleCompleteQuest(
 
       await env.DB.prepare("COMMIT").run();
 
-      return createSuccessResponse({
-        success: true,
-        points_earned: quest.points_value,
-      });
+      return createSuccessResponse(
+        {
+          success: true,
+          pointsEarned: quest.points_value,
+        },
+        corsHeaders,
+      );
     } catch (error) {
       await env.DB.prepare("ROLLBACK").run();
       throw error;
@@ -153,6 +207,7 @@ export async function handleCompleteQuest(
       "INTERNAL_ERROR",
       "Failed to complete quest",
       500,
+      corsHeaders,
     );
   }
 }
@@ -161,6 +216,7 @@ export async function handleCompleteQuest(
 export async function handleGetUserQuests(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
@@ -190,13 +246,30 @@ export async function handleGetUserQuests(
 
     const completions = await stmt.all();
 
-    return createSuccessResponse(completions.results);
+    const completionResponses: QuestCompletionResponse[] =
+      completions.results.map((c) => ({
+        id: c.id as number,
+        userId: c.user_id as string,
+        questId: c.quest_id as number,
+        pointsEarned: c.points_earned as number,
+        completedAt: c.completed_at as string,
+        verificationProof: c.verification_proof
+          ? JSON.parse(c.verification_proof as string)
+          : null,
+        questName: c.quest_name as string,
+        questDescription: c.quest_description as string | null,
+        verificationType: c.verification_type as string,
+        campaignName: c.campaign_name as string,
+      }));
+
+    return createSuccessResponse(completionResponses, corsHeaders);
   } catch (error) {
     console.error("[User Quests Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch user quests",
       500,
+      corsHeaders,
     );
   }
 }
@@ -207,21 +280,27 @@ export async function handleGetUserQuests(
 export async function handleCreateQuest(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
-    const quest: Omit<Quest, "id" | "created_at"> = await request.json();
+    const quest: CreateQuestRequest = await request.json();
 
     // Validate required fields
     if (
-      !quest.campaign_id ||
+      !quest.campaignId ||
       !quest.name ||
-      !quest.points_value ||
-      !quest.verification_type ||
-      !quest.start_date ||
-      !quest.end_date
+      !quest.pointsValue ||
+      !quest.verificationType ||
+      !quest.startDate ||
+      !quest.endDate
     ) {
-      return createErrorResponse("INVALID_PARAMS", "Missing required fields");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Missing required fields",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -234,22 +313,27 @@ export async function handleCreateQuest(
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `,
     ).bind(
-      quest.campaign_id,
+      quest.campaignId,
       quest.name,
       quest.description || null,
-      quest.points_value,
-      quest.verification_type,
-      quest.verification_data || null,
-      quest.start_date,
-      quest.end_date,
+      quest.pointsValue,
+      quest.verificationType,
+      quest.verificationData ? JSON.stringify(quest.verificationData) : null,
+      quest.startDate,
+      quest.endDate,
     );
 
     const result = await stmt.run();
 
-    return createSuccessResponse({ id: result.meta.last_row_id });
+    return createSuccessResponse({ id: result.meta.last_row_id }, corsHeaders);
   } catch (error) {
     console.error("[Create Quest Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to create quest", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to create quest",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -257,14 +341,20 @@ export async function handleCreateQuest(
 export async function handleUpdateQuest(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
     const id = request.url.split("/").pop();
-    const updates: Partial<Quest> = await request.json();
+    const updates: UpdateQuestRequest = await request.json();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Quest ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Quest ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // Build dynamic update query
@@ -272,14 +362,24 @@ export async function handleUpdateQuest(
     const values: any[] = [];
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (key !== "id" && key !== "created_at") {
-        updateFields.push(`${key} = ?`);
-        values.push(value);
+      if (key !== "id" && key !== "createdAt") {
+        // Convert camelCase to snake_case for database
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
+        updateFields.push(`${dbKey} = ?`);
+        values.push(key === "verificationData" ? JSON.stringify(value) : value);
       }
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(id); // Add id for WHERE clause
@@ -294,10 +394,15 @@ export async function handleUpdateQuest(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Update Quest Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to update quest", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to update quest",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -305,13 +410,19 @@ export async function handleUpdateQuest(
 export async function handleDeleteQuest(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env, true);
     const id = request.url.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Quest ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Quest ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // First delete related completions
@@ -324,9 +435,14 @@ export async function handleDeleteQuest(
     // Then delete the quest
     await env.DB.prepare("DELETE FROM quests WHERE id = ?").bind(id).run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Delete Quest Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to delete quest", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to delete quest",
+      500,
+      corsHeaders,
+    );
   }
 }

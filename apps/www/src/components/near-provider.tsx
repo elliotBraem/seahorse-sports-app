@@ -5,6 +5,7 @@ import { Wallet } from "@/near/wallet";
 import { useAuthStore } from "@/lib/store";
 import { useEffect } from "react";
 import { setAuthCookie, removeAuthCookie } from "@/app/actions";
+import { getUserProfile } from "@/lib/api/user";
 
 const GuestbookNearContract = "dev-1234567890123"; // Replace with actual contract ID
 const NetworkId = "testnet";
@@ -28,25 +29,35 @@ export default function NearProvider({
 
       if (accountId) {
         // User is signed in
-        const email = accountId; // Using accountId as email for demo
-        const user = {
-          id: accountId,
-          email,
-          name: accountId.split(".")[0], // Use first part of accountId as name
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-          points: 0,
-          completedQuests: [],
-        };
+        const url = new URL(window.location.href);
+        const email = url.searchParams.get("email") || accountId;
 
         // Set auth cookie using server action
-        await setAuthCookie(user.id);
-        useAuthStore.setState({ user, isAuthenticated: true });
+        await setAuthCookie(accountId);
+        useAuthStore.setState({ isAuthenticated: true });
 
-        // Handle returnUrl redirect
-        const url = new URL(window.location.href);
-        const returnUrl = url.searchParams.get("returnUrl");
-        if (returnUrl && !returnUrl.startsWith("http")) {
-          window.location.href = decodeURIComponent(returnUrl);
+        try {
+          // Check onboarding status
+          const profile = await getUserProfile();
+
+          useAuthStore.setState({ user: profile });
+
+          if (!profile.profileData.onboardingComplete) {
+            window.location.href = "/onboarding";
+            return;
+          }
+
+          // If onboarding is complete, handle returnUrl or go to quests
+          const returnUrl = url.searchParams.get("returnUrl");
+          if (returnUrl && !returnUrl.startsWith("http")) {
+            window.location.href = decodeURIComponent(returnUrl);
+          } else {
+            window.location.href = "/quests";
+          }
+        } catch (error) {
+          console.error("Failed to check onboarding status:", error);
+          // If we can't determine onboarding status, assume it's needed
+          window.location.href = "/onboarding";
         }
       } else {
         // User is signed out

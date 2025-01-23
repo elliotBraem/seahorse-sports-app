@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "init": "cp .dev.vars.example .dev.vars && bun run init:local",
     "check": "tsc && wrangler --experimental-json-config deploy --dry-run",
     "deploy": "wrangler --experimental-json-config deploy",
     "dev": "wrangler --experimental-json-config dev",
@@ -10,11 +11,11 @@
     "db:migrate:create": "wrangler d1 migrations create seahorse-sports-dev",
     "db:migrate:list": "wrangler d1 migrations list seahorse-sports-dev",
     "db:migrate:apply": "wrangler d1 migrations apply seahorse-sports-dev",
-    "init:local": "bun run db:clean && bun run deploy:sql:local",
+    "db:seed:local": "wrangler d1 execute seahorse-sports-dev --local --file=seed.sql",
+    "init:local": "bun run db:clean && bun run db:deploy:local && bun run db:seed:local",
     "db:clean": "rm -rf .wrangler/state",
-    "deploy:sql:local": "bunx wrangler d1 execute seahorse-sports-dev --local --file=schema.sql",
-    "deploy:sql:remote": "bunx wrangler d1 execute seahorse-sports-dev --remote --file=schema.sql",
-    "init": "bun run init:local"
+    "db:deploy:local": "bunx wrangler d1 execute seahorse-sports-dev --local --file=schema.sql",
+    "db:deploy:remote": "bunx wrangler d1 execute seahorse-sports-dev --remote --file=schema.sql"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.5.2",

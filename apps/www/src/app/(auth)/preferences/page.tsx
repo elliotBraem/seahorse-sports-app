@@ -1,84 +1,33 @@
-import PreferencesComp from "./Components/preferences_page";
+export const dynamic = "force-dynamic";
 
-const preferences = [
-  {
-    sports: [
-      {
-        id: "1",
-        title: "Football",
-        description: "NFL, MLB, NCAA, etc.",
-        points: 100,
-        status: "active" as const,
-      },
-      {
-        id: "2",
-        title: "Basketball",
-        description: "NBA, WNBA, NCAA, etc.",
-        points: 200,
-        status: "locked" as const,
-      },
-    ],
-  },
-  {
-    teams: [
-      {
-        id: "1",
-        title: "New York Giants",
-        description:
-          "The New York Giants are a professional American football team based in East Rutherford, New Jersey.",
-        points: 100,
-        status: "active" as const,
-      },
-      {
-        id: "2",
-        title: "Los Angeles Rams",
-        description:
-          "The Los Angeles Rams are a professional American football team based in Los Angeles, California.",
-        points: 200,
-        status: "locked" as const,
-      },
-    ],
-  },
-  {
-    leagues: [
-      {
-        id: "1",
-        title: "NFL",
-        description: "National Football League",
-        points: 100,
-        status: "active" as const,
-      },
-      {
-        id: "2",
-        title: "NBA",
-        description: "National Basketball Association",
-        points: 200,
-        status: "locked" as const,
-      },
-    ],
-  },
-  {
-    athletes: [
-      {
-        id: "1",
-        title: "Michael Jordan",
-        description:
-          "Michael Jordan is an American basketball player who played for the Chicago Bulls, Los Angeles Lakers, and Chicago Bulls of the National Basketball Association (NBA).",
-        points: 100,
-        status: "active" as const,
-      },
-      {
-        id: "2",
-        title: "LeBron James",
-        description:
-          "LeBron James is an American basketball player who plays for the Los Angeles Lakers of the National Basketball Association (NBA).",
-        points: 200,
-        status: "locked" as const,
-      },
-    ],
-  },
-];
+import { listSports } from "@/lib/api/sports";
+import { listTeams } from "@/lib/api/teams";
+import PreferencesForm from "./_components/preferences-form";
 
-export default function PreferencesPage() {
-  return <PreferencesComp preferences={preferences} />;
+export default async function PreferencesPage() {
+  const [sports, teams] = await Promise.all([listSports(), listTeams()]);
+
+  // Transform the data to match the expected format
+  const preferences = [
+    {
+      sports: sports.map((sport) => ({
+        id: sport.id.toString(),
+        title: sport.name,
+        description: sport.description || `${sport.name} sports and events`,
+        status: "active" as const,
+        points: 100, // Default points value
+      })),
+    },
+    {
+      teams: teams.map((team) => ({
+        id: team.id.toString(),
+        title: team.name,
+        description: team.description || `${team.name} team`,
+        status: "active" as const,
+        points: 100, // Default points value
+      })),
+    },
+  ];
+
+  return <PreferencesForm preferences={preferences} />;
 }

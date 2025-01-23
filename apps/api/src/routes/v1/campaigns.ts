@@ -1,8 +1,10 @@
 import {
-  Campaign,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
+  CreateCampaignRequest,
+  UpdateCampaignRequest,
+  CampaignResponse,
+  LeaderboardEntryResponse,
+} from "@renegade-fanclub/types";
+import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
@@ -10,6 +12,7 @@ import { requireAuth } from "../../middleware/auth";
 export async function handleListCampaigns(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -28,13 +31,27 @@ export async function handleListCampaigns(
 
     const campaigns = await stmt.all();
 
-    return createSuccessResponse(campaigns.results);
+    const campaignResponses: CampaignResponse[] = campaigns.results.map(
+      (c) => ({
+        id: c.id as number,
+        name: c.name as string,
+        description: c.description as string | null,
+        startDate: c.start_date as string,
+        endDate: c.end_date as string,
+        status: c.status as "upcoming" | "active" | "completed",
+        rules: c.rules ? JSON.parse(c.rules as string) : {},
+        createdAt: c.created_at as string,
+      }),
+    );
+
+    return createSuccessResponse(campaignResponses, corsHeaders);
   } catch (error) {
     console.error("[List Campaigns Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch campaigns",
       500,
+      corsHeaders,
     );
   }
 }
@@ -43,13 +60,19 @@ export async function handleListCampaigns(
 export async function handleGetCampaign(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare("SELECT * FROM campaigns WHERE id = ?").bind(
@@ -58,16 +81,33 @@ export async function handleGetCampaign(
     const campaign = await stmt.first();
 
     if (!campaign) {
-      return createErrorResponse("NOT_FOUND", "Campaign not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Campaign not found",
+        404,
+        corsHeaders,
+      );
     }
 
-    return createSuccessResponse(campaign);
+    const campaignResponse: CampaignResponse = {
+      id: campaign.id as number,
+      name: campaign.name as string,
+      description: campaign.description as string | null,
+      startDate: campaign.start_date as string,
+      endDate: campaign.end_date as string,
+      status: campaign.status as "upcoming" | "active" | "completed",
+      rules: campaign.rules ? JSON.parse(campaign.rules as string) : {},
+      createdAt: campaign.created_at as string,
+    };
+
+    return createSuccessResponse(campaignResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Campaign Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch campaign",
       500,
+      corsHeaders,
     );
   }
 }
@@ -76,6 +116,7 @@ export async function handleGetCampaign(
 export async function handleGetCampaignLeaderboard(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -84,29 +125,52 @@ export async function handleGetCampaignLeaderboard(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
 
     const stmt = env.DB.prepare(
       `
-      SELECT * FROM campaign_leaderboard 
-      WHERE campaign_id = ? 
-      ORDER BY total_points DESC 
+      SELECT 
+        cl.*,
+        u.username,
+        u.avatar,
+        ROW_NUMBER() OVER (ORDER BY cl.total_points DESC) as rank
+      FROM campaign_leaderboard cl
+      JOIN users u ON cl.user_id = u.id
+      WHERE cl.campaign_id = ? 
+      ORDER BY cl.total_points DESC 
       LIMIT ? OFFSET ?
     `,
     ).bind(id, limit, offset);
 
     const leaderboard = await stmt.all();
 
-    return createSuccessResponse(leaderboard.results);
+    const leaderboardResponses: LeaderboardEntryResponse[] =
+      leaderboard.results.map((entry) => ({
+        userId: entry.user_id as string,
+        username: entry.username as string,
+        avatar: entry.avatar as string | null,
+        totalPoints: entry.total_points as number,
+        predictionPoints: entry.prediction_points as number,
+        questPoints: entry.quest_points as number,
+        rank: entry.rank as number,
+      }));
+
+    return createSuccessResponse(leaderboardResponses, corsHeaders);
   } catch (error) {
     console.error("[Campaign Leaderboard Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch campaign leaderboard",
       500,
+      corsHeaders,
     );
   }
 }
@@ -117,14 +181,25 @@ export async function handleGetCampaignLeaderboard(
 export async function handleCreateCampaign(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true);
-    const campaign: Omit<Campaign, "id" | "created_at"> = await request.json();
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
+    const campaign: CreateCampaignRequest = await request.json();
 
     // Validate required fields
-    if (!campaign.name || !campaign.start_date || !campaign.end_date) {
-      return createErrorResponse("INVALID_PARAMS", "Missing required fields");
+    if (!campaign.name || !campaign.startDate || !campaign.endDate) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Missing required fields",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -135,21 +210,22 @@ export async function handleCreateCampaign(
     ).bind(
       campaign.name,
       campaign.description || null,
-      campaign.start_date,
-      campaign.end_date,
+      campaign.startDate,
+      campaign.endDate,
       campaign.status || "upcoming",
-      campaign.rules || "{}",
+      JSON.stringify(campaign.rules || {}),
     );
 
     const result = await stmt.run();
 
-    return createSuccessResponse({ id: result.meta.last_row_id });
+    return createSuccessResponse({ id: result.meta.last_row_id }, corsHeaders);
   } catch (error) {
     console.error("[Create Campaign Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to create campaign",
       500,
+      corsHeaders,
     );
   }
 }
@@ -158,14 +234,25 @@ export async function handleCreateCampaign(
 export async function handleUpdateCampaign(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true);
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
     const id = request.url.split("/").pop();
-    const updates: Partial<Campaign> = await request.json();
+    const updates: UpdateCampaignRequest = await request.json();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // Build dynamic update query
@@ -173,14 +260,24 @@ export async function handleUpdateCampaign(
     const values: any[] = [];
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (key !== "id" && key !== "created_at") {
-        updateFields.push(`${key} = ?`);
-        values.push(value);
+      if (key !== "id" && key !== "createdAt") {
+        // Convert camelCase to snake_case for database
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
+        updateFields.push(`${dbKey} = ?`);
+        values.push(key === "rules" ? JSON.stringify(value) : value);
       }
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(id); // Add id for WHERE clause
@@ -195,13 +292,14 @@ export async function handleUpdateCampaign(
 
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Update Campaign Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to update campaign",
       500,
+      corsHeaders,
     );
   }
 }
@@ -210,25 +308,37 @@ export async function handleUpdateCampaign(
 export async function handleDeleteCampaign(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
-    const authenticatedRequest = await requireAuth(request, env, true);
+    const authenticatedRequest = await requireAuth(
+      request,
+      env,
+      true,
+      corsHeaders,
+    );
     const id = request.url.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare("DELETE FROM campaigns WHERE id = ?").bind(id);
     await stmt.run();
 
-    return createSuccessResponse({ success: true });
+    return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Delete Campaign Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to delete campaign",
       500,
+      corsHeaders,
     );
   }
 }

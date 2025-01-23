@@ -1,8 +1,9 @@
 import {
-  Team,
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../types/api";
+  TeamResponse,
+  TeamFanResponse,
+  TeamFansPageResponse,
+} from "@renegade-fanclub/types";
+import { createSuccessResponse, createErrorResponse } from "../../types/api";
 import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
 
@@ -10,6 +11,7 @@ import { requireAuth } from "../../middleware/auth";
 export async function handleListTeams(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -46,10 +48,29 @@ export async function handleListTeams(
     const stmt = env.DB.prepare(query).bind(...params);
     const teams = await stmt.all();
 
-    return createSuccessResponse(teams.results);
+    const teamResponses: TeamResponse[] = teams.results.map((t) => ({
+      id: t.id as number,
+      sportId: t.sport_id as number,
+      name: t.name as string,
+      description: t.description as string | null,
+      logo: t.logo as string | null,
+      externalId: t.external_id as string | null,
+      apiMetadata: t.api_metadata ? JSON.parse(t.api_metadata as string) : {},
+      createdAt: t.created_at as string,
+      sportName: t.sport_name as string,
+      fanCount: t.fan_count as number,
+      socialAccounts: {},
+    }));
+
+    return createSuccessResponse(teamResponses, corsHeaders);
   } catch (error) {
     console.error("[List Teams Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch teams", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch teams",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -57,13 +78,19 @@ export async function handleListTeams(
 export async function handleGetTeam(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -84,7 +111,12 @@ export async function handleGetTeam(
     const team = await stmt.first();
 
     if (!team) {
-      return createErrorResponse("NOT_FOUND", "Team not found", 404);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Team not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Parse social accounts
@@ -94,18 +126,38 @@ export async function handleGetTeam(
             .split(",")
             .reduce((acc: Record<string, string>, curr: string) => {
               const [platform, username] = curr.split(":");
-              acc[platform] = username;
+              if (platform && username) {
+                acc[platform] = username;
+              }
               return acc;
             }, {})
         : {};
 
-    return createSuccessResponse({
-      ...team,
-      social_accounts: socialAccounts,
-    });
+    const teamResponse: TeamResponse = {
+      id: team.id as number,
+      sportId: team.sport_id as number,
+      name: team.name as string,
+      description: team.description as string | null,
+      logo: team.logo as string | null,
+      externalId: team.external_id as string | null,
+      apiMetadata: team.api_metadata
+        ? JSON.parse(team.api_metadata as string)
+        : {},
+      createdAt: team.created_at as string,
+      sportName: team.sport_name as string,
+      fanCount: team.fan_count as number,
+      socialAccounts,
+    };
+
+    return createSuccessResponse(teamResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Team Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch team", 500);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch team",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -113,6 +165,7 @@ export async function handleGetTeam(
 export async function handleGetTeamFans(
   request: Request,
   env: Env,
+  corsHeaders: Record<string, string>,
 ): Promise<Response> {
   try {
     const url = new URL(request.url);
@@ -121,7 +174,12 @@ export async function handleGetTeamFans(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required");
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -161,19 +219,30 @@ export async function handleGetTeamFans(
 
     const { total } = (await countStmt.first()) as { total: number };
 
-    return createSuccessResponse({
-      fans: fans.results,
+    const fanResponses: TeamFanResponse[] = fans.results.map((f) => ({
+      id: f.id as string,
+      username: f.username as string,
+      avatar: f.avatar as string | null,
+      fanSince: f.fan_since as string,
+      predictionsCount: f.predictions_count as number,
+    }));
+
+    const response: TeamFansPageResponse = {
+      fans: fanResponses,
       total,
       page,
       limit,
       pages: Math.ceil(total / limit),
-    });
+    };
+
+    return createSuccessResponse(response, corsHeaders);
   } catch (error) {
     console.error("[Team Fans Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to fetch team fans",
       500,
+      corsHeaders,
     );
   }
 }
