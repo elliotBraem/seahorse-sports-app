@@ -21,7 +21,7 @@ type PreferenceCategory = {
   [K in CategoryKey]?: PreferenceItem[];
 };
 
-interface PreferncesProps {
+interface PrrferencesProps {
   preferences: Array<{ [K in CategoryKey]?: PreferenceItem[] }>;
 }
 
@@ -30,7 +30,7 @@ function isCategoryKey(key: string): key is CategoryKey {
   return ["sports", "teams", "leagues", "athletes"].includes(key);
 }
 
-export default function PreferencesComp({ preferences }: PreferncesProps) {
+export default function Preferences({ preferences }: PrrferencesProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Record<string, string[]>>(

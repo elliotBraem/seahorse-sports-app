@@ -16,12 +16,12 @@ interface Team {
   color: string;
 }
 
-interface Poll_PageProps {
+interface PollProps {
   gameId: number;
   initialTeams: Team[];
 }
 
-export default function PollsPageComp({ gameId, initialTeams }: Poll_PageProps) {
+export default function Poll({ gameId, initialTeams }: PollProps) {
   const [teams, setTeams] = useState(initialTeams);
   const [vote, setVote] = useState("");
   const [hasVoted, setHasVoted] = useState(false);

@@ -1,37 +1,47 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import Link from "next/link";
+import { useAuth } from "@/lib/hooks/use-auth";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useAuthStore } from "@/lib/store";
 
 export default function HomePage() {
+  const { login } = useAuth();
+  const searchParams = useSearchParams();
+  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
+
+  // Handle email from query params
+  useEffect(() => {
+    const email = searchParams.get("email");
+    if (email && user) {
+      setUser({ ...user, email });
+    }
+  }, [searchParams, user, setUser]);
+
   return (
     <Container>
-      <div className="flex min-h-dvh flex-col justify-center overflow-hidden items-center px-4 text-center">
-        <Card className=" max-w-xl">
-          <CardContent className="space-y-10 pt-6">
-            {/* Hero Section */}
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl text-white font-bold tracking-tight">
-                Welcome to ------
-              </h1>
-              <p className="text-muted">
-                Your ultimate platform for engaging with your favorite artists
-              </p>
-            </div>
-
-            {/* CTA Section */}
-            <div>
-              <Link href="/login">
-                <Button className="rounded-full" size="lg">
-                  Get Started
-                </Button>
-              </Link>
-              <p className="text-center text-sm text-muted mt-4">
-                Join thousands of fans already on the platform
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex min-h-dvh flex-col justify-center items-center px-4 text-center space-y-16">
+        <div className="w-64 h-64 relative">
+          <Image
+            src="/images/rngfanclub-logo-white.png"
+            alt="Renegade Fan Club"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+        <div className="space-y-6">
+          <Button onClick={login} className="rounded-full" size="lg">
+            Get in the game
+          </Button>
+          <p className="text-center text-sm text-muted-foreground">
+            Connect with Apple or Google to start
+          </p>
+        </div>
       </div>
     </Container>
   );

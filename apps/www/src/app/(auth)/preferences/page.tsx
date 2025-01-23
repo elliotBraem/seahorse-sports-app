@@ -1,6 +1,6 @@
 import { listSports } from "@/lib/api/sports";
 import { listTeams } from "@/lib/api/teams";
-import PreferencesForm from "./components/preferences-form";
+import PreferencesForm from "./_components/preferences-form";
 
 export default async function PreferencesPage() {
   const [sports, teams] = await Promise.all([
