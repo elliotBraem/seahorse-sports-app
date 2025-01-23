@@ -61,7 +61,12 @@ export async function handleListGames(
     return createSuccessResponse(gameResponses, corsHeaders);
   } catch (error) {
     console.error("[List Games Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch games", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch games",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -76,7 +81,12 @@ export async function handleGetGame(
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Game ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -96,7 +106,12 @@ export async function handleGetGame(
     const game = await stmt.first();
 
     if (!game) {
-      return createErrorResponse("NOT_FOUND", "Game not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Game not found",
+        404,
+        corsHeaders,
+      );
     }
 
     const gameResponse: GameResponse = {
@@ -122,7 +137,12 @@ export async function handleGetGame(
     return createSuccessResponse(gameResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Game Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch game", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch game",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -184,7 +204,7 @@ export async function handleGetCurrentGames(
       "INTERNAL_ERROR",
       "Failed to fetch current games",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -210,7 +230,12 @@ export async function handleCreateGame(
       !game.startTime ||
       !game.pointsValue
     ) {
-      return createErrorResponse("INVALID_PARAMS", "Missing required fields", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Missing required fields",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -241,7 +266,12 @@ export async function handleCreateGame(
     return createSuccessResponse({ id: result.meta.last_row_id }, corsHeaders);
   } catch (error) {
     console.error("[Create Game Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to create game", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to create game",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -257,7 +287,12 @@ export async function handleUpdateGame(
     const updates: UpdateGameRequest = await request.json();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Game ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // Build dynamic update query
@@ -277,7 +312,12 @@ export async function handleUpdateGame(
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(id); // Add id for WHERE clause
@@ -315,7 +355,12 @@ export async function handleUpdateGame(
     return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Update Game Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to update game", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to update game",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -330,7 +375,12 @@ export async function handleDeleteGame(
     const id = request.url.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Game ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     // First delete related predictions
@@ -344,6 +394,11 @@ export async function handleDeleteGame(
     return createSuccessResponse({ success: true }, corsHeaders);
   } catch (error) {
     console.error("[Delete Game Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to delete game", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to delete game",
+      500,
+      corsHeaders,
+    );
   }
 }

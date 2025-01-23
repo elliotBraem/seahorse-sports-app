@@ -47,6 +47,6 @@ export async function getTeamFans(
     page: page.toString(),
     limit: limit.toString(),
   });
-  
+
   return apiRequest(`/teams/${teamId}/fans?${params}`, { options });
 }

@@ -14,7 +14,10 @@ export async function getAllTimeLeaderboard(
     limit: limit.toString(),
   });
 
-  return apiRequest(`/leaderboard/all-time?${params}`, { options, requiresAuth: false });
+  return apiRequest(`/leaderboard/all-time?${params}`, {
+    options,
+    requiresAuth: false,
+  });
 }
 
 export async function getCampaignLeaderboard(
@@ -28,5 +31,8 @@ export async function getCampaignLeaderboard(
     limit: limit.toString(),
   });
 
-  return apiRequest(`/leaderboard/${campaignId}?${params}`, { options, requiresAuth: false });
+  return apiRequest(`/leaderboard/${campaignId}?${params}`, {
+    options,
+    requiresAuth: false,
+  });
 }

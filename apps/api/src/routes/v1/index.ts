@@ -61,7 +61,11 @@ export async function handleV1Routes(
     return await handleGetCampaign(request, env, corsHeaders);
   }
   if (path.match(/^\/campaigns\/\d+\/leaderboard$/) && method === "GET") {
-    return await handleGetCampaignLeaderboardDetailed(request, env, corsHeaders);
+    return await handleGetCampaignLeaderboardDetailed(
+      request,
+      env,
+      corsHeaders,
+    );
   }
 
   // Games

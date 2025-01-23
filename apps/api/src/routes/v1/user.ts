@@ -41,7 +41,12 @@ export async function handleGetUserProfile(
     const profile = await stmt.first();
 
     if (!profile) {
-      return createErrorResponse("NOT_FOUND", "User profile not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "User profile not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Transform database result to match ProfileResponse type
@@ -63,7 +68,7 @@ export async function handleGetUserProfile(
       "INTERNAL_ERROR",
       "Failed to fetch user profile",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -91,7 +96,12 @@ export async function handleUpdateUserProfile(
     });
 
     if (updateFields.length === 0) {
-      return createErrorResponse("INVALID_PARAMS", "No valid fields to update", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
     }
 
     values.push(userId); // Add id for WHERE clause
@@ -113,7 +123,7 @@ export async function handleUpdateUserProfile(
       "INTERNAL_ERROR",
       "Failed to update user profile",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -130,7 +140,12 @@ export async function handleAddFavoriteTeam(
     const { teamId } = (await request.json()) as AddFavoriteTeamRequest;
 
     if (!teamId) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -149,7 +164,7 @@ export async function handleAddFavoriteTeam(
       "INTERNAL_ERROR",
       "Failed to add favorite team",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -166,7 +181,12 @@ export async function handleRemoveFavoriteTeam(
     const teamId = request.url.split("/").pop();
 
     if (!teamId) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -185,7 +205,7 @@ export async function handleRemoveFavoriteTeam(
       "INTERNAL_ERROR",
       "Failed to remove favorite team",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -207,7 +227,7 @@ export async function handleCreatePrediction(
         "INVALID_PARAMS",
         "Game ID and predicted winner ID are required",
         400,
-        corsHeaders
+        corsHeaders,
       );
     }
 
@@ -223,7 +243,12 @@ export async function handleCreatePrediction(
     const game = await gameStmt.first();
 
     if (!game) {
-      return createErrorResponse("NOT_FOUND", "Game not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Game not found",
+        404,
+        corsHeaders,
+      );
     }
 
     if (game.status !== "upcoming") {
@@ -231,12 +256,17 @@ export async function handleCreatePrediction(
         "INVALID_REQUEST",
         "Cannot predict on non-upcoming games",
         400,
-        corsHeaders
+        corsHeaders,
       );
     }
 
     if (new Date(game.start_time as string) <= new Date()) {
-      return createErrorResponse("INVALID_REQUEST", "Game has already started", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_REQUEST",
+        "Game has already started",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -255,7 +285,7 @@ export async function handleCreatePrediction(
       "INTERNAL_ERROR",
       "Failed to create prediction",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -322,7 +352,7 @@ export async function handleGetUserPredictions(
       "INTERNAL_ERROR",
       "Failed to fetch predictions",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -339,7 +369,12 @@ export async function handleGetGamePrediction(
     const gameId = request.url.split("/").pop();
 
     if (!gameId) {
-      return createErrorResponse("INVALID_PARAMS", "Game ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -364,7 +399,12 @@ export async function handleGetGamePrediction(
     const prediction = await stmt.first();
 
     if (!prediction) {
-      return createErrorResponse("NOT_FOUND", "Prediction not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Prediction not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Transform database result to match PredictionResponse type
@@ -389,7 +429,7 @@ export async function handleGetGamePrediction(
       "INTERNAL_ERROR",
       "Failed to fetch game prediction",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -411,7 +451,7 @@ export async function handleAddSocialAccount(
         "INVALID_PARAMS",
         "Platform and platform user ID are required",
         400,
-        corsHeaders
+        corsHeaders,
       );
     }
 
@@ -431,7 +471,7 @@ export async function handleAddSocialAccount(
       "INTERNAL_ERROR",
       "Failed to add social account",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -448,7 +488,12 @@ export async function handleRemoveSocialAccount(
     const platform = request.url.split("/").pop();
 
     if (!platform) {
-      return createErrorResponse("INVALID_PARAMS", "Platform is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Platform is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -467,7 +512,7 @@ export async function handleRemoveSocialAccount(
       "INTERNAL_ERROR",
       "Failed to remove social account",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -510,7 +555,7 @@ export async function handleGetSocialAccounts(
       "INTERNAL_ERROR",
       "Failed to fetch social accounts",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }

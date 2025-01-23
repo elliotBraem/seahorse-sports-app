@@ -9,7 +9,9 @@ import {
 } from "@renegade-fanclub/types";
 import { type ApiOptions, apiRequest } from "./types";
 
-export async function getUserProfile(options?: ApiOptions): Promise<ProfileResponse> {
+export async function getUserProfile(
+  options?: ApiOptions,
+): Promise<ProfileResponse> {
   return apiRequest("/user/profile", { options });
 }
 

@@ -65,7 +65,12 @@ export async function handleListTeams(
     return createSuccessResponse(teamResponses, corsHeaders);
   } catch (error) {
     console.error("[List Teams Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch teams", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch teams",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -80,7 +85,12 @@ export async function handleGetTeam(
     const id = url.pathname.split("/").pop();
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const stmt = env.DB.prepare(
@@ -101,7 +111,12 @@ export async function handleGetTeam(
     const team = await stmt.first();
 
     if (!team) {
-      return createErrorResponse("NOT_FOUND", "Team not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Team not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Parse social accounts
@@ -137,7 +152,12 @@ export async function handleGetTeam(
     return createSuccessResponse(teamResponse, corsHeaders);
   } catch (error) {
     console.error("[Get Team Error]", error);
-    return createErrorResponse("INTERNAL_ERROR", "Failed to fetch team", 500, corsHeaders);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch team",
+      500,
+      corsHeaders,
+    );
   }
 }
 
@@ -154,7 +174,12 @@ export async function handleGetTeamFans(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!id) {
-      return createErrorResponse("INVALID_PARAMS", "Team ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Team ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -217,7 +242,7 @@ export async function handleGetTeamFans(
       "INTERNAL_ERROR",
       "Failed to fetch team fans",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }

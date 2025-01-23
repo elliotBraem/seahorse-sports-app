@@ -26,10 +26,10 @@ type RequestConfig = {
 
 export async function apiRequest<T>(
   endpoint: string,
-  { method = "GET", body, requiresAuth = true, options }: RequestConfig = {}
+  { method = "GET", body, requiresAuth = true, options }: RequestConfig = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
-  
+
   // Add auth header if required and accountId exists
   if (requiresAuth) {
     const accountId = useAuthStore.getState().accountId;
@@ -51,7 +51,7 @@ export async function apiRequest<T>(
       body: body ? JSON.stringify(body) : undefined,
       signal: options?.signal,
     });
-    
+
     return handleApiResponse<T>(response);
   } catch (error) {
     throw error instanceof ApiError

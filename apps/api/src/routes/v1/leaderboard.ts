@@ -66,7 +66,7 @@ export async function handleGetAllTimeLeaderboard(
       "INTERNAL_ERROR",
       "Failed to fetch all-time leaderboard",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }
@@ -84,7 +84,12 @@ export async function handleGetCampaignLeaderboard(
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
     if (!campaignId) {
-      return createErrorResponse("INVALID_PARAMS", "Campaign ID is required", 400, corsHeaders);
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Campaign ID is required",
+        400,
+        corsHeaders,
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -101,7 +106,12 @@ export async function handleGetCampaignLeaderboard(
     const campaign = await campaignStmt.first();
 
     if (!campaign) {
-      return createErrorResponse("NOT_FOUND", "Campaign not found", 404, corsHeaders);
+      return createErrorResponse(
+        "NOT_FOUND",
+        "Campaign not found",
+        404,
+        corsHeaders,
+      );
     }
 
     // Get leaderboard
@@ -159,7 +169,7 @@ export async function handleGetCampaignLeaderboard(
       "INTERNAL_ERROR",
       "Failed to fetch campaign leaderboard",
       500,
-      corsHeaders
+      corsHeaders,
     );
   }
 }

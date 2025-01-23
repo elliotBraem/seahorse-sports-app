@@ -16,14 +16,20 @@ export async function getCampaign(
   campaignId: number,
   options?: ApiOptions,
 ): Promise<CampaignResponse> {
-  return apiRequest(`/campaigns/${campaignId}`, { options, requiresAuth: false });
+  return apiRequest(`/campaigns/${campaignId}`, {
+    options,
+    requiresAuth: false,
+  });
 }
 
 export async function getCampaignLeaderboardDetailed(
   campaignId: number,
   options?: ApiOptions,
 ): Promise<CampaignLeaderboardResponse> {
-  return apiRequest(`/campaigns/${campaignId}/leaderboard`, { options, requiresAuth: false });
+  return apiRequest(`/campaigns/${campaignId}/leaderboard`, {
+    options,
+    requiresAuth: false,
+  });
 }
 
 // Admin endpoints
