@@ -11,11 +11,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.rngfan.club"),
   title: {
     default: "RNG Fan Club | Sports Prediction Platform",
     template: "%s | RNG Fan Club",
   },
+  metadataBase: new URL("https://app.rngfan.club"),
   description:
     "Join RNG Fan Club to predict sports outcomes, compete with others, and win rewards on the NEAR blockchain.",
   keywords: [
