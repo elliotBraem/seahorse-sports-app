@@ -4,30 +4,34 @@ import {
 } from "@renegade-fanclub/types";
 import {
   API_BASE_URL,
-  type ApiResponse,
   type ApiOptions,
   handleApiResponse,
+  ApiError,
 } from "./types";
 
 export async function getAllTimeLeaderboard(
   page: number = 1,
   limit: number = 20,
   options?: ApiOptions,
-): Promise<ApiResponse<AllTimeLeaderboardResponse>> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
+): Promise<AllTimeLeaderboardResponse> {
+  try {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
 
-  const response = await fetch(
-    `${API_BASE_URL}/leaderboard/all-time?${params}`,
-    {
-      method: "GET",
-      credentials: "include",
-      signal: options?.signal,
-    },
-  );
-  return handleApiResponse<AllTimeLeaderboardResponse>(response);
+    const response = await fetch(
+      `${API_BASE_URL}/leaderboard/all-time?${params}`,
+      {
+        method: "GET",
+        credentials: "include",
+        signal: options?.signal,
+      },
+    );
+    return handleApiResponse<AllTimeLeaderboardResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch leaderboard");
+  }
 }
 
 export async function getCampaignLeaderboard(
@@ -35,19 +39,23 @@ export async function getCampaignLeaderboard(
   page: number = 1,
   limit: number = 20,
   options?: ApiOptions,
-): Promise<ApiResponse<CampaignLeaderboardResponse>> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
+): Promise<CampaignLeaderboardResponse> {
+  try {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
 
-  const response = await fetch(
-    `${API_BASE_URL}/leaderboard/${campaignId}?${params}`,
-    {
-      method: "GET",
-      credentials: "include",
-      signal: options?.signal,
-    },
-  );
-  return handleApiResponse<CampaignLeaderboardResponse>(response);
+    const response = await fetch(
+      `${API_BASE_URL}/leaderboard/${campaignId}?${params}`,
+      {
+        method: "GET",
+        credentials: "include",
+        signal: options?.signal,
+      },
+    );
+    return handleApiResponse<CampaignLeaderboardResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch campaign leaderboard");
+  }
 }

@@ -1,42 +1,35 @@
-import { User } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Container } from "@/components/ui/container";
 import { Card } from "@/components/ui/card";
+import { getAllTimeLeaderboard } from "@/lib/api/leaderboard";
+import { LeaderboardRankingResponse } from "@renegade-fanclub/types";
 
-const USERS: User[] = Array.from({ length: 10 }, (_, i) => ({
-  id: `${i + 1}`,
-  email: `user${i + 1}@example.com`,
-  name: `User ${i + 1}`,
-  avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`,
-  points: Math.floor(Math.random() * 1000),
-  completedQuests: [],
-}));
-
-USERS.sort((a, b) => b.points - a.points).forEach((user, i) => {
-  user.rank = i + 1;
-});
-
-export default function LeaderboardPage() {
+export default async function LeaderboardPage() {
+  const leaderboard = await getAllTimeLeaderboard(1, 10);
+  
   return (
     <Container
       title="Leaderboard"
       description="Top fans competing for Super Bowl tickets"
     >
       <div className="grid grid-cols-1 gap-4">
-        {USERS.map((user) => (
+        {leaderboard.rankings.map((ranking: LeaderboardRankingResponse) => (
           <Card
-            key={user.id}
+            key={ranking.userId}
             className="flex items-center space-x-4 rounded-lg shadow-sm"
           >
-            <span className="min-w-[2rem] text-2xl font-bold">{user.rank}</span>
+            <span className="min-w-[2rem] text-2xl font-bold">{ranking.rank}</span>
             <Avatar>
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback>{user.name[0]}</AvatarFallback>
+              <AvatarImage src={ranking.avatar ?? undefined} alt={ranking.username} />
+              <AvatarFallback>{ranking.username[0]}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <p className="font-medium">{user.name}</p>
+              <p className="font-medium">{ranking.username}</p>
               <p className="text-sm text-muted-foreground">
-                {user.points} points
+                {ranking.totalPoints} points
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Predictions: {ranking.predictionPoints} · Quests: {ranking.questPoints}
               </p>
             </div>
           </Card>

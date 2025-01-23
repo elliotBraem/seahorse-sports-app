@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
+import { createPrediction } from "@/lib/api/games";
 import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -15,32 +16,49 @@ interface Team {
   color: string;
 }
 
-interface Poll_PagePros {
+interface Poll_PageProps {
+  gameId: number;
   initialTeams: Team[];
 }
 
-export default function PollsPageComp({ initialTeams }: Poll_PagePros) {
+export default function PollsPageComp({ gameId, initialTeams }: Poll_PageProps) {
   const [teams, setTeams] = useState(initialTeams);
   const [vote, setVote] = useState("");
   const [hasVoted, setHasVoted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleVote = (teamTitle: string) => {
-    setVote(teamTitle);
-    setTeams((prevTeams) =>
-      prevTeams.map((team) =>
-        team.title === teamTitle ? { ...team, points: team.points + 1 } : team,
-      ),
-    );
-    setHasVoted(true);
-    toast.success(`${teamTitle} voted successfully!`);
+  const handleVote = async (teamId: number, teamTitle: string) => {
+    if (loading || hasVoted) return;
+
+    try {
+      setLoading(true);
+      await createPrediction(gameId, {
+        gameId,
+        predictedWinnerId: teamId,
+      });
+
+      setVote(teamTitle);
+      setTeams((prevTeams) =>
+        prevTeams.map((team) =>
+          team.id === teamId ? { ...team, points: team.points + 1 } : team,
+        ),
+      );
+      setHasVoted(true);
+      toast.success(`${teamTitle} voted successfully!`);
+    } catch (error) {
+      toast.error("Failed to submit prediction");
+      console.error("Error submitting prediction:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const totalPoints = teams.reduce((sum, team) => sum + team.points, 0);
-  const teamAWidth = (teams[0].points / totalPoints) * 100;
-  const teamBWidth = (teams[1].points / totalPoints) * 100;
+  const teamAWidth = totalPoints === 0 ? 50 : (teams[0].points / totalPoints) * 100;
+  const teamBWidth = totalPoints === 0 ? 50 : (teams[1].points / totalPoints) * 100;
 
   return (
-    <Container title="RNG" description="Win SuperBowl LIX Tickets">
+    <Container title="Game Prediction" description="Win Super Bowl LIX Tickets">
       <div className="space-y-4">
         {/* Dynamic Bar */}
         <div className="relative bg-gray-200 rounded-lg h-12 transition-all overflow-hidden flex items-center">
@@ -51,7 +69,7 @@ export default function PollsPageComp({ initialTeams }: Poll_PagePros) {
               backgroundColor: `${teams[0].color}`,
             }}
           >
-            <div className="flex items-center justify-start  h-full pl-4 text-white text-sm font-bold">
+            <div className="flex items-center justify-start h-full pl-4 text-white text-sm font-bold">
               <img
                 src={teams[0].logo}
                 alt={teams[0].title}
@@ -97,10 +115,10 @@ export default function PollsPageComp({ initialTeams }: Poll_PagePros) {
               <div
                 key={team.id}
                 className={`relative min-w-40 md:min-w-56 transition-all p-4 border rounded-xl border-mute pb-6 cursor-pointer hover:bg-white/5 ${
-                  hasVoted ? "pointer-events-none" : ""
+                  hasVoted || loading ? "pointer-events-none opacity-50" : ""
                 }`}
                 style={vote === team.title ? { borderColor: team.color } : {}}
-                onClick={() => handleVote(team.title)}
+                onClick={() => handleVote(team.id, team.title)}
               >
                 <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
                   <img
@@ -120,7 +138,7 @@ export default function PollsPageComp({ initialTeams }: Poll_PagePros) {
                 </div>
                 <div className="flex flex-col items-center space-y-4 justify-between">
                   <span className="font-bold text-xl mt-10">{team.title}</span>
-                  <p className="font-bold text-xl">-{team.points}</p>
+                  <p className="font-bold text-xl">{team.points} votes</p>
                 </div>
               </div>
             ))}

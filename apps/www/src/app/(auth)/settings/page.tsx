@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { updateUserProfile } from "@/lib/api/user";
 import { useAuthStore } from "@/lib/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Loader2, SquarePen } from "lucide-react";
@@ -47,12 +48,13 @@ export default function SettingsPage() {
 
     try {
       setIsLoading(true);
-      // Save user data to local storage
-      // Update user data in state
-      toast.success("Data updated successfully!");
+      await updateUserProfile({
+        email: data.email,
+      });
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Failed to update:", error);
-      toast.error("Failed to update data");
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile");
     } finally {
       setIsLoading(false);
     }

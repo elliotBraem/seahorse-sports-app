@@ -1,35 +1,80 @@
 import {
   type TeamResponse,
   type TeamFansPageResponse,
+  type AddFavoriteTeamRequest,
 } from "@renegade-fanclub/types";
 import {
   API_BASE_URL,
-  type ApiResponse,
   type ApiOptions,
   handleApiResponse,
+  ApiError,
 } from "./types";
 
 export async function listTeams(
   options?: ApiOptions,
-): Promise<ApiResponse<TeamResponse[]>> {
-  const response = await fetch(`${API_BASE_URL}/teams`, {
-    method: "GET",
-    credentials: "include",
-    signal: options?.signal,
-  });
-  return handleApiResponse<TeamResponse[]>(response);
+): Promise<TeamResponse[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teams`, {
+      method: "GET",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<TeamResponse[]>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch teams");
+  }
+}
+
+export async function addFavoriteTeam(
+  data: AddFavoriteTeamRequest,
+  options?: ApiOptions,
+): Promise<TeamResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teams/favorites`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      signal: options?.signal,
+    });
+    return handleApiResponse<TeamResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to add favorite team");
+  }
+}
+
+export async function removeFavoriteTeam(
+  teamId: number,
+  options?: ApiOptions,
+): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teams/favorites/${teamId}`, {
+      method: "DELETE",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<void>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to remove favorite team");
+  }
 }
 
 export async function getTeam(
   teamId: number,
   options?: ApiOptions,
-): Promise<ApiResponse<TeamResponse>> {
-  const response = await fetch(`${API_BASE_URL}/teams/${teamId}`, {
-    method: "GET",
-    credentials: "include",
-    signal: options?.signal,
-  });
-  return handleApiResponse<TeamResponse>(response);
+): Promise<TeamResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teams/${teamId}`, {
+      method: "GET",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<TeamResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch team");
+  }
 }
 
 export async function getTeamFans(
@@ -37,19 +82,23 @@ export async function getTeamFans(
   page: number = 1,
   limit: number = 20,
   options?: ApiOptions,
-): Promise<ApiResponse<TeamFansPageResponse>> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
+): Promise<TeamFansPageResponse> {
+  try {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
 
-  const response = await fetch(
-    `${API_BASE_URL}/teams/${teamId}/fans?${params}`,
-    {
-      method: "GET",
-      credentials: "include",
-      signal: options?.signal,
-    },
-  );
-  return handleApiResponse<TeamFansPageResponse>(response);
+    const response = await fetch(
+      `${API_BASE_URL}/teams/${teamId}/fans?${params}`,
+      {
+        method: "GET",
+        credentials: "include",
+        signal: options?.signal,
+      },
+    );
+    return handleApiResponse<TeamFansPageResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch team fans");
+  }
 }

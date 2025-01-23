@@ -7,48 +7,60 @@ import {
 } from "@renegade-fanclub/types";
 import {
   API_BASE_URL,
-  type ApiResponse,
   type ApiOptions,
   handleApiResponse,
+  ApiError,
 } from "./types";
 
 export async function listQuests(
   options?: ApiOptions,
-): Promise<ApiResponse<QuestResponse[]>> {
-  const response = await fetch(`${API_BASE_URL}/quests`, {
-    method: "GET",
-    credentials: "include",
-    signal: options?.signal,
-  });
-  return handleApiResponse<QuestResponse[]>(response);
+): Promise<QuestResponse[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quests`, {
+      method: "GET",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<QuestResponse[]>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch quests");
+  }
 }
 
 export async function getUserQuests(
   options?: ApiOptions,
-): Promise<ApiResponse<QuestCompletionResponse[]>> {
-  const response = await fetch(`${API_BASE_URL}/quests/mine`, {
-    method: "GET",
-    credentials: "include",
-    signal: options?.signal,
-  });
-  return handleApiResponse<QuestCompletionResponse[]>(response);
+): Promise<QuestCompletionResponse[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quests/mine`, {
+      method: "GET",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<QuestCompletionResponse[]>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to fetch user quests");
+  }
 }
 
 export async function completeQuest(
   questId: number,
   data: CompleteQuestRequest,
   options?: ApiOptions,
-): Promise<ApiResponse<QuestCompletionResponse>> {
-  const response = await fetch(`${API_BASE_URL}/quests/${questId}/complete`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    signal: options?.signal,
-  });
-  return handleApiResponse<QuestCompletionResponse>(response);
+): Promise<QuestCompletionResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quests/${questId}/complete`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      signal: options?.signal,
+    });
+    return handleApiResponse<QuestCompletionResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to complete quest");
+  }
 }
 
 // Admin endpoints
@@ -56,44 +68,56 @@ export async function completeQuest(
 export async function createQuest(
   data: CreateQuestRequest,
   options?: ApiOptions,
-): Promise<ApiResponse<QuestResponse>> {
-  const response = await fetch(`${API_BASE_URL}/admin/quests`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    signal: options?.signal,
-  });
-  return handleApiResponse<QuestResponse>(response);
+): Promise<QuestResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/quests`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      signal: options?.signal,
+    });
+    return handleApiResponse<QuestResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to create quest");
+  }
 }
 
 export async function updateQuest(
   questId: number,
   data: UpdateQuestRequest,
   options?: ApiOptions,
-): Promise<ApiResponse<QuestResponse>> {
-  const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
-    method: "PATCH",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    signal: options?.signal,
-  });
-  return handleApiResponse<QuestResponse>(response);
+): Promise<QuestResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      signal: options?.signal,
+    });
+    return handleApiResponse<QuestResponse>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to update quest");
+  }
 }
 
 export async function deleteQuest(
   questId: number,
   options?: ApiOptions,
-): Promise<ApiResponse<void>> {
-  const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
-    method: "DELETE",
-    credentials: "include",
-    signal: options?.signal,
-  });
-  return handleApiResponse<void>(response);
+): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/quests/${questId}`, {
+      method: "DELETE",
+      credentials: "include",
+      signal: options?.signal,
+    });
+    return handleApiResponse<void>(response);
+  } catch (error) {
+    throw error instanceof ApiError ? error : new ApiError("UNKNOWN_ERROR", "Failed to delete quest");
+  }
 }
