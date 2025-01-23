@@ -9,7 +9,7 @@ export default function HomePage() {
       <div className="flex min-h-dvh flex-col justify-center items-center px-4 text-center space-y-16">
         <div className="w-64 h-64 relative">
           <Image
-            src="/images/rngfanclub-logo-white.png"
+            src="images/rngfanclub-logo-white.png"
             alt="Renegade Fan Club"
             fill
             className="object-contain"
