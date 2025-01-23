@@ -26,159 +26,105 @@
 
 ```mermaid
 erDiagram
+    users ||--o{ user_favorite_teams : has
+    users ||--o{ user_favorite_sports : has
+    users ||--o{ user_social_accounts : has
+    users ||--o{ user_predictions : makes
+    users ||--o{ user_quest_completions : completes
+    users ||--o{ user_points : earns
+
+    campaigns ||--o{ games : contains
+    campaigns ||--o{ quests : offers
+    campaigns ||--o{ user_points : tracks
+
+    sports ||--o{ teams : has
+    sports ||--o{ games : includes
+    sports ||--o{ user_favorite_sports : belongs_to
+
+    teams ||--o{ user_favorite_teams : belongs_to
+    teams ||--o{ team_social_accounts : has
+    teams ||--o{ games : plays_home
+    teams ||--o{ games : plays_away
+    teams ||--o{ user_predictions : predicted_winner
+
+    games ||--o{ user_predictions : receives
+    quests ||--o{ user_quest_completions : completed_by
+
     users {
-        VARCHAR id PK
-        VARCHAR username UNIQUE
-        VARCHAR email UNIQUE
-        TEXT avatar
-        TEXT profile_data
-        DATETIME created_at
-        DATETIME updated_at
-    }
-
-    user_favorite_teams {
-        INT id PK
-        VARCHAR user_id FK
-        INT team_id FK
-        DATETIME created_at
-    }
-
-    user_favorite_sports {
-        INT id PK
-        VARCHAR user_id FK
-        INT sport_id FK
-        DATETIME created_at
-    }
-
-    user_social_accounts {
-        INT id PK
-        VARCHAR user_id FK
-        VARCHAR platform
-        VARCHAR platform_user_id UNIQUE
-        VARCHAR username
-        INT verified
-        DATETIME created_at
+        varchar id PK
+        varchar username
+        varchar email
+        text avatar
+        text profile_data
+        datetime created_at
     }
 
     campaigns {
-        INT id PK
-        VARCHAR name
-        TEXT description
-        DATETIME start_date
-        DATETIME end_date
-        VARCHAR status
-        TEXT rules
-        DATETIME created_at
+        integer id PK
+        varchar name
+        text description
+        datetime start_date
+        datetime end_date
+        varchar status
+        text rules
     }
 
     sports {
-        INT id PK
-        VARCHAR name UNIQUE
-        TEXT description
-        VARCHAR api_identifier
-        TEXT api_metadata
-        DATETIME created_at
+        integer id PK
+        varchar name
+        text description
+        varchar api_identifier
+        text api_metadata
     }
 
     teams {
-        INT id PK
-        INT sport_id FK
-        VARCHAR name UNIQUE
-        VARCHAR abbreviation
-        VARCHAR external_id
-        TEXT api_metadata
-        DATETIME created_at
-    }
-
-    team_social_accounts {
-        INT id PK
-        INT team_id FK
-        VARCHAR platform
-        VARCHAR platform_user_id UNIQUE
-        VARCHAR username
-        INT verified
-        DATETIME created_at
+        integer id PK
+        integer sport_id FK
+        varchar name
+        varchar abbreviation
+        varchar external_id
+        text api_metadata
     }
 
     games {
-        INT id PK
-        INT campaign_id FK
-        INT sport_id FK
-        INT home_team_id FK
-        INT away_team_id FK
-        DATETIME start_time
-        DATETIME end_time
-        INT winner_team_id FK
-        VARCHAR game_type
-        INT points_value
-        VARCHAR status
-        VARCHAR external_id
-        TEXT api_metadata
-        DATETIME created_at
+        integer id PK
+        integer campaign_id FK
+        integer sport_id FK
+        integer home_team_id FK
+        integer away_team_id FK
+        datetime start_time
+        integer winner_team_id FK
+        varchar game_type
+        integer points_value
     }
 
     user_predictions {
-        INT id PK
-        VARCHAR user_id FK
-        INT game_id FK
-        INT predicted_winner_id FK
-        INT points_earned
-        DATETIME created_at
+        integer id PK
+        varchar user_id FK
+        integer game_id FK
+        integer predicted_winner_id FK
+        integer points_earned
     }
 
     quests {
-        INT id PK
-        INT campaign_id FK
-        VARCHAR name
-        TEXT description
-        INT points_value
-        VARCHAR verification_type
-        TEXT verification_data
-        DATETIME start_date
-        DATETIME end_date
-        DATETIME created_at
-    }
-
-    user_quest_completions {
-        INT id PK
-        VARCHAR user_id FK
-        INT quest_id FK
-        INT points_earned
-        DATETIME completed_at
-        TEXT verification_proof
+        integer id PK
+        integer campaign_id FK
+        varchar name
+        text description
+        integer points_value
+        varchar verification_type
+        datetime start_date
+        datetime end_date
     }
 
     user_points {
-        INT id PK
-        VARCHAR user_id FK
-        INT campaign_id FK
-        INT total_points
-        INT prediction_points
-        INT quest_points
-        DATETIME last_updated
+        integer id PK
+        varchar user_id FK
+        integer campaign_id FK
+        integer total_points
+        integer prediction_points
+        integer quest_points
     }
-
-    users ||--o{ user_favorite_teams : "has"
-    users ||--o{ user_favorite_sports : "has"
-    users ||--o{ user_social_accounts : "has"
-    users ||--o{ user_predictions : "makes"
-    users ||--o{ user_quest_completions : "completes"
-    users ||--o{ user_points : "earns"
-
-    campaigns ||--o{ games : "has"
-    campaigns ||--o{ quests : "has"
-    campaigns ||--o{ user_points : "tracks"
-
-    sports ||--o{ teams : "includes"
-    sports ||--o{ games : "played in"
-
-    teams ||--o{ team_social_accounts : "has"
-    teams ||--o{ games : "participates"
-    teams ||--o{ user_favorite_teams : "fans"
-
-    quests ||--o{ user_quest_completions : "completed by"
-
-    games ||--o{ user_predictions : "predicted by"
 ```
 
 ## Getting Started
