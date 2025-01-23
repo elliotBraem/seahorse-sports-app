@@ -2,6 +2,31 @@ import { Container } from "@/components/ui/container";
 import Image from "next/image";
 import { Login } from "./_components/login";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | RNG Fan Club",
+  description: "Get in the game with your friends",
+  openGraph: {
+    title: "Home | RNG Fan Club",
+    description:
+      "Welcome to RNG Fan Club, your destination for amazing games and events",
+    images: [
+      {
+        url: "/images/rngfanclub-logo-white.png",
+        width: 1200,
+        height: 630,
+        alt: "RNG Fan Club Logo",
+      },
+    ],
+  },
+  twitter: {
+    title: "Home | RNG Fan Club",
+    description:
+      "Welcome to RNG Fan Club, your destination for amazing games and events",
+    images: ["/images/rngfanclub-logo-white.png"],
+  },
+};
 
 export default function HomePage() {
   return (

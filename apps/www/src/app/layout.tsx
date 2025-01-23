@@ -2,6 +2,64 @@ import NearProvider from "@/components/near-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "RNG Fan Club | Sports Prediction Platform",
+    template: "%s | RNG Fan Club",
+  },
+  description:
+    "Join RNG Fan Club to predict sports outcomes, compete with others, and win rewards on the NEAR blockchain.",
+  keywords: [
+    "sports prediction",
+    "blockchain",
+    "NEAR protocol",
+    "RNG Fan Club",
+    "crypto gaming",
+  ],
+  authors: [{ name: "RNG Fan Club" }],
+  creator: "RNG Fan Club",
+  publisher: "RNG Fan Club",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://app.rngfan.club",
+    siteName: "RNG Fan Club",
+    title: "RNG Fan Club | Sports Prediction Platform",
+    description:
+      "Join RNG Fan Club to predict sports outcomes, compete with others, and win rewards on the NEAR blockchain.",
+    images: [
+      {
+        url: "/images/rngfanclub-logo-white.png",
+        width: 1200,
+        height: 630,
+        alt: "RNG Fan Club Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RNG Fan Club | Sports Prediction Platform",
+    description:
+      "Join RNG Fan Club to predict sports outcomes, compete with others, and win rewards on the NEAR blockchain.",
+    images: ["/images/rngfanclub-logo-white.png"],
+  },
+  icons: {
+    icon: "/images/favicon.jpg",
+    shortcut: "/images/favicon.jpg",
+  },
+  manifest: "/manifest.json",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+  },
+  themeColor: "#000000",
+};
 
 export default function RootLayout({
   children,

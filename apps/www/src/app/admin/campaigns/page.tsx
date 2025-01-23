@@ -1,6 +1,33 @@
 export const dynamic = "force-dynamic";
 
+import { Metadata } from "next";
 import { listCampaigns } from "@/lib/api/campaigns";
+
+export const metadata: Metadata = {
+  title: "Campaign Management | RNG Fan Club",
+  description:
+    "Create, edit, and manage campaigns for RNG Fan Club events and competitions",
+  openGraph: {
+    title: "Campaign Management | RNG Fan Club",
+    description:
+      "Create, edit, and manage campaigns for RNG Fan Club events and competitions",
+    images: [
+      {
+        url: "/images/rngfanclub-logo-white.png",
+        width: 1200,
+        height: 630,
+        alt: "RNG Fan Club Logo",
+      },
+    ],
+  },
+  twitter: {
+    title: "Campaign Management | RNG Fan Club",
+    description:
+      "Create, edit, and manage campaigns for RNG Fan Club events and competitions",
+    images: ["/images/rngfanclub-logo-white.png"],
+  },
+};
+
 import { Card } from "@/components/ui/card";
 import { Campaign } from "@renegade-fanclub/types";
 import { CampaignActions } from "./actions";
