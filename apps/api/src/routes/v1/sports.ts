@@ -104,7 +104,9 @@ export async function handleGetSport(
       description: sport.description as string | null,
       abbreviation: sport.abbreviation as string | null,
       externalId: sport.external_id as string | null,
-      apiMetadata: sport.api_metadata ? JSON.parse(sport.api_metadata as string) : {},
+      apiMetadata: sport.api_metadata
+        ? JSON.parse(sport.api_metadata as string)
+        : {},
       createdAt: sport.created_at as string,
       teamCount: sport.team_count as number,
       fanCount: sport.fan_count as number,

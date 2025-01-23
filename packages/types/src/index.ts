@@ -5,4 +5,3 @@ export * from "./responses";
 export * from "./sport";
 export * from "./team";
 export * from "./user";
-
