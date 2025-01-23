@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { Metadata } from "next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "My Profile | RNG Fan Club",
@@ -37,13 +37,12 @@ import {
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { CopyLink } from "@/components/ui/copy-link";
-import { getUserProfile } from "@/lib/api/user";
 import { getUserQuests } from "@/lib/api/quests";
+import { getUserProfile } from "@/lib/api/user";
 import { cn } from "@/lib/utils";
 import { Settings, Trophy } from "lucide-react";
-import Link from "next/link";
 import { headers } from "next/headers";
-import { notFound } from "next/navigation";
+import Link from "next/link";
 
 export default async function ProfilePage() {
   const [profile, completedQuests] = await Promise.all([
@@ -123,11 +122,11 @@ export default async function ProfilePage() {
         </CardContent>
       </Card>
 
-      <CopyLink
+      {/* <CopyLink
         title="Refer a Friend"
         description="Earn points for referring friends. Achieved when your referral completes the quest"
         link={`${origin}/refer/${profile.id}`}
-      />
+      /> */}
     </Container>
   );
 }

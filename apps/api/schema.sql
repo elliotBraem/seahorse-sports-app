@@ -58,7 +58,8 @@ CREATE TABLE sports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
-    api_identifier VARCHAR(255), -- For external API mapping
+    abbreviation VARCHAR(10),
+    external_id VARCHAR(255), -- For external API mapping
     api_metadata TEXT DEFAULT '{}', -- Store API-specific data as JSON string
     created_at DATETIME DEFAULT (datetime('now'))
 );
