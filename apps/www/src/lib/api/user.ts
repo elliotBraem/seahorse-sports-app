@@ -1,12 +1,24 @@
 import {
   type AddFavoriteTeamRequest,
   type AddSocialAccountRequest,
+  type CreateProfileRequest,
   type PredictionResponse,
   type ProfileResponse,
   type SocialAccountResponse,
   type UpdateProfileRequest,
 } from "@renegade-fanclub/types";
 import { type ApiOptions, apiRequest } from "./types";
+
+export async function createUserProfile(
+  data: CreateProfileRequest,
+  options?: ApiOptions,
+): Promise<ProfileResponse> {
+  return apiRequest("/user/profile", {
+    method: "POST",
+    body: data,
+    options,
+  });
+}
 
 export async function getUserProfile(
   options?: ApiOptions,

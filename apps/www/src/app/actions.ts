@@ -17,3 +17,7 @@ export async function setAuthCookie(userId: string) {
 export async function removeAuthCookie() {
   cookies().delete("auth");
 }
+
+export async function getAuthCookie() {
+  return cookies().get("auth")?.value;
+}
