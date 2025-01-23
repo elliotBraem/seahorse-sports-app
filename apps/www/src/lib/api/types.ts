@@ -1,4 +1,4 @@
-import { useAuthStore } from "../store";
+import { getAuthCookie } from "@/app/actions";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const API_BASE_URL = `${API_URL}/api/v1`;
@@ -32,7 +32,7 @@ export async function apiRequest<T>(
 
   // Add auth header if required and accountId exists
   if (requiresAuth) {
-    const accountId = useAuthStore.getState().accountId;
+    const accountId = await getAuthCookie();
     if (accountId) {
       headers.Authorization = `Bearer ${accountId}`;
     }
