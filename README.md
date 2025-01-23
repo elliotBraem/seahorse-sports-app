@@ -27,9 +27,9 @@
 ```mermaid
 erDiagram
     users {
-        VARCHAR(42) id PK
-        VARCHAR(255) username UNIQUE
-        VARCHAR(255) email UNIQUE
+        VARCHAR id PK
+        VARCHAR username UNIQUE
+        VARCHAR email UNIQUE
         TEXT avatar
         TEXT profile_data
         DATETIME created_at
@@ -37,102 +37,102 @@ erDiagram
     }
 
     user_favorite_teams {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        INTEGER team_id FK
+        INT id PK
+        VARCHAR user_id FK
+        INT team_id FK
         DATETIME created_at
     }
 
     user_favorite_sports {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        INTEGER sport_id FK
+        INT id PK
+        VARCHAR user_id FK
+        INT sport_id FK
         DATETIME created_at
     }
 
     user_social_accounts {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        VARCHAR(50) platform
-        VARCHAR(255) platform_user_id UNIQUE
-        VARCHAR(255) username
-        INTEGER verified
+        INT id PK
+        VARCHAR user_id FK
+        VARCHAR platform
+        VARCHAR platform_user_id UNIQUE
+        VARCHAR username
+        INT verified
         DATETIME created_at
     }
 
     campaigns {
-        INTEGER id PK
-        VARCHAR(255) name
+        INT id PK
+        VARCHAR name
         TEXT description
         DATETIME start_date
         DATETIME end_date
-        VARCHAR(20) status
+        VARCHAR status
         TEXT rules
         DATETIME created_at
     }
 
     sports {
-        INTEGER id PK
-        VARCHAR(255) name UNIQUE
+        INT id PK
+        VARCHAR name UNIQUE
         TEXT description
-        VARCHAR(255) api_identifier
+        VARCHAR api_identifier
         TEXT api_metadata
         DATETIME created_at
     }
 
     teams {
-        INTEGER id PK
-        INTEGER sport_id FK
-        VARCHAR(255) name UNIQUE
-        VARCHAR(10) abbreviation
-        VARCHAR(255) external_id
+        INT id PK
+        INT sport_id FK
+        VARCHAR name UNIQUE
+        VARCHAR abbreviation
+        VARCHAR external_id
         TEXT api_metadata
         DATETIME created_at
     }
 
     team_social_accounts {
-        INTEGER id PK
-        INTEGER team_id FK
-        VARCHAR(50) platform
-        VARCHAR(255) platform_user_id UNIQUE
-        VARCHAR(255) username
-        INTEGER verified
+        INT id PK
+        INT team_id FK
+        VARCHAR platform
+        VARCHAR platform_user_id UNIQUE
+        VARCHAR username
+        INT verified
         DATETIME created_at
     }
 
     games {
-        INTEGER id PK
-        INTEGER campaign_id FK
-        INTEGER sport_id FK
-        INTEGER home_team_id FK
-        INTEGER away_team_id FK
+        INT id PK
+        INT campaign_id FK
+        INT sport_id FK
+        INT home_team_id FK
+        INT away_team_id FK
         DATETIME start_time
         DATETIME end_time
-        INTEGER winner_team_id FK
-        VARCHAR(50) game_type
-        INTEGER points_value
-        VARCHAR(20) status
-        VARCHAR(255) external_id
+        INT winner_team_id FK
+        VARCHAR game_type
+        INT points_value
+        VARCHAR status
+        VARCHAR external_id
         TEXT api_metadata
         DATETIME created_at
     }
 
     user_predictions {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        INTEGER game_id FK
-        INTEGER predicted_winner_id FK
-        INTEGER points_earned
+        INT id PK
+        VARCHAR user_id FK
+        INT game_id FK
+        INT predicted_winner_id FK
+        INT points_earned
         DATETIME created_at
     }
 
     quests {
-        INTEGER id PK
-        INTEGER campaign_id FK
-        VARCHAR(255) name
+        INT id PK
+        INT campaign_id FK
+        VARCHAR name
         TEXT description
-        INTEGER points_value
-        VARCHAR(50) verification_type
+        INT points_value
+        VARCHAR verification_type
         TEXT verification_data
         DATETIME start_date
         DATETIME end_date
@@ -140,21 +140,21 @@ erDiagram
     }
 
     user_quest_completions {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        INTEGER quest_id FK
-        INTEGER points_earned
+        INT id PK
+        VARCHAR user_id FK
+        INT quest_id FK
+        INT points_earned
         DATETIME completed_at
         TEXT verification_proof
     }
 
     user_points {
-        INTEGER id PK
-        VARCHAR(42) user_id FK
-        INTEGER campaign_id FK
-        INTEGER total_points
-        INTEGER prediction_points
-        INTEGER quest_points
+        INT id PK
+        VARCHAR user_id FK
+        INT campaign_id FK
+        INT total_points
+        INT prediction_points
+        INT quest_points
         DATETIME last_updated
     }
 
