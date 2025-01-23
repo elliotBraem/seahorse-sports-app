@@ -2,7 +2,6 @@ import NearProvider from "@/components/near-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
-
 import { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
