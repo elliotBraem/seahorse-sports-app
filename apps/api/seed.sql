@@ -1,6 +1,6 @@
 -- Insert sports
-INSERT INTO sports (id, name, description, api_identifier) VALUES (1, 'Football', 'American Football', 'NFL');
-INSERT INTO sports (id, name, description, api_identifier) VALUES (2, 'Basketball', 'Professional Basketball', 'NBA');
+INSERT INTO sports (id, name, description, abbreviation, external_id) VALUES (1, 'Football', 'American Football', 'NFL', 'NFL');
+INSERT INTO sports (id, name, description, abbreviation, external_id) VALUES (2, 'Basketball', 'Professional Basketball', 'NBA', 'NBA');
 
 -- Insert teams
 INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Philadelphia Eagles', 'PHI', 'PHI');

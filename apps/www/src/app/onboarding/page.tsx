@@ -1,50 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { getUserProfile, updateUserProfile } from "@/lib/api/user";
-import { useAuthStore } from "@/lib/store";
+import { Container } from "@/components/ui/container";
+import { createUserProfile } from "@/lib/api/user";
+import { Sport } from "@renegade-fanclub/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { SportsSelection } from "./_components/sports-selection";
 import { TeamsSelection } from "./_components/teams-selection";
-import { Sport } from "@renegade-fanclub/types";
+import { UserInfo } from "./_components/user-info";
 
-type OnboardingStep = "sports" | "teams";
+type OnboardingStep = "userInfo" | "sports" | "teams";
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { accountId } = useAuthStore();
-  const [loading, setLoading] = useState(true);
-  const [currentStep, setCurrentStep] = useState<OnboardingStep>("sports");
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>("userInfo");
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
-
-  useEffect(() => {
-    if (!accountId) {
-      router.replace("/");
-      return;
-    }
-
-    const checkOnboardingStatus = async () => {
-      try {
-        const profile = await getUserProfile();
-
-        // If user has completed onboarding steps, redirect to quests
-        if (profile.profileData.onboardingComplete) {
-          router.replace("/quests");
-          return;
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to check onboarding status:", error);
-        // If there's an error, assume user needs to complete onboarding
-        setLoading(false);
-      }
-    };
-
-    checkOnboardingStatus();
-  }, [accountId]);
 
   const handleSportsNext = (sports: Sport[]) => {
     setSelectedSports(sports);
@@ -57,25 +28,11 @@ export default function OnboardingPage() {
 
   const handleTeamsNext = async () => {
     try {
-      // Mark onboarding as complete
-      await updateUserProfile({
-        profileData: { onboardingComplete: true },
-      });
       router.replace("/quests");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);
     }
   };
-
-  if (loading) {
-    return (
-      <Container>
-        <div className="flex min-h-dvh items-center justify-center">
-          Loading...
-        </div>
-      </Container>
-    );
-  }
 
   return (
     <Container>
@@ -90,6 +47,22 @@ export default function OnboardingPage() {
             </p>
           </CardHeader>
           <CardContent>
+            {currentStep === "userInfo" && (
+              <UserInfo
+                onNext={async (username, email) => {
+                  try {
+                    await createUserProfile({
+                      username,
+                      email,
+                      profileData: { onboardingComplete: true },
+                    });
+                    setCurrentStep("sports");
+                  } catch (error) {
+                    console.error("Failed to update user info:", error);
+                  }
+                }}
+              />
+            )}
             {currentStep === "sports" && (
               <SportsSelection onNext={handleSportsNext} />
             )}
