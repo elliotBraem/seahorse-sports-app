@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { listQuests } from "@/lib/api/quests";
 import Link from "next/link";
 import { Header } from "@/components/header";
+import { Trophy } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Quests | RNG Fan Club",
@@ -69,9 +70,12 @@ export default async function QuestsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {quest.pointsValue} points
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5 text-yellow-500" />
+                        <span className="text-sm font-medium">
+                          {quest.pointsValue} points
+                        </span>
+                      </div>
 
                       {/* Quest-specific actions */}
                       {quest.verificationType === "social_follow" &&

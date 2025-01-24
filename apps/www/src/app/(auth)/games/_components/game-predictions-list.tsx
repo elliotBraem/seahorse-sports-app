@@ -22,7 +22,9 @@ export function GamePredictionsList({
         <Card key={prediction.id} className="p-4">
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-medium">User {prediction.userId}</p>
+              <p className="font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+                User {prediction.userId}
+              </p>
               <p className="text-sm text-gray-500">
                 Predicted: {prediction.predictedWinnerName}
               </p>

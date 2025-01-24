@@ -49,7 +49,7 @@ export function Game({ gameId, initialGame }: GameProps) {
                 <span className="text-2xl font-black bg-gray-900 text-white px-4 py-2 rounded-full">
                   VS
                 </span>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-400 mt-2">
                   {new Date(currentGame.startTime).toLocaleDateString()}
                 </p>
               </div>
@@ -65,14 +65,14 @@ export function Game({ gameId, initialGame }: GameProps) {
               {typeof currentGame.apiMetadata === "object" &&
                 currentGame.apiMetadata !== null &&
                 "location" in currentGame.apiMetadata && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-400">
                     {currentGame.apiMetadata.location as string}
                   </p>
                 )}
               {typeof currentGame.apiMetadata === "object" &&
                 currentGame.apiMetadata !== null &&
                 "conference" in currentGame.apiMetadata && (
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p className="text-xs font-semibold text-gray-400">
                     {currentGame.apiMetadata.conference as string} Championship
                   </p>
                 )}

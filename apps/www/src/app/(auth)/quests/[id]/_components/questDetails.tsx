@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
+import { Trophy } from "lucide-react";
 
 export default function QuestDetails() {
   return (
@@ -15,14 +16,17 @@ export default function QuestDetails() {
       <Header showBackButton={true} />
       <Container title="Quest Title">
         <Card key="1">
-          <CardHeader className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <h3 className="font-bold">Dscription</h3>
+          <CardHeader className="flex flex-row gap-4 items-start sm:items-center justify-between">
+            <h3 className="font-bold">Description</h3>
             <Button variant={"outline"}>Get Started</Button>
           </CardHeader>
           <CardContent>
-            <p>This is a description of the quest.</p>
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <span className="text-sm font-medium">50 points</span>
+              <p>This is a description of the quest.</p>
+              <div className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-yellow-500" />
+                <span className="text-sm font-medium">50 points</span>
+              </div>
 
               {/* Quest-specific actions */}
 
