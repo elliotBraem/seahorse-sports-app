@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -36,7 +37,7 @@ export function Header({
             onClick={() => router.back()}
             className="bg-none rounded-full border-none p-0 h-9 w-9 hover:bg-none"
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <FontAwesomeIcon icon={faArrowLeft} className="h-6 w-6" />
           </button>
         )}
       </div>
