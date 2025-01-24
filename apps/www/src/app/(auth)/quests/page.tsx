@@ -61,55 +61,57 @@ export default async function QuestsPage() {
             };
 
             return (
-              <Card key={quest.id}>
-                <CardHeader>
-                  <CardTitle>{quest.name}</CardTitle>
-                  <CardDescription>{quest.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <span className="text-sm font-medium">
-                      {quest.pointsValue} points
-                    </span>
+              <Link key={quest.id} href={`/quests/${quest.id}`}>
+                <Card key={quest.id}>
+                  <CardHeader>
+                    <CardTitle>{quest.name}</CardTitle>
+                    <CardDescription>{quest.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {quest.pointsValue} points
+                      </span>
 
-                    {/* Quest-specific actions */}
-                    {quest.verificationType === "social_follow" &&
-                      verificationData.platform === "twitter" && (
-                        <Button asChild>
-                          <a
-                            href={verificationData.intent_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full sm:w-auto"
-                          >
-                            Follow on Twitter
-                          </a>
-                        </Button>
-                      )}
+                      {/* Quest-specific actions */}
+                      {quest.verificationType === "social_follow" &&
+                        verificationData.platform === "twitter" && (
+                          <Button asChild>
+                            <a
+                              href={verificationData.intent_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full sm:w-auto"
+                            >
+                              Follow on Twitter
+                            </a>
+                          </Button>
+                        )}
 
-                    {quest.verificationType === "prediction" &&
-                      verificationData.game_link && (
-                        <Button variant="outline" asChild>
-                          <Link
-                            href={verificationData.game_link}
-                            className="w-full sm:w-auto"
-                          >
-                            Make Prediction
-                          </Link>
-                        </Button>
-                      )}
-                  </div>
+                      {quest.verificationType === "prediction" &&
+                        verificationData.game_link && (
+                          <Button variant="outline" asChild>
+                            <Link
+                              href={verificationData.game_link}
+                              className="w-full sm:w-auto"
+                            >
+                              Make Prediction
+                            </Link>
+                          </Button>
+                        )}
+                    </div>
 
-                  <div className="mt-4 text-sm text-muted-foreground">
-                    Available until{" "}
-                    {new Date(quest.endDate).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
+                    <div className="mt-4 text-sm text-muted-foreground">
+                      Available until{" "}
+                      {new Date(quest.endDate).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             );
           })}
         </div>
