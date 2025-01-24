@@ -563,9 +563,11 @@ export async function handleGetGamePredictions(
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
-    const gameId = request.url.split("/").pop()?.split("/")[0];
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
+    const gameId = pathParts[pathParts.length - 2]; // Get the second to last segment
 
-    if (!gameId) {
+    if (!gameId || isNaN(Number(gameId))) {
       return createErrorResponse(
         "INVALID_PARAMS",
         "Game ID is required",

@@ -1,11 +1,28 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { type GameResponse } from "@renegade-fanclub/types";
+import { useGames } from "@/lib/hooks/use-games";
 import Link from "next/link";
+import { TeamCard } from "./team-card";
 
-export function GamesList({ games }: { games: GameResponse[] }) {
-  if (!games.length) {
+export function GamesList() {
+  const { data: games, isLoading } = useGames();
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <Card className="p-6">
+              <div className="h-32 bg-gray-200 rounded-lg"></div>
+            </Card>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!games?.length) {
     return (
       <Card className="p-6">
         <p className="text-center text-gray-500">No current games available</p>
@@ -20,18 +37,11 @@ export function GamesList({ games }: { games: GameResponse[] }) {
           <Card className="p-6 hover:opacity-90 transition-all">
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-center">
-                <div
-                  className="flex-1 p-4 rounded-lg"
-                  style={{
-                    background:
-                      game.homeTeamMetadata?.colors?.primary || "#666666",
-                    color: "#FFFFFF",
-                    boxShadow: `0 4px 6px -1px ${game.homeTeamMetadata?.colors?.primary || "#666666"}33`,
-                  }}
-                >
-                  <h3 className="font-bold text-lg">{game.homeTeamName}</h3>
-                  <p className="text-sm opacity-80">Home Team</p>
-                </div>
+                <TeamCard
+                  teamName={game.homeTeamName}
+                  teamMetadata={game.homeTeamMetadata}
+                  isHome={true}
+                />
 
                 <div className="text-center px-6 py-2">
                   <span className="text-2xl font-black bg-gray-900 text-white px-4 py-2 rounded-full">
@@ -42,18 +52,11 @@ export function GamesList({ games }: { games: GameResponse[] }) {
                   </p>
                 </div>
 
-                <div
-                  className="flex-1 p-4 rounded-lg text-right"
-                  style={{
-                    background:
-                      game.awayTeamMetadata?.colors?.primary || "#666666",
-                    color: "#FFFFFF",
-                    boxShadow: `0 4px 6px -1px ${game.awayTeamMetadata?.colors?.primary || "#666666"}33`,
-                  }}
-                >
-                  <h3 className="font-bold text-lg">{game.awayTeamName}</h3>
-                  <p className="text-sm opacity-80">Away Team</p>
-                </div>
+                <TeamCard
+                  teamName={game.awayTeamName}
+                  teamMetadata={game.awayTeamMetadata}
+                  isHome={false}
+                />
               </div>
 
               <div className="text-center space-y-2">

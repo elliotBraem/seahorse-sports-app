@@ -1,34 +1,37 @@
 "use client";
 
-import { createPrediction } from "@/lib/api/games";
+import { useCreatePrediction } from "@/lib/hooks/use-games";
 import { type GameResponse } from "@renegade-fanclub/types";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 export function GamePredictionForm({ game }: { game: GameResponse }) {
-  const router = useRouter();
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { mutate: createPrediction, isPending: submitting } = useCreatePrediction();
 
   // Ensure metadata is properly structured with fallbacks
   const homeTeamColor = game.homeTeamMetadata?.colors?.primary || "#666666";
   const awayTeamColor = game.awayTeamMetadata?.colors?.primary || "#666666";
 
-  const handlePredict = async () => {
+  const handlePredict = () => {
     if (!selectedTeamId) return;
 
-    setSubmitting(true);
-    try {
-      await createPrediction({
+    createPrediction(
+      {
         gameId: game.id,
         predictedWinnerId: selectedTeamId,
-      });
-      router.refresh(); // Refresh the page to show the new prediction
-    } catch (error) {
-      console.error("Failed to submit prediction:", error);
-    } finally {
-      setSubmitting(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success("Prediction submitted successfully!");
+          setSelectedTeamId(null);
+        },
+        onError: (error) => {
+          toast.error("Failed to submit prediction. Please try again.");
+          console.error("Failed to submit prediction:", error);
+        },
+      }
+    );
   };
 
   return (

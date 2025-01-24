@@ -1,43 +1,19 @@
-import { Card } from "@/components/ui/card";
-import { type PredictionResponse } from "@renegade-fanclub/types";
+"use client";
 
-export function GamePredictions({
-  predictions,
-}: {
-  predictions: PredictionResponse[];
-}) {
-  if (!predictions.length) {
+import { useGamePredictions } from "@/lib/hooks/use-games";
+import { GamePredictionsList } from "./game-predictions-list";
+
+export function GamePredictions({ gameId }: { gameId: number }) {
+  const { data: predictions, isLoading } = useGamePredictions(gameId);
+
+  if (isLoading) {
     return (
-      <Card className="p-6">
-        <p className="text-center text-gray-500">No predictions yet</p>
-      </Card>
+      <div className="animate-pulse">
+        <div className="h-20 bg-gray-200 rounded-lg mb-4"></div>
+        <div className="h-20 bg-gray-200 rounded-lg"></div>
+      </div>
     );
   }
 
-  return (
-    <div className="space-y-4">
-      {predictions.map((prediction) => (
-        <Card key={prediction.id} className="p-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-medium">User {prediction.userId}</p>
-              <p className="text-sm text-gray-500">
-                Predicted: {prediction.predictedWinnerName}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">
-                {new Date(prediction.createdAt).toLocaleDateString()}
-              </p>
-              {prediction.pointsEarned !== null && (
-                <p className="text-sm font-medium">
-                  Points: {prediction.pointsEarned}
-                </p>
-              )}
-            </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
+  return <GamePredictionsList predictions={predictions || []} />;
 }
