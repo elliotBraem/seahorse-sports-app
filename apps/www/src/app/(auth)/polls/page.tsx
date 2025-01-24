@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 import { getTeam } from "@/lib/api/teams";
 import { notFound } from "next/navigation";
 import Poll from "./_components/poll";
+import { Header } from "@/components/header";
 
 export default async function PollsPage() {
   // Get current games
@@ -79,5 +80,10 @@ export default async function PollsPage() {
     },
   ];
 
-  return <Poll gameId={game.id} initialTeams={teams} />;
+  return (
+    <>
+      <Header />
+      <Poll gameId={game.id} initialTeams={teams} />
+    </>
+  );
 }

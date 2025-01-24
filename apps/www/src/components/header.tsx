@@ -1,75 +1,60 @@
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useAuthStore } from "@/lib/store";
-import { LogOut, Menu, Target, Trophy, User } from "lucide-react";
-import Link from "next/link";
+"use client";
 
-export function MainNav() {
-  return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-14 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center space-x-2">
-          <Trophy className="h-6 w-6" />
-          <span className="font-bold">-------</span>
-        </Link>
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>Navigation</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col space-y-4">
-              <NavLinks />
-            </nav>
-          </SheetContent>
-        </Sheet>
-
-        {/* Desktop Menu */}
-        <nav className="hidden items-center space-x-6 md:flex">
-          <NavLinks />
-        </nav>
-      </div>
-    </header>
-  );
+interface HeaderProps {
+  showtitle?: boolean;
+  showBackButton?: boolean;
+  rightChildren?: React.ReactNode;
 }
 
-export function NavLinks() {
+export function Header({
+  showtitle = false,
+  showBackButton = false,
+  rightChildren,
+}: HeaderProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const formatTitle = (path: string) => {
+    const segments = path.split("/").filter(Boolean);
+    return segments
+      .map(
+        (segment) =>
+          segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase(),
+      )
+      .join(", ");
+  };
+
   return (
-    <>
-      <Link
-        href="/quests"
-        className="flex items-center space-x-2 font-medium transition hover:text-primary"
-      >
-        <Target className="h-4 w-4" />
-        <span>Quests</span>
-      </Link>
-      <Link
-        href="/leaderboard"
-        className="flex items-center space-x-2 font-medium transition hover:text-primary"
-      >
-        <Trophy className="h-4 w-4" />
-        <span>Leaderboard</span>
-      </Link>
-      <Link
-        href="/profile"
-        className="flex items-center space-x-2 font-medium transition hover:text-primary"
-      >
-        <User className="h-4 w-4" />
-        <span>Profile</span>
-      </Link>
-    </>
+    <header className="flex items-center justify-between py-6 px-6 lg:px-72">
+      <div className="flex items-center min-w-9">
+        {showBackButton && (
+          <button
+            onClick={() => router.back()}
+            className="bg-none rounded-full border-none p-0 h-9 w-9 hover:bg-none"
+          >
+            <ArrowLeftIcon className="h-6 w-6" />
+          </button>
+        )}
+      </div>
+
+      <div className={`flex items-center`}>
+        {showtitle ? (
+          <h1 className="text-xl font-bold">{formatTitle(pathname)}</h1>
+        ) : (
+          <Image
+            src={"/images/rngfanclub-logo-white.png"}
+            alt=""
+            width={80}
+            height={80}
+          />
+        )}
+      </div>
+
+      <div className="flex items-center min-w-9">{rightChildren}</div>
+    </header>
   );
 }

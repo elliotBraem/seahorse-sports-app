@@ -31,7 +31,7 @@ export function GamesList() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col space-y-4">
       {games.map((game) => (
         <Link key={game.id} href={`/games/${game.id}`}>
           <Card className="p-6 hover:opacity-90 transition-all">

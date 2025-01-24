@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 
 import { listTeams } from "@/lib/api/teams";
 import PreferencesForm from "./_components/preferences-form";
+import { Header } from "@/components/header";
 
 export default async function PreferencesPage() {
   const [sports, teams] = await Promise.all([listSports(), listTeams()]);
@@ -56,5 +57,10 @@ export default async function PreferencesPage() {
     },
   ];
 
-  return <PreferencesForm preferences={preferences} />;
+  return (
+    <>
+      <Header />
+      <PreferencesForm preferences={preferences} />
+    </>
+  );
 }

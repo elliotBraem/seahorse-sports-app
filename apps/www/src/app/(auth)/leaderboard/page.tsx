@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { Leaderboard } from "./_components/leaderboard";
+import { Header } from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Leaderboard | RNG Fan Club",
@@ -31,11 +32,14 @@ export const metadata: Metadata = {
 
 export default function LeaderboardPage() {
   return (
-    <Container
-      title="Leaderboard"
-      description="Top fans competing for Super Bowl tickets"
-    >
-      <Leaderboard />
-    </Container>
+    <>
+      <Header />
+      <Container
+        title="Leaderboard"
+        description="Top fans competing for Super Bowl tickets"
+      >
+        <Leaderboard />
+      </Container>
+    </>
   );
 }
