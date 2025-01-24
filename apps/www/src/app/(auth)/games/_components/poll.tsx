@@ -129,15 +129,15 @@ export default function Poll({ game }: { game: GameResponse }) {
               onClick={() => handleVote(team.id, team.title)}
             >
               <div className="flex items-center justify-end">
-              <FontAwesomeIcon
-                    icon={faCheckCircle}
-                    size="lg"
-                    style={
-                      selectedTeamId === team.id
-                        ? { color: team.color }
-                        : { color: "transparent" }
-                    }
-                  />
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size="lg"
+                  style={
+                    selectedTeamId === team.id
+                      ? { color: team.color }
+                      : { color: "transparent" }
+                  }
+                />
               </div>
               <div className="flex flex-col items-center space-y-4 justify-between">
                 <span className="font-bold text-sm sm:text-xl mt-6 sm:mt-10">
