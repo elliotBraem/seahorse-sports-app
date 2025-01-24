@@ -15,10 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateUserProfile } from "@/lib/api/user";
 import { useAuthStore } from "@/lib/store";
-import {
-  faArrowRight,
-  faCircleNotch
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
