@@ -42,7 +42,6 @@ import { getUserPredictions, getUserProfile } from "@/lib/api/user";
 import { listTeams } from "@/lib/api/teams";
 import { listGames } from "@/lib/api/games";
 import { cn } from "@/lib/utils";
-import { Check, Clock, Settings, Trophy, X } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { Header } from "@/components/header";
@@ -52,6 +51,16 @@ import {
   CarouselItem,
   CarouselNext,
 } from "@/components/ui/carousel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faClock,
+  faCog,
+  faCopy,
+  faTrophy,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
+import { CopyLink } from "@/components/ui/copy-link";
 
 export default async function ProfilePage() {
   const [profile, completedQuests, predictions, teams, games] =
@@ -82,7 +91,7 @@ export default async function ProfilePage() {
             href="/settings"
             className="bg-none rounded-full border-none p-0 h-9 w-9 hover:bg-none"
           >
-            <Settings className="h-6 w-6" />
+            <FontAwesomeIcon icon={faCog} className="h-6 w-6" />
           </Link>
         }
       />
@@ -104,7 +113,10 @@ export default async function ProfilePage() {
             </p>
           </div>
           <div className="flex items-center space-x-4 bg-white/20 px-4 p-2 rounded-full">
-            <Trophy className="h-5 w-5 text-yellow-500" />
+            <FontAwesomeIcon
+              icon={faTrophy}
+              className="h-5 w-5 text-yellow-500"
+            />
             <span className="font-medium">{totalPoints}</span>
           </div>
         </div>
@@ -125,7 +137,7 @@ export default async function ProfilePage() {
                   {predictions.map((prediction) => (
                     <CarouselItem
                       key={prediction.id}
-                      className="basis-1/2 lg:basis-1/5"
+                      className="basis-1/2 lg:basis-1/4"
                     >
                       <div className="p-1">
                         <Card className="aspect-square p-0 w-full">
@@ -142,17 +154,26 @@ export default async function ProfilePage() {
                             >
                               {prediction.pointsEarned === null ? (
                                 <>
-                                  <Clock className="h-4 w-4" />
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    className="h-4 w-4"
+                                  />
                                   <span>Pending</span>
                                 </>
                               ) : prediction.pointsEarned > 0 ? (
                                 <>
-                                  <Check className="h-4 w-4" />
+                                  <FontAwesomeIcon
+                                    icon={faCheck}
+                                    className="h-4 w-4"
+                                  />
                                   <span>+{prediction.pointsEarned}</span>
                                 </>
                               ) : (
                                 <>
-                                  <X className="h-4 w-4" />
+                                  <FontAwesomeIcon
+                                    icon={faX}
+                                    className="h-4 w-4"
+                                  />
                                   <span>0</span>
                                 </>
                               )}
@@ -207,7 +228,10 @@ export default async function ProfilePage() {
               ) : (
                 completedQuests.map((quest) => (
                   <div key={quest.id} className="flex items-center space-x-2">
-                    <Trophy className="h-4 w-4 text-yellow-500" />
+                    <FontAwesomeIcon
+                      icon={faTrophy}
+                      className="h-4 w-4 text-yellow-500"
+                    />
                     <span>{quest.questName}</span>
                     <span className="text-sm text-muted-foreground">
                       +{quest.pointsEarned} points
@@ -218,12 +242,11 @@ export default async function ProfilePage() {
             </div>
           </CardContent>
         </Card>
-
         {/* <CopyLink
-        title="Refer a Friend"
-        description="Earn points for referring friends. Achieved when your referral completes the quest"
-        link={`${origin}/refer/${profile.id}`}
-      /> */}
+          title="Refer a Friend"
+          description="Earn points for referring friends. Achieved when your referral completes the quest"
+          link={`${origin}/refer/${profile.id}`}
+        /> */}
       </Container>
     </>
   );

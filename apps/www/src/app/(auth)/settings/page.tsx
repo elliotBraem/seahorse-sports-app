@@ -15,8 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateUserProfile } from "@/lib/api/user";
 import { useAuthStore } from "@/lib/store";
+import {
+  faArrowRight,
+  faCircleNotch,
+  faPenToSquare,
+  faSquarePen,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -107,7 +113,10 @@ export default function SettingsPage() {
                             title="Save changes"
                             type="submit"
                           >
-                            <ArrowRight className="w-5 h-5" />
+                            <FontAwesomeIcon
+                              icon={faArrowRight}
+                              className="w-5 h-5"
+                            />
                           </button>
                         </div>
                       )}
@@ -126,7 +135,7 @@ export default function SettingsPage() {
             className="flex items-center justify-between space-x-2 text-lg font-medium"
           >
             <span>Prefrences</span>
-            <SquarePen className="h-4 w-4" />
+            <FontAwesomeIcon icon={faPenToSquare} className="h-4 w-4" />
           </a>
         </div>
 
@@ -145,7 +154,11 @@ export default function SettingsPage() {
 
         <div className="flex items-center justify-end space-x-4">
           <Button disabled={isLoading} onClick={disconnectWallet}>
-            {isLoading ? <Loader2 className="animate-spin" /> : "Logout"}
+            {isLoading ? (
+              <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
+            ) : (
+              "Logout"
+            )}
           </Button>
         </div>
       </Container>
