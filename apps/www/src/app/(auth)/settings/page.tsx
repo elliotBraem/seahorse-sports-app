@@ -17,9 +17,7 @@ import { updateUserProfile } from "@/lib/api/user";
 import { useAuthStore } from "@/lib/store";
 import {
   faArrowRight,
-  faCircleNotch,
-  faPenToSquare,
-  faSquarePen,
+  faCircleNotch
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -84,7 +82,7 @@ export default function SettingsPage() {
   return (
     <>
       <Header showtitle={true} showBackButton={true} />
-      <Container title="Settings" description="Manage your account settings!">
+      <Container>
         {user && (
           <Form {...form}>
             <form
@@ -129,7 +127,7 @@ export default function SettingsPage() {
           </Form>
         )}
 
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <a
             href="/preferences"
             className="flex items-center justify-between space-x-2 text-lg font-medium"
@@ -137,23 +135,22 @@ export default function SettingsPage() {
             <span>Prefrences</span>
             <FontAwesomeIcon icon={faPenToSquare} className="h-4 w-4" />
           </a>
-        </div>
+        </div> */}
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h2 className="text-lg font-medium">NEAR Wallet</h2>
-              <p className="text-sm text-muted-foreground">
-                {accountId
-                  ? "Connected as " + accountId
-                  : "Connect your NEAR wallet"}
-              </p>
+              <p className="text-sm text-muted-foreground">{accountId}</p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-end space-x-4">
-          <Button disabled={isLoading} onClick={disconnectWallet}>
+        <div className="flex items-center ">
+          <Button
+            className="w-full"
+            disabled={isLoading}
+            onClick={disconnectWallet}
+          >
             {isLoading ? (
               <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
             ) : (

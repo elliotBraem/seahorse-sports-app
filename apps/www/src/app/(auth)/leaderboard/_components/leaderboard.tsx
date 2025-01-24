@@ -34,7 +34,7 @@ export function Leaderboard() {
   if (!leaderboard) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="grid grid-cols-1">
       {leaderboard.rankings.map((ranking: LeaderboardRankingResponse) => (
         <Card
           key={ranking.userId}

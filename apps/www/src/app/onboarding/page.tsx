@@ -6,33 +6,31 @@ import { createUserProfile } from "@/lib/api/user";
 import { Sport } from "@renegade-fanclub/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SportsSelection } from "./_components/sports-selection";
-import { TeamsSelection } from "./_components/teams-selection";
 import { UserInfo } from "./_components/user-info";
 
-type OnboardingStep = "userInfo" | "sports" | "teams";
+type OnboardingStep = "userInfo";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("userInfo");
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
 
-  const handleSportsNext = (sports: Sport[]) => {
-    setSelectedSports(sports);
-    setCurrentStep("teams");
-  };
+  // const handleSportsNext = (sports: Sport[]) => {
+  //   setSelectedSports(sports);
+  //   setCurrentStep("teams");
+  // };
 
-  const handleTeamsBack = () => {
-    setCurrentStep("sports");
-  };
+  // const handleTeamsBack = () => {
+  //   setCurrentStep("sports");
+  // };
 
-  const handleTeamsNext = async () => {
-    try {
-      router.replace("/quests");
-    } catch (error) {
-      console.error("Failed to complete onboarding:", error);
-    }
-  };
+  // const handleTeamsNext = async () => {
+  //   try {
+  //     router.replace("/quests");
+  //   } catch (error) {
+  //     console.error("Failed to complete onboarding:", error);
+  //   }
+  // };
 
   return (
     <Container>
@@ -56,14 +54,15 @@ export default function OnboardingPage() {
                       email,
                       profileData: { onboardingComplete: true },
                     });
-                    setCurrentStep("sports");
+                    router.replace("/quests");
+                    // setCurrentStep("sports");
                   } catch (error) {
                     console.error("Failed to update user info:", error);
                   }
                 }}
               />
             )}
-            {currentStep === "sports" && (
+            {/* {currentStep === "sports" && (
               <SportsSelection onNext={handleSportsNext} />
             )}
             {currentStep === "teams" && (
@@ -72,7 +71,7 @@ export default function OnboardingPage() {
                 onNext={handleTeamsNext}
                 onBack={handleTeamsBack}
               />
-            )}
+            )} */}
           </CardContent>
         </Card>
       </div>
