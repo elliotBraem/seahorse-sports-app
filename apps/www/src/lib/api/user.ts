@@ -20,10 +20,15 @@ export async function createUserProfile(
   });
 }
 
-export async function getUserProfile(
-  options?: ApiOptions,
-): Promise<ProfileResponse> {
-  return apiRequest("/user/profile", { options });
+export async function getUserProfile({
+  userId,
+  options,
+}: {
+  userId?: string;
+  options?: ApiOptions;
+} = {}): Promise<ProfileResponse> {
+  const endpoint = userId ? `/user/profile/${userId}` : "/user/profile";
+  return apiRequest(endpoint, { options });
 }
 
 export async function updateUserProfile(

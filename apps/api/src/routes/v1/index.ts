@@ -115,6 +115,9 @@ export async function handleV1Routes(
   if (path === "/user/profile" && method === "GET") {
     return await handleGetUserProfile(request, env, corsHeaders);
   }
+  if (path.match(/^\/user\/profile\/[^\/]+$/) && method === "GET") {
+    return await handleGetUserProfile(request, env, corsHeaders);
+  }
   if (path === "/user/profile" && method === "POST") {
     return await handleCreateUserProfile(request, env, corsHeaders);
   }

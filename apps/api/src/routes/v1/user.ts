@@ -108,7 +108,7 @@ export async function handleCreateUserProfile(
   }
 }
 
-// GET /api/v1/user/profile
+// GET /api/v1/user/profile/:userId?
 export async function handleGetUserProfile(
   request: Request,
   env: Env,
@@ -116,7 +116,12 @@ export async function handleGetUserProfile(
 ): Promise<Response> {
   try {
     const authenticatedRequest = await requireAuth(request, env);
-    const userId = authenticatedRequest.user?.id;
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split("/");
+    const requestedUserId =
+      pathParts[pathParts.length - 1] === "profile"
+        ? authenticatedRequest.user?.id
+        : pathParts[pathParts.length - 1];
 
     const stmt = env.DB.prepare(
       `
@@ -132,7 +137,7 @@ export async function handleGetUserProfile(
       WHERE u.id = ?
       GROUP BY u.id
     `,
-    ).bind(userId);
+    ).bind(requestedUserId);
 
     const profile = await stmt.first();
 
