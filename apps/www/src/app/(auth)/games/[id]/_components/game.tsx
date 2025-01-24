@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { useGame } from "@/lib/hooks/use-games";
 import { type GameResponse } from "@renegade-fanclub/types";
-import { TeamCard } from "../../_components/team-card";
 
 interface GameProps {
   gameId: number;
