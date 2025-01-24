@@ -32,7 +32,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-gray-800 bg-background shadow-[0_-4px_0_rgba(0,0,0,1)]">
-      <div className="container mx-auto pb-1 flex h-16 items-center justify-around px-4">
+      <div className="container mx-auto flex h-[70px] items-center justify-around px-4 md:h-16">
         {links.map((link) => {
           const Icon = link.icon;
           const isActive = currentPath === link.to;

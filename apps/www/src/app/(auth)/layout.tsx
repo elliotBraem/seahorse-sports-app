@@ -6,7 +6,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="pb-16">
+    <div className="pb-[70px] md:pb-16">
       {children}
       <BottomNav />
     </div>
