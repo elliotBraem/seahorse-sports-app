@@ -13,10 +13,13 @@ interface TeamCardProps {
 
 export function TeamCard({ teamName, teamMetadata, isHome }: TeamCardProps) {
   return (
-    <div className="flex flex-col items-center gap-2" style={{ width: "200px", height: "180px" }}>
+    <div
+      className="flex flex-col items-center gap-2"
+      style={{ width: "200px", height: "180px" }}
+    >
       <div
         style={{
-          filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
+          filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
         }}
       >
         <FootballHelmet

@@ -2,7 +2,13 @@ export const dynamic = "force-dynamic";
 
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { listQuests } from "@/lib/api/quests";
 import { Metadata } from "next";
