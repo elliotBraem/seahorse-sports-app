@@ -48,7 +48,7 @@ VALUES (1, 1, NULL, NULL, '2025-02-09 18:30:00', 'superbowl', 30, 'upcoming',
 
 -- Insert quests
 INSERT INTO quests (campaign_id, name, description, points_value, verification_type, verification_data, start_date, end_date) 
-VALUES (1, 'Follow RenegadeFanClub', 'Follow @rngfanclub on Twitter', 10, 'social_follow', 
+VALUES (1, 'Follow us', 'Follow @rngfanclub on X', 10, 'social_follow', 
   '{"platform": "twitter", "action": "follow", "intent_url": "https://twitter.com/intent/follow?screen_name=rngfanclub"}',
   '2025-01-01', '2025-02-09');
 

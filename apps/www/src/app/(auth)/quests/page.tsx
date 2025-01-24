@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { listQuests } from "@/lib/api/quests";
 import { Metadata } from "next";
@@ -55,7 +55,7 @@ export default async function QuestsPage() {
               <Card key={quest.id}>
                 <CardHeader>
                   <CardTitle>{quest.name}</CardTitle>
-                  {/* <CardDescription>{quest.description}</CardDescription> */}
+                  <CardDescription>{quest.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
