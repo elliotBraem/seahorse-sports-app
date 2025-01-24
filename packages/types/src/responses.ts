@@ -40,7 +40,9 @@ export interface GameResponse {
   createdAt: string;
   // Additional fields from JOINs
   homeTeamName: string;
+  homeTeamMetadata: Record<string, any>;
   awayTeamName: string;
+  awayTeamMetadata: Record<string, any>;
   sportName: string;
 }
 

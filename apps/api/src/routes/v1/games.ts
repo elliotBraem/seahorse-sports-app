@@ -1,14 +1,14 @@
 import {
   CreateGameRequest,
-  UpdateGameRequest,
+  CreatePredictionRequest,
   GameResponse,
   GameStatus,
-  CreatePredictionRequest,
   PredictionResponse,
+  UpdateGameRequest,
 } from "@renegade-fanclub/types";
-import { createSuccessResponse, createErrorResponse } from "../../types/api";
-import { Env } from "../../types/env";
 import { requireAuth } from "../../middleware/auth";
+import { createErrorResponse, createSuccessResponse } from "../../types/api";
+import { Env } from "../../types/env";
 
 // GET /api/v1/games
 export async function handleListGames(
@@ -27,7 +27,9 @@ export async function handleListGames(
       `
       SELECT g.*, 
         ht.name as home_team_name,
+        ht.api_metadata as home_team_metadata,
         at.name as away_team_name,
+        at.api_metadata as away_team_metadata,
         s.name as sport_name
       FROM games g
       JOIN teams ht ON g.home_team_id = ht.id
@@ -40,25 +42,55 @@ export async function handleListGames(
 
     const games = await stmt.all();
 
-    const gameResponses: GameResponse[] = games.results.map((g) => ({
-      id: g.id as number,
-      campaignId: g.campaign_id as number,
-      sportId: g.sport_id as number,
-      homeTeamId: g.home_team_id as number,
-      awayTeamId: g.away_team_id as number,
-      startTime: g.start_time as string,
-      endTime: g.end_time as string | null,
-      winnerTeamId: g.winner_team_id as number | null,
-      gameType: g.game_type as string | null,
-      pointsValue: g.points_value as number,
-      status: g.status as GameStatus,
-      externalId: g.external_id as string | null,
-      apiMetadata: g.api_metadata as Record<string, unknown>,
-      createdAt: g.created_at as string,
-      homeTeamName: g.home_team_name as string,
-      awayTeamName: g.away_team_name as string,
-      sportName: g.sport_name as string,
-    }));
+    const gameResponses: GameResponse[] = games.results.map((g) => {
+      try {
+        return {
+          id: g.id as number,
+          campaignId: g.campaign_id as number,
+          sportId: g.sport_id as number,
+          homeTeamId: g.home_team_id as number,
+          awayTeamId: g.away_team_id as number,
+          startTime: g.start_time as string,
+          endTime: g.end_time as string | null,
+          winnerTeamId: g.winner_team_id as number | null,
+          gameType: g.game_type as string | null,
+          pointsValue: g.points_value as number,
+          status: g.status as GameStatus,
+          externalId: g.external_id as string | null,
+          apiMetadata: JSON.parse(g.api_metadata as string || '{}'),
+          createdAt: g.created_at as string,
+          homeTeamName: g.home_team_name as string,
+          homeTeamMetadata: JSON.parse(g.home_team_metadata as string || '{}'),
+          awayTeamName: g.away_team_name as string,
+          awayTeamMetadata: JSON.parse(g.away_team_metadata as string || '{}'),
+          sportName: g.sport_name as string,
+        };
+      } catch (error) {
+        console.error('[Game Metadata Parse Error]', error, g);
+        // Return with empty objects for metadata if parsing fails
+        return {
+          id: g.id as number,
+          campaignId: g.campaign_id as number,
+          sportId: g.sport_id as number,
+          homeTeamId: g.home_team_id as number,
+          awayTeamId: g.away_team_id as number,
+          startTime: g.start_time as string,
+          endTime: g.end_time as string | null,
+          winnerTeamId: g.winner_team_id as number | null,
+          gameType: g.game_type as string | null,
+          pointsValue: g.points_value as number,
+          status: g.status as GameStatus,
+          externalId: g.external_id as string | null,
+          apiMetadata: {},
+          createdAt: g.created_at as string,
+          homeTeamName: g.home_team_name as string,
+          homeTeamMetadata: {},
+          awayTeamName: g.away_team_name as string,
+          awayTeamMetadata: {},
+          sportName: g.sport_name as string,
+        };
+      }
+    });
 
     return createSuccessResponse(gameResponses, corsHeaders);
   } catch (error) {
@@ -95,7 +127,9 @@ export async function handleGetGame(
       `
       SELECT g.*, 
         ht.name as home_team_name,
+        ht.api_metadata as home_team_metadata,
         at.name as away_team_name,
+        at.api_metadata as away_team_metadata,
         s.name as sport_name
       FROM games g
       JOIN teams ht ON g.home_team_id = ht.id
@@ -116,25 +150,54 @@ export async function handleGetGame(
       );
     }
 
-    const gameResponse: GameResponse = {
-      id: game.id as number,
-      campaignId: game.campaign_id as number,
-      sportId: game.sport_id as number,
-      homeTeamId: game.home_team_id as number,
-      awayTeamId: game.away_team_id as number,
-      startTime: game.start_time as string,
-      endTime: game.end_time as string | null,
-      winnerTeamId: game.winner_team_id as number | null,
-      gameType: game.game_type as string | null,
-      pointsValue: game.points_value as number,
-      status: game.status as GameStatus,
-      externalId: game.external_id as string | null,
-      apiMetadata: game.api_metadata as Record<string, unknown>,
-      createdAt: game.created_at as string,
-      homeTeamName: game.home_team_name as string,
-      awayTeamName: game.away_team_name as string,
-      sportName: game.sport_name as string,
-    };
+    let gameResponse: GameResponse;
+    try {
+      gameResponse = {
+        id: game.id as number,
+        campaignId: game.campaign_id as number,
+        sportId: game.sport_id as number,
+        homeTeamId: game.home_team_id as number,
+        awayTeamId: game.away_team_id as number,
+        startTime: game.start_time as string,
+        endTime: game.end_time as string | null,
+        winnerTeamId: game.winner_team_id as number | null,
+        gameType: game.game_type as string | null,
+        pointsValue: game.points_value as number,
+        status: game.status as GameStatus,
+        externalId: game.external_id as string | null,
+        apiMetadata: JSON.parse(game.api_metadata as string || '{}'),
+        createdAt: game.created_at as string,
+        homeTeamName: game.home_team_name as string,
+        homeTeamMetadata: JSON.parse(game.home_team_metadata as string || '{}'),
+        awayTeamName: game.away_team_name as string,
+        awayTeamMetadata: JSON.parse(game.away_team_metadata as string || '{}'),
+        sportName: game.sport_name as string,
+      };
+    } catch (error) {
+      console.error('[Game Metadata Parse Error]', error, game);
+      // Return with empty objects for metadata if parsing fails
+      gameResponse = {
+        id: game.id as number,
+        campaignId: game.campaign_id as number,
+        sportId: game.sport_id as number,
+        homeTeamId: game.home_team_id as number,
+        awayTeamId: game.away_team_id as number,
+        startTime: game.start_time as string,
+        endTime: game.end_time as string | null,
+        winnerTeamId: game.winner_team_id as number | null,
+        gameType: game.game_type as string | null,
+        pointsValue: game.points_value as number,
+        status: game.status as GameStatus,
+        externalId: game.external_id as string | null,
+        apiMetadata: {},
+        createdAt: game.created_at as string,
+        homeTeamName: game.home_team_name as string,
+        homeTeamMetadata: {},
+        awayTeamName: game.away_team_name as string,
+        awayTeamMetadata: {},
+        sportName: game.sport_name as string,
+      };
+    }
 
     return createSuccessResponse(gameResponse, corsHeaders);
   } catch (error) {
@@ -165,7 +228,9 @@ export async function handleGetCurrentGames(
       `
       SELECT g.*, 
         ht.name as home_team_name,
+        ht.api_metadata as home_team_metadata,
         at.name as away_team_name,
+        at.api_metadata as away_team_metadata,
         s.name as sport_name
       FROM games g
       JOIN teams ht ON g.home_team_id = ht.id
@@ -179,25 +244,55 @@ export async function handleGetCurrentGames(
 
     const games = await stmt.all();
 
-    const gameResponses: GameResponse[] = games.results.map((g) => ({
-      id: g.id as number,
-      campaignId: g.campaign_id as number,
-      sportId: g.sport_id as number,
-      homeTeamId: g.home_team_id as number,
-      awayTeamId: g.away_team_id as number,
-      startTime: g.start_time as string,
-      endTime: g.end_time as string | null,
-      winnerTeamId: g.winner_team_id as number | null,
-      gameType: g.game_type as string | null,
-      pointsValue: g.points_value as number,
-      status: g.status as GameStatus,
-      externalId: g.external_id as string | null,
-      apiMetadata: g.api_metadata as Record<string, unknown>,
-      createdAt: g.created_at as string,
-      homeTeamName: g.home_team_name as string,
-      awayTeamName: g.away_team_name as string,
-      sportName: g.sport_name as string,
-    }));
+    const gameResponses: GameResponse[] = games.results.map((g) => {
+      try {
+        return {
+          id: g.id as number,
+          campaignId: g.campaign_id as number,
+          sportId: g.sport_id as number,
+          homeTeamId: g.home_team_id as number,
+          awayTeamId: g.away_team_id as number,
+          startTime: g.start_time as string,
+          endTime: g.end_time as string | null,
+          winnerTeamId: g.winner_team_id as number | null,
+          gameType: g.game_type as string | null,
+          pointsValue: g.points_value as number,
+          status: g.status as GameStatus,
+          externalId: g.external_id as string | null,
+          apiMetadata: JSON.parse(g.api_metadata as string || '{}'),
+          createdAt: g.created_at as string,
+          homeTeamName: g.home_team_name as string,
+          homeTeamMetadata: JSON.parse(g.home_team_metadata as string || '{}'),
+          awayTeamName: g.away_team_name as string,
+          awayTeamMetadata: JSON.parse(g.away_team_metadata as string || '{}'),
+          sportName: g.sport_name as string,
+        };
+      } catch (error) {
+        console.error('[Game Metadata Parse Error]', error, g);
+        // Return with empty objects for metadata if parsing fails
+        return {
+          id: g.id as number,
+          campaignId: g.campaign_id as number,
+          sportId: g.sport_id as number,
+          homeTeamId: g.home_team_id as number,
+          awayTeamId: g.away_team_id as number,
+          startTime: g.start_time as string,
+          endTime: g.end_time as string | null,
+          winnerTeamId: g.winner_team_id as number | null,
+          gameType: g.game_type as string | null,
+          pointsValue: g.points_value as number,
+          status: g.status as GameStatus,
+          externalId: g.external_id as string | null,
+          apiMetadata: {},
+          createdAt: g.created_at as string,
+          homeTeamName: g.home_team_name as string,
+          homeTeamMetadata: {},
+          awayTeamName: g.away_team_name as string,
+          awayTeamMetadata: {},
+          sportName: g.sport_name as string,
+        };
+      }
+    });
 
     return createSuccessResponse(gameResponses, corsHeaders);
   } catch (error) {
@@ -368,7 +463,7 @@ export async function handleUpdateGame(
   }
 }
 
-// POST /api/v1/games/:id/predict
+// POST /api/v1/games/predict
 export async function handleCreatePrediction(
   request: Request,
   env: Env,
@@ -377,8 +472,7 @@ export async function handleCreatePrediction(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const gameId = request.url.split("/").pop()?.split("/")[0];
-    const { predictedWinnerId } =
+    const { gameId, predictedWinnerId } =
       (await request.json()) as CreatePredictionRequest;
 
     if (!gameId || !predictedWinnerId) {

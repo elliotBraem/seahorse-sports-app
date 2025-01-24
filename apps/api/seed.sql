@@ -3,10 +3,10 @@ INSERT INTO sports (id, name, description, abbreviation, external_id) VALUES (1,
 INSERT INTO sports (id, name, description, abbreviation, external_id) VALUES (2, 'Basketball', 'Professional Basketball', 'NBA', 'NBA');
 
 -- Insert teams
-INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Philadelphia Eagles', 'PHI', 'PHI');
-INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Washington Commanders', 'WAS', 'WAS');
-INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Kansas City Chiefs', 'KC', 'KC');
-INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Buffalo Bills', 'BUF', 'BUF');
+INSERT INTO teams (sport_id, name, abbreviation, external_id, api_metadata) VALUES (1, 'Philadelphia Eagles', 'PHI', 'PHI', '{"location":"Philadelphia, Pennsylvania","colors":{"primary":"#004C54","secondary":"#A5ACAF"},"conference":"NFC","division":"NFC East"}');
+INSERT INTO teams (sport_id, name, abbreviation, external_id, api_metadata) VALUES (1, 'Washington Commanders', 'WAS', 'WAS', '{"location":"Landover, Maryland","colors":{"primary":"#5A1414","secondary":"#FFB612"},"conference":"NFC","division":"NFC East"}');
+INSERT INTO teams (sport_id, name, abbreviation, external_id, api_metadata) VALUES (1, 'Kansas City Chiefs', 'KC', 'KC', '{"location":"Kansas City, Missouri","colors":{"primary":"#E31837","secondary":"#FFB612"},"conference":"AFC","division":"AFC West"}');
+INSERT INTO teams (sport_id, name, abbreviation, external_id, api_metadata) VALUES (1, 'Buffalo Bills', 'BUF', 'BUF', '{"location":"Orchard Park, New York","colors":{"primary":"#00338D","secondary":"#C60C30"},"conference":"AFC","division":"AFC East"}');
 INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (1, 'Chicago Bears', 'CHI', 'CHI');
 INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (2, 'Denver Nuggets', 'DEN', 'DEN');
 INSERT INTO teams (sport_id, name, abbreviation, external_id) VALUES (2, 'Los Angeles Lakers', 'LAL', 'LAL');
@@ -32,10 +32,19 @@ INSERT INTO user_favorite_sports (user_id, sport_id) VALUES ('bearslover.testnst
 INSERT INTO user_favorite_sports (user_id, sport_id) VALUES ('0x3456789012345678901234567890123456789012', 2);
 INSERT INTO user_favorite_sports (user_id, sport_id) VALUES ('0x4444444444444444444444444444444444444444', 1);
 
--- Insert upcoming games
-INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status) VALUES (1, 1, 1, 2, '2025-01-28 13:00:00', 'regular_season', 10, 'upcoming');
-INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status) VALUES (1, 1, 3, 4, '2025-01-28 16:30:00', 'regular_season', 10, 'upcoming');
-INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status) VALUES (1, 1, NULL, NULL, '2025-02-09 18:30:00', 'superbowl', 30, 'upcoming');
+-- Insert championship games
+INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status, api_metadata) 
+VALUES (1, 1, 1, 2, '2025-01-26 15:00:00', 'conference_championship', 20, 'upcoming', 
+  '{"location": "Lincoln Financial Field, Philadelphia, Pennsylvania", "conference": "NFC"}');
+
+INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status, api_metadata) 
+VALUES (1, 1, 3, 4, '2025-01-26 18:30:00', 'conference_championship', 20, 'upcoming', 
+  '{"location": "GEHA Field at Arrowhead Stadium, Kansas City, Missouri", "conference": "AFC"}');
+
+-- Insert Super Bowl
+INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status, api_metadata) 
+VALUES (1, 1, NULL, NULL, '2025-02-09 18:30:00', 'superbowl', 30, 'upcoming',
+  '{"location": "Caesars Superdome, New Orleans, Louisiana"}');
 
 -- Insert quests
 INSERT INTO quests (campaign_id, name, description, points_value, verification_type, start_date, end_date) VALUES (1, 'Follow RenegadeFanClub', 'Follow @rngfanclub on Twitter', 5, 'social_follow', '2025-01-01', '2025-02-09');

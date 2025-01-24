@@ -25,11 +25,10 @@ export async function getCurrentGames(
 }
 
 export async function createPrediction(
-  gameId: number,
   data: CreatePredictionRequest,
   options?: ApiOptions,
 ): Promise<PredictionResponse> {
-  return apiRequest(`/games/${gameId}/predict`, {
+  return apiRequest(`/games/predict`, {
     method: "POST",
     body: data,
     options,
