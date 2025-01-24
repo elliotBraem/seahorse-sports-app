@@ -75,7 +75,7 @@ export default function Poll({ game }: { game: GameResponse }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="">
       {/* Dynamic Bar */}
       <div className="relative bg-gray-200 rounded-lg h-12 transition-all overflow-hidden flex items-center">
         <div

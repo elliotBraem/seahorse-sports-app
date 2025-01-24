@@ -54,11 +54,6 @@ export function Game({ gameId, initialGame }: GameProps) {
               <h2 className="text-2xl font-bold">
                 {currentGame.apiMetadata.conference as string} Championship
               </h2>
-              {typeof currentGame.apiMetadata.location === "string" && (
-                <p className="text-md text-gray-200 mt-1">
-                  {currentGame.apiMetadata.location}
-                </p>
-              )}
               <p className="text-md font-medium text-gray-300 mt-2">
                 {new Date(currentGame.startTime).toLocaleDateString(undefined, {
                   weekday: "long",
@@ -83,9 +78,7 @@ export function Game({ gameId, initialGame }: GameProps) {
           </div>
         )}
       </div>
-      <div className="space-y-8">
-        <Poll game={currentGame} />
-      </div>
+      <Poll game={currentGame} />
     </Container>
   );
 }
