@@ -36,19 +36,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { CopyLink } from "@/components/ui/copy-link";
+// import { CopyLink } from "@/components/ui/copy-link";
 import { getUserQuests } from "@/lib/api/quests";
-import { getUserProfile } from "@/lib/api/user";
+import { getUserPredictions, getUserProfile } from "@/lib/api/user";
 import { cn } from "@/lib/utils";
 import { Settings, Trophy } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { Header } from "@/components/header";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export default async function ProfilePage() {
-  const [profile, completedQuests] = await Promise.all([
+  const [profile, completedQuests, predictions] = await Promise.all([
     getUserProfile(),
     getUserQuests(),
+    getUserPredictions(),
   ]);
 
   const origin = headers().get("origin") || "";
@@ -56,6 +64,7 @@ export default async function ProfilePage() {
     (sum, quest) => sum + quest.pointsEarned,
     0,
   );
+  console.log(predictions);
 
   return (
     <>
@@ -69,48 +78,61 @@ export default async function ProfilePage() {
           </Link>
         }
       />
-      <Container title="Profile" description="Review your account details">
+      <Container>
+        <div className="flex flex-col items-center space-y-4">
+          <Avatar className="h-20 w-20">
+            <AvatarImage
+              src={profile.avatar ?? undefined}
+              alt={profile.username}
+            />
+            <AvatarFallback>{profile.username[0]}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-center">
+            <p className="font-semibold tracking-tight text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+              {profile.username}
+            </p>
+            <p className="text-sm text-muted-foreground overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+              {profile.email}
+            </p>
+          </div>
+          <div className="flex items-center space-x-4 bg-white/20 px-4 p-2 rounded-full">
+            <Trophy className="h-5 w-5 text-yellow-500" />
+            <span className="font-medium">{totalPoints}</span>
+          </div>
+        </div>
+
         <Card>
-          <CardHeader className="flex flex-row gap-4 items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage
-                  src={profile.avatar ?? undefined}
-                  alt={profile.username}
-                />
-                <AvatarFallback>{profile.username[0]}</AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-                  {profile.username}
-                </CardTitle>
-                <CardDescription className="overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-                  {profile.email}
-                </CardDescription>
-              </div>
-            </div>
-            <div className="flex items-end space-x-4">
-              <Link
-                href="/settings"
-                className={cn(
-                  "text-xs text-muted-foreground hover:text-primary",
-                )}
-              >
-                <Settings className="h-5 w-5" />
-              </Link>
-            </div>
+          <CardHeader className="px-2 py-4">
+            <CardTitle>Predictions</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <Trophy className="h-5 w-5 text-yellow-500" />
-              <span className="font-medium">{totalPoints} points</span>
-            </div>
-          </CardContent>
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full max-w-[90%]"
+          >
+            <CarouselContent>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <CarouselItem key={index} className="basis-1/3 lg:basis-1/5">
+                  <div className="p-1">
+                    <Card className="aspect-square p-0 w-full">
+                      <CardContent className="flex aspect-square items-center justify-center p-6">
+                        <span className="text-3xl font-semibold">
+                          {index + 1}
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselNext className=" h-12 w-12 text-xl border-none m-0 text-white" />
+          </Carousel>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Achievements</CardTitle>
+            <CardTitle>Quest Completions</CardTitle>
             <CardDescription>
               Your progress towards Super Bowl tickets
             </CardDescription>
