@@ -7,7 +7,8 @@ import { toast } from "react-hot-toast";
 
 export function GamePredictionForm({ game }: { game: GameResponse }) {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-  const { mutate: createPrediction, isPending: submitting } = useCreatePrediction();
+  const { mutate: createPrediction, isPending: submitting } =
+    useCreatePrediction();
 
   // Ensure metadata is properly structured with fallbacks
   const homeTeamColor = game.homeTeamMetadata?.colors?.primary || "#666666";
@@ -30,7 +31,7 @@ export function GamePredictionForm({ game }: { game: GameResponse }) {
           toast.error("Failed to submit prediction. Please try again.");
           console.error("Failed to submit prediction:", error);
         },
-      }
+      },
     );
   };
 

@@ -39,20 +39,22 @@ export function Game({ gameId, initialGame }: GameProps) {
         <Card className="p-6 mb-8">
           <div className="flex flex-col gap-6">
             <div className="flex justify-between items-center">
-              <TeamCard 
+              <TeamCard
                 teamName={currentGame.homeTeamName}
                 teamMetadata={currentGame.homeTeamMetadata}
                 isHome={true}
               />
-              
+
               <div className="text-center px-6 py-2">
-                <span className="text-2xl font-black bg-gray-900 text-white px-4 py-2 rounded-full">VS</span>
+                <span className="text-2xl font-black bg-gray-900 text-white px-4 py-2 rounded-full">
+                  VS
+                </span>
                 <p className="text-sm text-gray-600 mt-2">
                   {new Date(currentGame.startTime).toLocaleDateString()}
                 </p>
               </div>
-              
-              <TeamCard 
+
+              <TeamCard
                 teamName={currentGame.awayTeamName}
                 teamMetadata={currentGame.awayTeamMetadata}
                 isHome={false}
@@ -60,28 +62,40 @@ export function Game({ gameId, initialGame }: GameProps) {
             </div>
 
             <div className="text-center space-y-2">
-              {typeof currentGame.apiMetadata === 'object' && currentGame.apiMetadata !== null && 'location' in currentGame.apiMetadata && (
-                <p className="text-sm text-gray-600">{currentGame.apiMetadata.location as string}</p>
-              )}
-              {typeof currentGame.apiMetadata === 'object' && currentGame.apiMetadata !== null && 'conference' in currentGame.apiMetadata && (
-                <p className="text-xs font-semibold text-gray-500">{currentGame.apiMetadata.conference as string} Championship</p>
-              )}
+              {typeof currentGame.apiMetadata === "object" &&
+                currentGame.apiMetadata !== null &&
+                "location" in currentGame.apiMetadata && (
+                  <p className="text-sm text-gray-600">
+                    {currentGame.apiMetadata.location as string}
+                  </p>
+                )}
+              {typeof currentGame.apiMetadata === "object" &&
+                currentGame.apiMetadata !== null &&
+                "conference" in currentGame.apiMetadata && (
+                  <p className="text-xs font-semibold text-gray-500">
+                    {currentGame.apiMetadata.conference as string} Championship
+                  </p>
+                )}
               {currentGame.status === "completed" ? (
                 <div className="bg-gray-100 rounded-full px-4 py-2 inline-block">
                   <span className="font-semibold">
-                    Winner: {currentGame.winnerTeamId === currentGame.homeTeamId 
-                      ? currentGame.homeTeamName 
+                    Winner:{" "}
+                    {currentGame.winnerTeamId === currentGame.homeTeamId
+                      ? currentGame.homeTeamName
                       : currentGame.awayTeamName}
                   </span>
                 </div>
               ) : (
-                <div 
+                <div
                   className="bg-gray-900 text-white rounded-full px-6 py-2 inline-block mt-2"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(45,45,45,0.9) 100%)'
+                    background:
+                      "linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(45,45,45,0.9) 100%)",
                   }}
                 >
-                  <span className="font-bold">{currentGame.pointsValue} Points</span>
+                  <span className="font-bold">
+                    {currentGame.pointsValue} Points
+                  </span>
                 </div>
               )}
             </div>

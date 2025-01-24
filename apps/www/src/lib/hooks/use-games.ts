@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  listGames, 
-  getGame, 
-  getGamePredictions, 
-  createPrediction 
+import {
+  listGames,
+  getGame,
+  getGamePredictions,
+  createPrediction,
 } from "@/lib/api/games";
-import type { CreatePredictionRequest, GameResponse } from "@renegade-fanclub/types";
+import type {
+  CreatePredictionRequest,
+  GameResponse,
+} from "@renegade-fanclub/types";
 
 export function useGames(initialData?: GameResponse[]) {
   return useQuery({
@@ -37,7 +40,9 @@ export function useCreatePrediction() {
     mutationFn: (data: CreatePredictionRequest) => createPrediction(data),
     onSuccess: (_, variables) => {
       // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["game-predictions", variables.gameId] });
+      queryClient.invalidateQueries({
+        queryKey: ["game-predictions", variables.gameId],
+      });
     },
   });
 }

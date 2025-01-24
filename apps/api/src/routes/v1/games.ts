@@ -564,7 +564,7 @@ export async function handleGetGamePredictions(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const url = new URL(request.url);
-    const pathParts = url.pathname.split('/');
+    const pathParts = url.pathname.split("/");
     const gameId = pathParts[pathParts.length - 2]; // Get the second to last segment
 
     if (!gameId || isNaN(Number(gameId))) {
