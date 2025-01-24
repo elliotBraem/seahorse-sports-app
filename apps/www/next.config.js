@@ -2,13 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      path: false,
-      os: false,
-    };
-    return config;
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
   },
 };
 

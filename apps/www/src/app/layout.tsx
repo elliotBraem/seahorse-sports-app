@@ -1,9 +1,8 @@
-import NearProvider from "@/components/near-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
-import { Toaster } from "react-hot-toast";
 import { Metadata, Viewport } from "next";
+import { Toaster } from "react-hot-toast";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -80,9 +79,7 @@ export default function RootLayout({
         >
           <div className="h-full w-full">
             <Toaster />
-            <QueryProvider>
-              <NearProvider>{children}</NearProvider>
-            </QueryProvider>
+            <QueryProvider>{children}</QueryProvider>
           </div>
         </div>
       </body>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Login } from "./_components/login";
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { BackgroundImage } from "./_components/background-image";
 
 export const metadata: Metadata = {
   title: "Home | RNG Fan Club",
@@ -30,26 +31,33 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <Container>
-      <div className="flex min-h-dvh flex-col justify-center items-center px-4 text-center space-y-16">
-        <div className="w-64 h-64 relative">
-          <Image
-            src={"/images/rngfanclub-logo-white.png"}
-            alt="Renegade Fan Club"
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
-        <div className="space-y-6">
-          <Suspense fallback="Loading...">
-            <Login />
-          </Suspense>
-          <p className="text-center text-sm text-muted-foreground">
-            Connect with Apple or Google to start
-          </p>
-        </div>
+    <>
+    {/* Background layers */}
+      <div className="fixed inset-0 z-5">
+        {/* Base background image */}
+        <BackgroundImage />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/40" />
       </div>
-    </Container>
+      {/* Page content with contrast from the background (whether it is the black gradient, or the faded image) */}
+      <Container className="relative z-10">
+        <div className="flex h-screen overflow-hidden flex-col items-center px-4 py-12 z-20">
+          <div className="w-64 h-64">
+            <Image
+              src={"/images/rngfanclub-logo-white.png"}
+              alt="Renegade Fan Club"
+              width={256}
+              height={256}
+              className="w-full h-full object-contain"
+              priority
+            />
+          </div>
+          <div className="space-y-6">
+            <Suspense fallback="Loading...">
+              <Login />
+            </Suspense>
+          </div>
+        </div>
+      </Container>
+    </>
   );
 }
