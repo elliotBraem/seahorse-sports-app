@@ -1,10 +1,7 @@
 import { Container } from "@/components/ui/container";
-import { listGames } from "@/lib/api/games";
 import { GamesList } from "./_components/games-list";
 
 export default async function GamesPage() {
-  const initialGames = await listGames();
-
   return (
     <Container>
       <div className="py-8">
