@@ -1,18 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import { Metadata } from "next";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { listQuests } from "@/lib/api/quests";
-import Link from "next/link";
 import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Container } from "@/components/ui/container";
+import { listQuests } from "@/lib/api/quests";
+import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Quests | RNG Fan Club",
@@ -45,11 +39,8 @@ export default async function QuestsPage() {
   return (
     <>
       <Header />
-      <Container
-        title="Quests"
-        description="Complete quests to win Super Bowl tickets!"
-      >
-        <div className="grid gap-6 w-full">
+      <Container>
+        <div className="grid w-full">
           {quests.map((quest) => {
             const verificationData = quest.verificationData as {
               platform?: string;
@@ -64,11 +55,11 @@ export default async function QuestsPage() {
               <Card key={quest.id}>
                 <CardHeader>
                   <CardTitle>{quest.name}</CardTitle>
-                  <CardDescription>{quest.description}</CardDescription>
+                  {/* <CardDescription>{quest.description}</CardDescription> */}
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <span className="text-sm font-medium">
+                    <span className="text-base font-medium">
                       {quest.pointsValue} points
                     </span>
 
@@ -89,7 +80,7 @@ export default async function QuestsPage() {
 
                     {quest.verificationType === "prediction" &&
                       verificationData.game_link && (
-                        <Button variant="outline" asChild>
+                        <Button asChild>
                           <Link
                             href={verificationData.game_link}
                             className="w-full sm:w-auto"
@@ -100,14 +91,14 @@ export default async function QuestsPage() {
                       )}
                   </div>
 
-                  <div className="mt-4 text-sm text-muted-foreground">
+                  {/* <div className="mt-4 text-sm text-white/70">
                     Available until{" "}
                     {new Date(quest.endDate).toLocaleDateString("en-US", {
                       month: "long",
                       day: "numeric",
                       year: "numeric",
                     })}
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
             );
