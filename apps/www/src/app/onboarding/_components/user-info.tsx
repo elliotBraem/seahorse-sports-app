@@ -42,19 +42,19 @@ export function UserInfo({ onNext }: UserInfoProps) {
             }}
           />
         </div>
-        {!user?.email && (
-          <div>
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-              }}
-            />
-          </div>
-        )}
+        {/* {!user?.email && ( */}
+        <div>
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+          />
+        </div>
+        {/* )} */}
         {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       </div>
 
