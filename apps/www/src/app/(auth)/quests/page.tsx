@@ -62,60 +62,58 @@ export default async function QuestsPage() {
             };
 
             return (
-              <Link key={quest.id} href={`/quests/${quest.id}`}>
-                <Card key={quest.id}>
-                  <CardHeader>
-                    <CardTitle>{quest.name}</CardTitle>
-                    <CardDescription>{quest.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Trophy className="h-5 w-5 text-yellow-500" />
-                        <span className="text-sm font-medium">
-                          {quest.pointsValue} points
-                        </span>
-                      </div>
-
-                      {/* Quest-specific actions */}
-                      {quest.verificationType === "social_follow" &&
-                        verificationData.platform === "twitter" && (
-                          <Button asChild>
-                            <a
-                              href={verificationData.intent_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full sm:w-auto"
-                            >
-                              Follow on Twitter
-                            </a>
-                          </Button>
-                        )}
-
-                      {quest.verificationType === "prediction" &&
-                        verificationData.game_link && (
-                          <Button variant="outline" asChild>
-                            <Link
-                              href={verificationData.game_link}
-                              className="w-full sm:w-auto"
-                            >
-                              Make Prediction
-                            </Link>
-                          </Button>
-                        )}
+              <Card key={quest.id}>
+                <CardHeader>
+                  <CardTitle>{quest.name}</CardTitle>
+                  <CardDescription>{quest.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-500" />
+                      <span className="text-sm font-medium">
+                        {quest.pointsValue} points
+                      </span>
                     </div>
 
-                    <div className="mt-4 text-sm text-muted-foreground">
-                      Available until{" "}
-                      {new Date(quest.endDate).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                    {/* Quest-specific actions */}
+                    {quest.verificationType === "social_follow" &&
+                      verificationData.platform === "twitter" && (
+                        <Button asChild>
+                          <a
+                            href={verificationData.intent_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto"
+                          >
+                            Follow on Twitter
+                          </a>
+                        </Button>
+                      )}
+
+                    {quest.verificationType === "prediction" &&
+                      verificationData.game_link && (
+                        <Button variant="outline" asChild>
+                          <Link
+                            href={verificationData.game_link}
+                            className="w-full sm:w-auto"
+                          >
+                            Make Prediction
+                          </Link>
+                        </Button>
+                      )}
+                  </div>
+
+                  <div className="mt-4 text-sm text-muted-foreground">
+                    Available until{" "}
+                    {new Date(quest.endDate).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

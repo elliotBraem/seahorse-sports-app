@@ -32,7 +32,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-gray-800 bg-background shadow-[0_-4px_0_rgba(0,0,0,1)]">
-      <div className="container mx-auto flex h-[70px] items-center justify-around px-4 md:h-16">
+      <div className="container mx-auto flex h-24 items-center justify-around px-4 md:h-16">
         {links.map((link) => {
           const Icon = link.icon;
           const isActive = currentPath === link.to;
@@ -41,13 +41,13 @@ export function BottomNav() {
               key={link.to}
               href={link.to}
               className={cn(
-                "flex flex-col items-center justify-center h-12 w-12 rounded-xl bg-white/10 border backdrop-blur-lg shadow-md ",
+                "flex flex-col items-center justify-center h-16 w-16 rounded-xl bg-white/10 border backdrop-blur-lg shadow-md md:h-12 md:w-12 ",
                 isActive
                   ? " text-white border-white"
                   : "border-white/20 hover:border-white",
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-8 w-8 md:w-6 md:h-6" />
             </Link>
           );
         })}
