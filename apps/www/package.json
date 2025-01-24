@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.64.2",
     "@hookform/resolvers": "^3.10.0",
     "@keypom/fastauth": "^0.1.6",
     "@near-wallet-selector/bitte-wallet": "^8.9.12",
