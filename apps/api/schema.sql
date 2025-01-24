@@ -221,3 +221,9 @@ CREATE INDEX idx_games_status ON games(status);
 CREATE INDEX idx_user_favorites_team_id ON user_favorite_teams(team_id);
 CREATE INDEX idx_user_favorites_sport_id ON user_favorite_sports(sport_id);
 CREATE INDEX idx_user_social_accounts_platform ON user_social_accounts(platform, platform_user_id);
+
+-- Indexes for team and sport joins
+CREATE INDEX idx_games_home_team_id ON games(home_team_id);
+CREATE INDEX idx_games_away_team_id ON games(away_team_id);
+CREATE INDEX idx_games_sport_id ON games(sport_id);
+CREATE INDEX idx_teams_sport_id ON teams(sport_id);

@@ -1,4 +1,5 @@
 import NearProvider from "@/components/near-provider";
+import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
@@ -79,7 +80,9 @@ export default function RootLayout({
         >
           <div className="h-full w-full">
             <Toaster />
-            <NearProvider>{children}</NearProvider>
+            <QueryProvider>
+              <NearProvider>{children}</NearProvider>
+            </QueryProvider>
           </div>
         </div>
       </body>
