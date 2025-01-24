@@ -6,8 +6,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./button";
-import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 interface ReferLinkProps {
   title: string;
@@ -36,7 +37,7 @@ export function CopyLink({ title, description, link }: ReferLinkProps) {
           onClick={onCopy}
           className="flex-shrink-0 ml-2"
         >
-          <Copy className="h-4 w-4" />
+          <FontAwesomeIcon icon={faCopy} className="h-4 w-4" />
         </Button>
       </CardContent>
     </Card>

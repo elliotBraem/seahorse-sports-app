@@ -3,7 +3,8 @@
 import { Card } from "@/components/ui/card";
 import { useCreatePrediction, useGamePredictions } from "@/lib/hooks/use-games";
 import { GameResponse } from "@renegade-fanclub/types";
-import { CheckCircle2 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -128,13 +129,15 @@ export default function Poll({ game }: { game: GameResponse }) {
               onClick={() => handleVote(team.id, team.title)}
             >
               <div className="flex items-center justify-end">
-                <CheckCircle2
-                  style={
-                    selectedTeamId === team.id
-                      ? { color: team.color }
-                      : { color: "transparent" }
-                  }
-                />
+              <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size="lg"
+                    style={
+                      selectedTeamId === team.id
+                        ? { color: team.color }
+                        : { color: "transparent" }
+                    }
+                  />
               </div>
               <div className="flex flex-col items-center space-y-4 justify-between">
                 <span className="font-bold text-sm sm:text-xl mt-6 sm:mt-10">

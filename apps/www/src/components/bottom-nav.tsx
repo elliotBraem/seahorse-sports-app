@@ -1,6 +1,5 @@
 "use client";
 
-import { Gamepad2, Target, Trophy, User } from "lucide-react";
 import { cn } from "../lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -41,7 +40,6 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-gray-800 bg-background shadow-[0_-4px_0_rgba(0,0,0,1)]">
       <div className="container mx-auto flex h-24 items-center justify-around px-4 md:h-24 max-w-lg">
         {links.map((link) => {
-          const Icon = link.icon;
           const isActive = currentPath === link.to;
           return (
             <Link
