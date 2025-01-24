@@ -183,24 +183,20 @@ FROM user_points up
 JOIN users u ON u.id = up.user_id;
 
 CREATE VIEW all_time_leaderboard AS
-SELECT 
-    u.username,
-    u.avatar,
-    SUM(up.total_points) as total_points,
-    SUM(up.prediction_points) as prediction_points,
-    SUM(up.quest_points) as quest_points,
-    (
-        SELECT COUNT(*) + 1 
-        FROM (
-            SELECT SUM(up2.total_points) as total 
-            FROM user_points up2 
-            GROUP BY up2.user_id
-        ) sub 
-        WHERE sub.total > SUM(up.total_points)
-    ) as rank
-FROM user_points up
-JOIN users u ON u.id = up.user_id
-GROUP BY u.id, u.username, u.avatar;
+WITH ranked_users AS (
+    SELECT 
+        u.id as user_id,
+        u.username,
+        u.avatar,
+        SUM(up.total_points) as total_points,
+        SUM(up.prediction_points) as prediction_points,
+        SUM(up.quest_points) as quest_points,
+        ROW_NUMBER() OVER (ORDER BY SUM(up.total_points) DESC) as rank
+    FROM user_points up
+    JOIN users u ON u.id = up.user_id
+    GROUP BY u.id, u.username, u.avatar
+)
+SELECT * FROM ranked_users;
 
 CREATE VIEW team_fan_distribution AS
 SELECT 
@@ -221,3 +217,9 @@ CREATE INDEX idx_games_status ON games(status);
 CREATE INDEX idx_user_favorites_team_id ON user_favorite_teams(team_id);
 CREATE INDEX idx_user_favorites_sport_id ON user_favorite_sports(sport_id);
 CREATE INDEX idx_user_social_accounts_platform ON user_social_accounts(platform, platform_user_id);
+
+-- Indexes for team and sport joins
+CREATE INDEX idx_games_home_team_id ON games(home_team_id);
+CREATE INDEX idx_games_away_team_id ON games(away_team_id);
+CREATE INDEX idx_games_sport_id ON games(sport_id);
+CREATE INDEX idx_teams_sport_id ON teams(sport_id);

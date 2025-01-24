@@ -129,7 +129,7 @@ export async function handleV1Routes(
   }
 
   // Game Predictions
-  if (path.match(/^\/games\/\d+\/predict$/) && method === "POST") {
+  if (path.match("/games/predict") && method === "POST") {
     return await handleCreatePrediction(request, env, corsHeaders);
   }
   if (path.match(/^\/games\/\d+\/predictions$/) && method === "GET") {
