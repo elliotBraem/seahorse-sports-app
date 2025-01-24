@@ -2,9 +2,9 @@
 
 import { Card } from "@/components/ui/card";
 import { useCreatePrediction, useGamePredictions } from "@/lib/hooks/use-games";
-import { GameResponse } from "@renegade-fanclub/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GameResponse } from "@renegade-fanclub/types";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -75,7 +75,7 @@ export default function Poll({ game }: { game: GameResponse }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="">
       {/* Dynamic Bar */}
       <div className="relative bg-gray-200 rounded-lg h-12 transition-all overflow-hidden flex items-center">
         <div
@@ -84,11 +84,7 @@ export default function Poll({ game }: { game: GameResponse }) {
             width: `${homeTeamWidth}%`,
             backgroundColor: `${teams[0].color}`,
           }}
-        >
-          <div className="flex items-center justify-start h-full pl-4 text-white text-sm font-bold">
-            <span className="ml-2">{teams[0].title}</span>
-          </div>
-        </div>
+        ></div>
 
         {/* VS Sign on Bar */}
         <div
@@ -106,11 +102,7 @@ export default function Poll({ game }: { game: GameResponse }) {
             width: `${awayTeamWidth}%`,
             backgroundColor: `${teams[1].color}`,
           }}
-        >
-          <div className="flex items-center justify-end h-full pr-4 text-white text-sm font-bold">
-            <span className="ml-2">{teams[1].title}</span>
-          </div>
-        </div>
+        ></div>
       </div>
 
       {/* Main Game voting */}

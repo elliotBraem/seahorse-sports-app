@@ -1,6 +1,7 @@
 "use client";
 
 import { type GameResponse } from "@renegade-fanclub/types";
+import FootballHelmet from "@/components/football-helmet";
 
 interface TeamCardProps {
   teamName: string;
@@ -13,16 +14,29 @@ interface TeamCardProps {
 export function TeamCard({ teamName, teamMetadata, isHome }: TeamCardProps) {
   return (
     <div
-      className="flex-1 p-4 rounded-lg"
-      style={{
-        background: teamMetadata?.colors?.primary || "#666666",
-        color: "#FFFFFF",
-        boxShadow: `0 4px 6px -1px ${teamMetadata?.colors?.primary || "#666666"}33`,
-        textAlign: isHome ? "left" : "right",
-      }}
+      className="flex flex-col items-center gap-2"
+      style={{ width: "200px", height: "180px" }}
     >
-      <h3 className="font-bold text-lg">{teamName}</h3>
-      <p className="text-sm opacity-80">{isHome ? "Home Team" : "Away Team"}</p>
+      <div
+        style={{
+          filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+        }}
+      >
+        <FootballHelmet
+          primary={teamMetadata?.colors?.primary || "#666666"}
+          secondary={teamMetadata?.colors?.secondary || "#333333"}
+          size={120}
+          direction={isHome ? "right" : "left"}
+        />
+      </div>
+      <div
+        className="w-full"
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <h3 className="font-bold text-lg">{teamName}</h3>
+      </div>
     </div>
   );
 }
