@@ -61,9 +61,11 @@ export default async function QuestsPage() {
 
             return (
               <Card key={quest.id}>
-                <CardHeader className="flex flex-col sm:flex-row gap-4 items-start justify-between">
+                <CardHeader className="flex flex-row gap-4 items-start justify-between">
                   <div className="flex flex-col gap-4">
-                    <CardTitle>{quest.name}</CardTitle>
+                    <CardTitle className="text-wrap max-w-[250px] md:max-w-full leading-7">
+                      {quest.name}
+                    </CardTitle>
                     <CardDescription>{quest.description}</CardDescription>
                   </div>
 
