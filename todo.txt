@@ -4,4 +4,5 @@
 - comment out onboarding
 - use magic link?
 - handle predictions (set prediction)
-- games
+- games, this weekend and superbowl
+- hard code colors, location, name

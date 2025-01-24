@@ -1,24 +1,25 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { createPrediction } from "@/lib/api/games";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { type GameResponse } from "@renegade-fanclub/types";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function GamePredictionForm({ game }: { game: GameResponse }) {
   const router = useRouter();
-  const { user } = useAuth();
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Ensure metadata is properly structured with fallbacks
+  const homeTeamColor = game.homeTeamMetadata?.colors?.primary || "#666666";
+  const awayTeamColor = game.awayTeamMetadata?.colors?.primary || "#666666";
+
   const handlePredict = async () => {
-    if (!user || !selectedTeamId) return;
+    if (!selectedTeamId) return;
 
     setSubmitting(true);
     try {
-      await createPrediction(game.id, {
+      await createPrediction({
         gameId: game.id,
         predictedWinnerId: selectedTeamId,
       });
@@ -30,41 +31,57 @@ export function GamePredictionForm({ game }: { game: GameResponse }) {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="text-center p-6 bg-muted rounded-lg">
-        <p className="text-sm text-gray-500">
-          Please log in to make predictions
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex justify-center gap-4">
-        <Button
-          variant={selectedTeamId === game.homeTeamId ? "default" : "outline"}
+        <button
+          className={`px-6 py-3 rounded-lg transition-all ${
+            selectedTeamId === game.homeTeamId
+              ? "text-white"
+              : "text-gray-700 border-2"
+          }`}
+          style={{
+            background:
+              selectedTeamId === game.homeTeamId
+                ? homeTeamColor
+                : "transparent",
+            borderColor: homeTeamColor,
+          }}
           onClick={() => setSelectedTeamId(game.homeTeamId)}
         >
-          {game.homeTeamName} Wins
-        </Button>
-        <Button
-          variant={selectedTeamId === game.awayTeamId ? "default" : "outline"}
+          <span className="font-bold">{game.homeTeamName} Wins</span>
+        </button>
+        <button
+          className={`px-6 py-3 rounded-lg transition-all ${
+            selectedTeamId === game.awayTeamId
+              ? "text-white"
+              : "text-gray-700 border-2"
+          }`}
+          style={{
+            background:
+              selectedTeamId === game.awayTeamId
+                ? awayTeamColor
+                : "transparent",
+            borderColor: awayTeamColor,
+          }}
           onClick={() => setSelectedTeamId(game.awayTeamId)}
         >
-          {game.awayTeamName} Wins
-        </Button>
+          <span className="font-bold">{game.awayTeamName} Wins</span>
+        </button>
       </div>
-      
+
       {selectedTeamId && (
-        <Button
-          className="w-full"
+        <button
+          className="w-full px-6 py-3 rounded-lg text-white font-bold transition-all disabled:opacity-50"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(45,45,45,0.9) 100%)",
+          }}
           onClick={handlePredict}
           disabled={submitting}
         >
           {submitting ? "Submitting..." : "Submit Prediction"}
-        </Button>
+        </button>
       )}
     </div>
   );
