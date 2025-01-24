@@ -32,7 +32,7 @@ export default function Poll({ gameId, initialTeams }: PollProps) {
 
     try {
       setLoading(true);
-      await createPrediction(gameId, {
+      await createPrediction({
         gameId,
         predictedWinnerId: teamId,
       });

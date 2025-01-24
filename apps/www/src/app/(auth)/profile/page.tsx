@@ -39,8 +39,10 @@ import { Container } from "@/components/ui/container";
 // import { CopyLink } from "@/components/ui/copy-link";
 import { getUserQuests } from "@/lib/api/quests";
 import { getUserPredictions, getUserProfile } from "@/lib/api/user";
+import { listTeams } from "@/lib/api/teams";
+import { listGames } from "@/lib/api/games";
 import { cn } from "@/lib/utils";
-import { Settings, Trophy } from "lucide-react";
+import { Check, Clock, Settings, Trophy, X } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { Header } from "@/components/header";
@@ -49,15 +51,21 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 
 export default async function ProfilePage() {
-  const [profile, completedQuests, predictions] = await Promise.all([
-    getUserProfile(),
-    getUserQuests(),
-    getUserPredictions(),
-  ]);
+  const [profile, completedQuests, predictions, teams, games] =
+    await Promise.all([
+      getUserProfile(),
+      getUserQuests(),
+      getUserPredictions(),
+      listTeams(),
+      listGames(),
+    ]);
+
+  // Create maps for team names and game details
+  const teamMap = new Map(teams.map((team) => [team.id, team.name]));
+  const gameMap = new Map(games.map((game) => [game.id, game]));
 
   const origin = headers().get("origin") || "";
   const totalPoints = completedQuests.reduce(
@@ -105,29 +113,82 @@ export default async function ProfilePage() {
           <CardHeader className="px-2 py-4">
             <CardTitle>Predictions</CardTitle>
           </CardHeader>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="w-full max-w-[90%]"
-          >
-            <CarouselContent>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <CarouselItem key={index} className="basis-1/3 lg:basis-1/5">
-                  <div className="p-1">
-                    <Card className="aspect-square p-0 w-full">
-                      <CardContent className="flex aspect-square items-center justify-center p-6">
-                        <span className="text-3xl font-semibold">
-                          {index + 1}
-                        </span>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselNext className=" h-12 w-12 text-xl border-none m-0 text-white" />
-          </Carousel>
+          {predictions ? (
+            <p>
+              <Carousel
+                opts={{
+                  align: "start",
+                }}
+                className="w-full max-w-[90%]"
+              >
+                <CarouselContent>
+                  {predictions.map((prediction) => (
+                    <CarouselItem
+                      key={prediction.id}
+                      className="basis-1/2 lg:basis-1/5"
+                    >
+                      <div className="p-1">
+                        <Card className="aspect-square p-0 w-full">
+                          <CardContent className="flex aspect-square flex-col items-center justify-center p-4 text-center">
+                            <div
+                              className={cn(
+                                "mb-2 text-sm font-medium flex items-center gap-1",
+                                prediction.pointsEarned === null
+                                  ? "text-yellow-500" // Pending
+                                  : prediction.pointsEarned > 0
+                                    ? "text-green-500" // Won
+                                    : "text-red-500", // Lost
+                              )}
+                            >
+                              {prediction.pointsEarned === null ? (
+                                <>
+                                  <Clock className="h-4 w-4" />
+                                  <span>Pending</span>
+                                </>
+                              ) : prediction.pointsEarned > 0 ? (
+                                <>
+                                  <Check className="h-4 w-4" />
+                                  <span>+{prediction.pointsEarned}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <X className="h-4 w-4" />
+                                  <span>0</span>
+                                </>
+                              )}
+                            </div>
+                            <div className="text-xs space-y-1">
+                              <div className="font-semibold text-sm">
+                                {teamMap.get(prediction.predictedWinnerId) ||
+                                  "Unknown Team"}
+                              </div>
+                              {gameMap.get(prediction.gameId) && (
+                                <>
+                                  <div className="text-[10px] text-muted-foreground">
+                                    {gameMap.get(prediction.gameId)?.gameType ||
+                                      "Game"}
+                                  </div>
+                                  <div className="text-[10px] text-muted-foreground">
+                                    {new Date(
+                                      gameMap.get(prediction.gameId)
+                                        ?.startTime || "",
+                                    ).toLocaleDateString()}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselNext className=" h-12 w-12 text-xl border-none m-0 text-white" />
+              </Carousel>
+            </p>
+          ) : (
+            <p>No predictions yet</p>
+          )}
         </Card>
 
         <Card>
