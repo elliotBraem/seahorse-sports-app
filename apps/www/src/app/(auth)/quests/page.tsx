@@ -2,9 +2,17 @@ export const dynamic = "force-dynamic";
 
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { listQuests } from "@/lib/api/quests";
+import { faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -53,16 +61,27 @@ export default async function QuestsPage() {
 
             return (
               <Card key={quest.id}>
-                <CardHeader>
-                  <CardTitle>{quest.name}</CardTitle>
-                  <CardDescription>{quest.description}</CardDescription>
+                <CardHeader className="flex flex-col sm:flex-row gap-4 items-start justify-between">
+                  <div className="flex flex-col gap-4">
+                    <CardTitle>{quest.name}</CardTitle>
+                    <CardDescription>{quest.description}</CardDescription>
+                  </div>
+
+                  <div
+                    title={`You will earn ${quest.pointsValue} points for completing this quest`}
+                    className="flex items-center space-x-4 bg-white/20 px-4 p-1 rounded-full"
+                  >
+                    <FontAwesomeIcon
+                      icon={faTrophy}
+                      className="h-4 w-4 text-yellow-500"
+                    />
+                    <span className="text-base font-medium">
+                      {quest.pointsValue}
+                    </span>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <span className="text-base font-medium">
-                      {quest.pointsValue} points
-                    </span>
-
+                  <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-end">
                     {/* Quest-specific actions */}
                     {quest.verificationType === "social_follow" &&
                       verificationData.platform === "twitter" && (

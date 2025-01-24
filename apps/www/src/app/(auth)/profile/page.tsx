@@ -61,6 +61,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { CopyLink } from "@/components/ui/copy-link";
+import { Button } from "@/components/ui/button";
 
 export default async function ProfilePage() {
   const [profile, completedQuests, predictions, teams, games] =
@@ -125,7 +126,7 @@ export default async function ProfilePage() {
           <CardHeader className="px-2 py-4">
             <CardTitle>Predictions</CardTitle>
           </CardHeader>
-          {predictions ? (
+          {predictions.length > 0 ? (
             <p>
               <Carousel
                 opts={{
@@ -208,7 +209,14 @@ export default async function ProfilePage() {
               </Carousel>
             </p>
           ) : (
-            <p>No predictions yet</p>
+            <div className="flex flex-col items-start py-4 px-2 gap-4">
+              <p className="text-md">No predictions yet</p>
+              <Link href={"/games"}>
+                <Button variant={"outline"} className="">
+                  Make Predictions
+                </Button>
+              </Link>
+            </div>
           )}
         </Card>
 
