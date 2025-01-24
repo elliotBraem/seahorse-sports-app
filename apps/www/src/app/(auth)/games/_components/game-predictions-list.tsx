@@ -14,9 +14,7 @@ function PredictionCard({ prediction }: { prediction: PredictionResponse }) {
         <Avatar className="h-10 w-10">
           <AvatarImage src={userProfile?.avatar ?? undefined} />
           <AvatarFallback>
-            {(userProfile?.username ?? prediction.userId)
-              .charAt(0)
-              .toUpperCase()}
+            {(userProfile?.username ?? prediction.userId).charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">

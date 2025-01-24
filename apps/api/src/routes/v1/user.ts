@@ -117,11 +117,10 @@ export async function handleGetUserProfile(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const url = new URL(request.url);
-    const pathParts = url.pathname.split("/");
-    const requestedUserId =
-      pathParts[pathParts.length - 1] === "profile"
-        ? authenticatedRequest.user?.id
-        : pathParts[pathParts.length - 1];
+    const pathParts = url.pathname.split('/');
+    const requestedUserId = pathParts[pathParts.length - 1] === 'profile' 
+      ? authenticatedRequest.user?.id 
+      : pathParts[pathParts.length - 1];
 
     const stmt = env.DB.prepare(
       `

@@ -37,31 +37,28 @@ export function Game({ gameId, initialGame }: GameProps) {
       <div className="container py-8">
         <Card className="p-6 mb-8">
           <div className="flex flex-col gap-6">
-            {typeof currentGame.apiMetadata === "object" &&
-              currentGame.apiMetadata !== null &&
-              "conference" in currentGame.apiMetadata && (
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold">
-                    {currentGame.apiMetadata.conference as string} Championship
-                  </h2>
-                  {typeof currentGame.apiMetadata.location === "string" && (
-                    <p className="text-md text-gray-200 mt-1">
-                      {currentGame.apiMetadata.location}
-                    </p>
-                  )}
-                  <p className="text-md font-medium text-gray-300 mt-2">
-                    {new Date(currentGame.startTime).toLocaleDateString(
-                      undefined,
-                      {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      },
-                    )}
+            {typeof currentGame.apiMetadata === "object" && 
+             currentGame.apiMetadata !== null &&
+             "conference" in currentGame.apiMetadata && (
+              <div className="text-center">
+                <h2 className="text-2xl font-bold">
+                  {currentGame.apiMetadata.conference as string} Championship
+                </h2>
+                {typeof currentGame.apiMetadata.location === "string" && (
+                  <p className="text-md text-gray-200 mt-1">
+                    {currentGame.apiMetadata.location}
                   </p>
-                </div>
-              )}
+                )}
+                <p className="text-md font-medium text-gray-300 mt-2">
+                  {new Date(currentGame.startTime).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+            )}
 
             {currentGame.status === "completed" && (
               <div className="text-center">
