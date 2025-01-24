@@ -57,16 +57,20 @@ export async function handleListGames(
           pointsValue: g.points_value as number,
           status: g.status as GameStatus,
           externalId: g.external_id as string | null,
-          apiMetadata: JSON.parse(g.api_metadata as string || '{}'),
+          apiMetadata: JSON.parse((g.api_metadata as string) || "{}"),
           createdAt: g.created_at as string,
           homeTeamName: g.home_team_name as string,
-          homeTeamMetadata: JSON.parse(g.home_team_metadata as string || '{}'),
+          homeTeamMetadata: JSON.parse(
+            (g.home_team_metadata as string) || "{}",
+          ),
           awayTeamName: g.away_team_name as string,
-          awayTeamMetadata: JSON.parse(g.away_team_metadata as string || '{}'),
+          awayTeamMetadata: JSON.parse(
+            (g.away_team_metadata as string) || "{}",
+          ),
           sportName: g.sport_name as string,
         };
       } catch (error) {
-        console.error('[Game Metadata Parse Error]', error, g);
+        console.error("[Game Metadata Parse Error]", error, g);
         // Return with empty objects for metadata if parsing fails
         return {
           id: g.id as number,
@@ -165,16 +169,20 @@ export async function handleGetGame(
         pointsValue: game.points_value as number,
         status: game.status as GameStatus,
         externalId: game.external_id as string | null,
-        apiMetadata: JSON.parse(game.api_metadata as string || '{}'),
+        apiMetadata: JSON.parse((game.api_metadata as string) || "{}"),
         createdAt: game.created_at as string,
         homeTeamName: game.home_team_name as string,
-        homeTeamMetadata: JSON.parse(game.home_team_metadata as string || '{}'),
+        homeTeamMetadata: JSON.parse(
+          (game.home_team_metadata as string) || "{}",
+        ),
         awayTeamName: game.away_team_name as string,
-        awayTeamMetadata: JSON.parse(game.away_team_metadata as string || '{}'),
+        awayTeamMetadata: JSON.parse(
+          (game.away_team_metadata as string) || "{}",
+        ),
         sportName: game.sport_name as string,
       };
     } catch (error) {
-      console.error('[Game Metadata Parse Error]', error, game);
+      console.error("[Game Metadata Parse Error]", error, game);
       // Return with empty objects for metadata if parsing fails
       gameResponse = {
         id: game.id as number,
@@ -259,16 +267,20 @@ export async function handleGetCurrentGames(
           pointsValue: g.points_value as number,
           status: g.status as GameStatus,
           externalId: g.external_id as string | null,
-          apiMetadata: JSON.parse(g.api_metadata as string || '{}'),
+          apiMetadata: JSON.parse((g.api_metadata as string) || "{}"),
           createdAt: g.created_at as string,
           homeTeamName: g.home_team_name as string,
-          homeTeamMetadata: JSON.parse(g.home_team_metadata as string || '{}'),
+          homeTeamMetadata: JSON.parse(
+            (g.home_team_metadata as string) || "{}",
+          ),
           awayTeamName: g.away_team_name as string,
-          awayTeamMetadata: JSON.parse(g.away_team_metadata as string || '{}'),
+          awayTeamMetadata: JSON.parse(
+            (g.away_team_metadata as string) || "{}",
+          ),
           sportName: g.sport_name as string,
         };
       } catch (error) {
-        console.error('[Game Metadata Parse Error]', error, g);
+        console.error("[Game Metadata Parse Error]", error, g);
         // Return with empty objects for metadata if parsing fails
         return {
           id: g.id as number,

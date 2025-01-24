@@ -1,7 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { type PredictionResponse } from "@renegade-fanclub/types";
 
-export function GamePredictions({ predictions }: { predictions: PredictionResponse[] }) {
+export function GamePredictions({
+  predictions,
+}: {
+  predictions: PredictionResponse[];
+}) {
   if (!predictions.length) {
     return (
       <Card className="p-6">
