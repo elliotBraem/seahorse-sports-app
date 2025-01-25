@@ -79,7 +79,54 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    -webkit-tap-highlight-color: transparent;
+    @apply antialiased scroll-smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground font-['Poppins',_sans-serif];
+    @apply bg-background text-foreground font-['Poppins',_sans-serif] min-h-screen overflow-x-hidden;
+    @apply selection:bg-purple/30 selection:text-white;
+  }
+
+  /* Improved text rendering */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight text-balance;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    :root {
+      @apply touch-pan-x touch-pan-y;
+    }
+
+    body {
+      @apply text-[15px];
+    }
+
+    input, textarea, select, button {
+      @apply text-base;
+    }
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .scrollbar-custom {
+    @apply scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20;
+  }
+
+  /* Glass effect utility */
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-lg border border-white/10;
+  }
+
+  /* Safe area insets for modern mobile devices */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
