@@ -1,4 +1,3 @@
-import { getUserProfile } from "@/lib/api/user";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getAuthToken, verifyToken } from "./app/actions";
@@ -28,23 +27,21 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     } else {
       // Redirect to onboarding if incomplete or missing profile
-      try {
-        const profile = await getUserProfile();
-
-        // Check if profile exists and onboarding is complete
-        const needsOnboarding =
-          !profile?.profileData?.onboardingComplete ||
-          (!profile?.username && !profile?.email);
-
-        if (needsOnboarding && pathname !== "/onboarding") {
-          return NextResponse.redirect(new URL("/onboarding", request.url));
-        }
-      } catch (error) {
-        // If we can't fetch the profile, redirect to onboarding
-        if (pathname !== "/onboarding") {
-          return NextResponse.redirect(new URL("/onboarding", request.url));
-        }
-      }
+      // try {
+      //   const profile = await getUserProfile();
+      //   // Check if profile exists and onboarding is complete
+      //   const needsOnboarding =
+      //     !profile?.profileData?.onboardingComplete ||
+      //     (!profile?.username && !profile?.email);
+      //   if (needsOnboarding && pathname !== "/onboarding") {
+      //     return NextResponse.redirect(new URL("/onboarding", request.url));
+      //   }
+      // } catch (error) {
+      //   // If we can't fetch the profile, redirect to onboarding
+      //   if (pathname !== "/onboarding") {
+      //     return NextResponse.redirect(new URL("/onboarding", request.url));
+      //   }
+      // }
     }
   }
 
