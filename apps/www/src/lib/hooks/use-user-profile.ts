@@ -5,23 +5,37 @@ import { getCurrentUserInfo } from "@/lib/auth";
 import { type ProfileResponse } from "@renegade-fanclub/types";
 import { useQuery } from "@tanstack/react-query";
 
-export function useUserProfile() {
-  const { data: magicUser, ...magicQuery } = useQuery({
-    queryKey: ["magic-user"],
-    queryFn: getCurrentUserInfo,
-  });
+export function useUserProfile(userId?: string) {
+  if (!userId) {
+    const { data: magicUser, ...magicQuery } = useQuery({
+      queryKey: ["magic-user"],
+      queryFn: getCurrentUserInfo,
+    });
 
-  console.log("magicUser", magicUser);
+    console.log("magicUser", magicUser);
 
-  const profileQuery = useQuery<ProfileResponse>({
-    queryKey: ["user-profile", magicUser?.issuer],
-    queryFn: () => getUserProfile({ userId: magicUser?.issuer! }),
-    enabled: !!magicUser?.issuer,
-  });
+    const profileQuery = useQuery<ProfileResponse>({
+      queryKey: ["user-profile", magicUser?.issuer],
+      queryFn: () => getUserProfile({ userId: magicUser?.issuer! }),
+      enabled: !!magicUser?.issuer,
+    });
 
-  return {
-    data: profileQuery.data,
-    isLoading: magicQuery.isLoading || profileQuery.isLoading,
-    error: magicQuery.error || profileQuery.error,
-  };
+    return {
+      data: profileQuery.data,
+      isLoading: magicQuery.isLoading || profileQuery.isLoading,
+      error: magicQuery.error || profileQuery.error,
+    };
+  } else {
+    const profileQuery = useQuery<ProfileResponse>({
+      queryKey: ["user-profile", userId],
+      queryFn: () => getUserProfile({ userId: userId! }),
+      enabled: !!userId,
+    });
+
+    return {
+      data: profileQuery.data,
+      isLoading: profileQuery.isLoading,
+      error: profileQuery.error,
+    };
+  }
 }
