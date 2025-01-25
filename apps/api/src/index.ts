@@ -16,13 +16,17 @@ const getCorsHeaders = (request: Request, env: Env): Record<string, string> => {
     "Access-Control-Max-Age": "",
   };
 
-  if (origin && allowedOrigins.includes(origin)) {
-    headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Methods"] =
-      "GET, POST, PATCH, DELETE, OPTIONS";
-    headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
-    headers["Access-Control-Allow-Credentials"] = "true";
-    headers["Access-Control-Max-Age"] = "86400";
+  if (origin) {
+    if (allowedOrigins.includes(origin)) {
+      headers["Access-Control-Allow-Origin"] = origin;
+      headers["Access-Control-Allow-Methods"] =
+        "GET, POST, PATCH, DELETE, OPTIONS";
+      headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+      headers["Access-Control-Allow-Credentials"] = "true";
+      headers["Access-Control-Max-Age"] = "86400";
+    } else {
+      console.error(`[CORS Error] Origin "${origin}" not allowed. Allowed origins:`, allowedOrigins);
+    }
   }
 
   return headers;
@@ -35,8 +39,20 @@ export default {
     const method = request.method;
 
     // Handle CORS preflight requests
+    const corsHeaders = getCorsHeaders(request, env);
     if (method === "OPTIONS") {
-      return createSuccessResponse(null, getCorsHeaders(request, env));
+      return createSuccessResponse(null, corsHeaders);
+    }
+
+    const origin = request.headers.get("Origin");
+    // If there's an origin but no CORS headers were set, the origin is not allowed
+    if (origin && !corsHeaders["Access-Control-Allow-Origin"]) {
+      return createErrorResponse(
+        "CORS_ERROR",
+        "Origin not allowed",
+        403,
+        corsHeaders
+      );
     }
 
     try {
