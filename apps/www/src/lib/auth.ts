@@ -76,13 +76,7 @@ export async function loginWithEmail(email: string) {
       },
     });
 
-    if (res.ok) {
-      const userMetadata = await magic.user.getMetadata();
-      toast({
-        title: "Success",
-        description: "Logged in successfully!",
-      });
-    } else {
+    if (!res.ok) {
       toast({
         variant: "destructive",
         title: "Login Failed",
@@ -106,13 +100,7 @@ export async function loginWithPhoneNumber(phoneNumber: string) {
       },
     });
 
-    if (res.ok) {
-      const userMetadata = await magic.user.getMetadata();
-      toast({
-        title: "Success",
-        description: "Logged in successfully!",
-      });
-    } else {
+    if (!res.ok) {
       toast({
         variant: "destructive",
         title: "Login Failed",
@@ -123,9 +111,21 @@ export async function loginWithPhoneNumber(phoneNumber: string) {
 }
 
 export async function getCurrentUserInfo() {
-  const magic = createMagic(MAGIC_PUBLISHABLE_KEY);
-  if (magic) {
-    return await magic.user.getInfo();
+  try {
+    const magic = createMagic(MAGIC_PUBLISHABLE_KEY);
+    if (!magic) {
+      throw new Error("Magic SDK not initialized");
+    }
+
+    const isLoggedIn = await magic.user.isLoggedIn();
+    if (!isLoggedIn) {
+      throw new Error("User not logged in");
+    }
+
+    return await magic.user.getMetadata();
+  } catch (error) {
+    console.error("Failed to get user info:", error);
+    return null;
   }
 }
 

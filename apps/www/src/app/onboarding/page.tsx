@@ -16,19 +16,18 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("userInfo");
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
-  const [initialData, setInitialData] = useState<{ email?: string }>({});
+  const [initialData, setInitialData] = useState<{
+    email?: string;
+    phoneNumber?: string;
+  }>({});
   const { toast } = useToast();
 
   // Get initial data from Magic SDK
   useEffect(() => {
     async function getInitialData() {
-      try {
-        const userInfo = await getCurrentUserInfo();
-        if (userInfo?.email) {
-          setInitialData({ email: userInfo.email });
-        }
-      } catch (error) {
-        console.error("Failed to get user info:", error);
+      const userInfo = await getCurrentUserInfo();
+      if (userInfo?.email) {
+        setInitialData({ email: userInfo.email });
       }
     }
     getInitialData();
@@ -69,19 +68,17 @@ export default function OnboardingPage() {
                 initialEmail={initialData.email}
                 onNext={async (username, email) => {
                   try {
-                    const userInfo = await getCurrentUserInfo();
-
-                    // Both fields are required and validated by UserInfo component
+                    // Create profile with required fields
                     await createUserProfile({
                       username,
                       email,
                       profileData: {
-                        issuer: userInfo?.issuer,
                         onboardingComplete: true,
+                        phoneNumber: initialData?.phoneNumber,
                       },
                     });
 
-                    router.replace("/quests");
+                    router.push("/quests");
                   } catch (error) {
                     console.error("Failed to create profile:", error);
                     toast({

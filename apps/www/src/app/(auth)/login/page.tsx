@@ -38,7 +38,7 @@ function LoginContent() {
       } else if (loginType === "phone") {
         await loginWithPhoneNumber(value);
       }
-      router.push("/");
+      router.push("/quests");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
