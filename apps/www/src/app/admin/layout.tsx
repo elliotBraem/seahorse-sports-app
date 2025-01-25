@@ -6,7 +6,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Container title="Admin Dashboard">
+    <Container>
       <div className="flex flex-col space-y-4">{children}</div>
     </Container>
   );

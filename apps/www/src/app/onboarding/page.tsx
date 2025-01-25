@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { createUserProfile } from "@/lib/api/user";
+import { getCurrentUserInfo } from "@/lib/auth";
 import { Sport } from "@renegade-fanclub/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -49,15 +50,20 @@ export default function OnboardingPage() {
               <UserInfo
                 onNext={async (username, email) => {
                   try {
+                    const userInfo = await getCurrentUserInfo();
+                    
                     await createUserProfile({
-                      username,
-                      email,
-                      profileData: { onboardingComplete: true },
+                      username: username || userInfo?.email?.split("@")[0] || `user_${Date.now()}`,
+                      email: email || userInfo?.email || undefined,
+                      profileData: {
+                        issuer: userInfo?.issuer,
+                        onboardingComplete: true,
+                      },
                     });
+                    
                     router.replace("/quests");
-                    // setCurrentStep("sports");
                   } catch (error) {
-                    console.error("Failed to update user info:", error);
+                    console.error("Failed to create profile:", error);
                   }
                 }}
               />

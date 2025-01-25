@@ -10,7 +10,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
+import { createUserProfile } from "@/lib/api";
 import { listQuests } from "@/lib/api/quests";
+import { getCurrentUserInfo } from "@/lib/auth";
 import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Metadata } from "next";

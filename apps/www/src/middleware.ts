@@ -32,16 +32,16 @@ export async function middleware(request: NextRequest) {
         const profile = await getUserProfile();
 
         // Check if profile exists and has required fields
-        // const isProfileComplete = profile && profile.username && profile.email;
+        const isProfileComplete = profile && profile.username && profile.email;
 
-        // if (!isProfileComplete && pathname !== "/onboarding") {
-        //   return NextResponse.redirect(new URL("/onboarding", request.url));
-        // }
+        if (!isProfileComplete && pathname !== "/onboarding") {
+          return NextResponse.redirect(new URL("/onboarding", request.url));
+        }
       } catch (error) {
         // If we can't fetch the profile, redirect to onboarding
-        // if (pathname !== "/onboarding") {
-        //   return NextResponse.redirect(new URL("/onboarding", request.url));
-        // }
+        if (pathname !== "/onboarding") {
+          return NextResponse.redirect(new URL("/onboarding", request.url));
+        }
       }
     }
   }

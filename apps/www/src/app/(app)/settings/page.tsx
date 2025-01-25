@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateUserProfile } from "@/lib/api/user";
 import { logout } from "@/lib/auth";
-import { useAuthStore } from "@/lib/store";
+import { useUserProfile } from "@/lib/hooks/use-user-profile";
 import { faArrowRight, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,13 +37,13 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function SettingsPage() {
-  const { user, accountId } = useAuthStore();
+  const { data: user } = useUserProfile();
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { email: user?.email },
+    defaultValues: { email: user?.email || undefined },
   });
 
   const onSubmit = async (data: FormData) => {
@@ -72,7 +72,7 @@ export default function SettingsPage() {
   };
 
   // Show not found if no user is authenticated
-  if (!user && !accountId) {
+  if (!user) {
     return <div>Not authenticated</div>;
   }
 
@@ -137,7 +137,7 @@ export default function SettingsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">{accountId}</p>
+              <p className="text-sm text-muted-foreground">{user.id}</p>
             </div>
           </div>
         </div>

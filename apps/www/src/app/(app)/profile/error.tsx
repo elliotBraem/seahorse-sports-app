@@ -10,6 +10,12 @@ export default function ProfileError({
   reset: () => void;
 }) {
   return (
-    <ErrorBoundary error={error} reset={reset} title="Failed to load profile" />
+    <>
+      <ErrorBoundary
+        error={error}
+        reset={reset}
+        title="Failed to load profile"
+      />
+    </>
   );
 }
