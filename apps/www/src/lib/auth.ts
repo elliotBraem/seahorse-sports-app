@@ -1,7 +1,5 @@
 import { OAuthExtension } from "@magic-ext/oauth2";
-import { Magic, MagicUserMetadata, RPCError, RPCErrorCode } from "magic-sdk";
-
-
+import { Magic, RPCError, RPCErrorCode } from "magic-sdk";
 
 // Build the key into the client
 const MAGIC_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MAGIC_API_KEY!
