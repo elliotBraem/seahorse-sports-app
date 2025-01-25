@@ -65,7 +65,7 @@ export function Login() {
       </div>
 
       <Button
-        onClick={() => router.push("/auth/email")}
+        onClick={() => router.push("/login?type=email")}
         className="rounded-full"
         size="lg"
       >
@@ -73,7 +73,7 @@ export function Login() {
       </Button>
 
       <Button
-        onClick={() => router.push("/auth/phone")}
+        onClick={() => router.push("/login?type=phone")}
         className="rounded-full"
         size="lg"
       >

@@ -1,9 +1,9 @@
 import { Container } from "@/components/ui/container";
 import Image from "next/image";
-import { Login } from "./auth/_components/login";
+import { Login } from "./(auth)/_components/login";
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { BackgroundImage } from "./auth/_components/background-image";
+import { BackgroundImage } from "./(auth)/_components/background-image";
 
 export const metadata: Metadata = {
   title: "Home | RNG Fan Club",

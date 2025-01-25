@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateUserProfile } from "@/lib/api/user";
+import { logout } from "@/lib/auth";
 import { useAuthStore } from "@/lib/store";
 import { faArrowRight, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,7 +38,7 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function SettingsPage() {
-  const { user, accountId, disconnectWallet } = useAuthStore();
+  const { user, accountId } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -143,11 +144,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex items-center ">
-          <Button
-            className="w-full"
-            disabled={isLoading}
-            onClick={disconnectWallet}
-          >
+          <Button className="w-full" disabled={isLoading} onClick={logout}>
             {isLoading ? (
               <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
             ) : (
