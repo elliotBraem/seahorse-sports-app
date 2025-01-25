@@ -11,6 +11,7 @@ export async function authenticateUser(
     throw new Error("UNAUTHORIZED");
   }
 
+  let isAdmin = false;
   const token = authHeader.split(" ")[1];
 
   try {
@@ -25,10 +26,12 @@ export async function authenticateUser(
     }
 
     // Check if user is in admin whitelist
-    const adminWhitelist = env.ADMIN_WHITELIST.split(",").map((id) =>
-      id.trim(),
-    );
-    const isAdmin = adminWhitelist.includes(payload.sub);
+    if (env.ADMIN_WHITELIST) {
+      const adminWhitelist = env.ADMIN_WHITELIST.split(",").map((id) =>
+        id.trim(),
+      );
+      isAdmin = adminWhitelist.includes(payload.sub);
+    }
 
     // Add user data to request
     const authenticatedRequest = request as AuthenticatedRequest;
