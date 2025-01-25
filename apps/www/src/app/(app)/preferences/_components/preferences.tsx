@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Container } from "@/components/ui/container";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -83,10 +82,9 @@ export default function Preferences({ preferences }: PrrferencesProps) {
   };
 
   return (
-    <Container
-      title="Preferences"
-      description="Choose Favorite Sports, Teams, Leagues, Athletes!"
-    >
+    <div>
+      <h1 className="text-2xl font-bold mb-2">Preferences</h1>
+      <p className="text-muted-foreground mb-6">Choose Favorite Sports, Teams, Leagues, Athletes!</p>
       <div className="space-y-6">
         {preferences.map((categoryObj, index) => {
           const key = Object.keys(categoryObj)[0];
@@ -121,6 +119,6 @@ export default function Preferences({ preferences }: PrrferencesProps) {
           Submit Preferences
         </Button>
       </div>
-    </Container>
+    </div>
   );
 }

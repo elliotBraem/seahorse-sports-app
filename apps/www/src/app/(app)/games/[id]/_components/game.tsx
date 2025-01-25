@@ -3,7 +3,6 @@
 import Poll from "@/app/(app)/games/_components/poll";
 import { TeamCard } from "@/app/(app)/games/_components/team-card";
 import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
 import { useGame } from "@/lib/hooks/use-games";
 import { type GameResponse } from "@renegade-fanclub/types";
 
@@ -18,8 +17,7 @@ export function Game({ gameId, initialGame }: GameProps) {
 
   if (isLoading && !initialGame) {
     return (
-      <Container>
-        <div className="container py-8">
+      <div className="py-8">
           <div className="animate-pulse">
             <Card className="p-6 mb-8">
               <div className="h-48 bg-gray-200 rounded-lg"></div>
@@ -28,12 +26,11 @@ export function Game({ gameId, initialGame }: GameProps) {
             <div className="h-64 bg-gray-200 rounded-lg"></div>
           </div>
         </div>
-      </Container>
     );
   }
 
   return (
-    <Container>
+    <>
       <div className="flex justify-center gap-8">
         <TeamCard
           teamName={currentGame.homeTeamName}
@@ -79,6 +76,6 @@ export function Game({ gameId, initialGame }: GameProps) {
         )}
       </div>
       <Poll game={currentGame} />
-    </Container>
+    </>
   );
 }

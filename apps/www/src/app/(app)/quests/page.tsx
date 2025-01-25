@@ -47,7 +47,7 @@ export default async function QuestsPage() {
   return (
     <>
       <Header />
-      <Container>
+      <Container className="m-4">
         <div className="grid w-full">
           {quests.map((quest) => {
             const verificationData = quest.verificationData as {
@@ -61,9 +61,9 @@ export default async function QuestsPage() {
 
             return (
               <Card key={quest.id}>
-                <CardHeader className="flex flex-row gap-4 items-start justify-between">
-                  <div className="flex flex-col gap-4">
-                    <CardTitle className="text-wrap max-w-[250px] md:max-w-full leading-7">
+                <CardHeader className="flex flex-row gap-4 items-start justify-between p-3 sm:p-6">
+                  <div className="flex flex-col gap-2 sm:gap-4 min-w-0">
+                    <CardTitle className="text-wrap leading-7 break-words">
                       {quest.name}
                     </CardTitle>
                     <CardDescription>{quest.description}</CardDescription>
@@ -71,7 +71,7 @@ export default async function QuestsPage() {
 
                   <div
                     title={`You will earn ${quest.pointsValue} points for completing this quest`}
-                    className="flex items-center space-x-4 bg-white/20 px-4 p-1 rounded-full"
+                    className="flex items-center space-x-2 bg-white/20 px-3 py-1 rounded-full shrink-0"
                   >
                     <FontAwesomeIcon
                       icon={faTrophy}
@@ -82,7 +82,7 @@ export default async function QuestsPage() {
                     </span>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                   <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-end">
                     {/* Quest-specific actions */}
                     {quest.verificationType === "social_follow" &&

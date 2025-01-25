@@ -1,4 +1,5 @@
 import { BottomNav } from "@/components/bottom-nav";
+import { Container } from "@/components/ui/container";
 
 export default function AuthLayout({
   children,
@@ -7,7 +8,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="pb-24 md:pb-24">
-      {children}
+      <Container>{children}</Container>
       <BottomNav />
     </div>
   );

@@ -11,18 +11,19 @@ interface UserInfoProps {
 
 export function UserInfo({ onNext }: UserInfoProps) {
   const { data: profile, isLoading } = useUserProfile();
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(profile?.username || "");
+  const [email, setEmail] = useState(profile?.email || "");
   const [error, setError] = useState("");
 
+  // Update fields if profile loads after component mount
   useEffect(() => {
-    if (profile?.username) {
-      setUsername(profile.username);
-    }
-    if (profile?.email) {
+    if (profile?.email && !email) {
       setEmail(profile.email);
     }
-  }, [profile]);
+    if (profile?.username && !username) {
+      setUsername(profile.username);
+    }
+  }, [profile, email, username]);
 
   const handleSubmit = () => {
     if (!username.trim()) {
@@ -68,7 +69,7 @@ export function UserInfo({ onNext }: UserInfoProps) {
       <div className="flex justify-end">
         <Button
           onClick={handleSubmit}
-          disabled={isLoading || !username.trim() || !email.trim()}
+          disabled={!username.trim() || !email.trim()}
         >
           Next
         </Button>

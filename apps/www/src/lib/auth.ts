@@ -46,6 +46,7 @@ export async function loginWithGoogle() {
       magic.oauth2.loginWithRedirect({
         provider: "google",
         redirectURI: CALLBACK_URL,
+        scope: ["email"]
       }),
     );
   }

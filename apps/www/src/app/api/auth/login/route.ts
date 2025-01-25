@@ -56,13 +56,16 @@ export async function POST(request: Request) {
       profileData: {
         issuer: userMetadata.issuer,
         publicAddress: userMetadata.publicAddress,
+        oauthProvider: userMetadata.oauthProvider,
+        wallets: userMetadata.wallets,
+        phoneNumber: userMetadata.phoneNumber,
       },
     });
 
     // Return success and redirect to app
     return NextResponse.json({
       status: "success",
-      redirect: "/",
+      redirect: "/quests",
     });
   } catch (error) {
     console.error("Login error:", error);

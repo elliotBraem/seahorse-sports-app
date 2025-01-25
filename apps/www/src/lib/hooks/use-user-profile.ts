@@ -7,21 +7,32 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useUserProfile(userId?: string) {
   if (!userId) {
-    const { data: magicUser, ...magicQuery } = useQuery({
+    const magicQuery = useQuery({
       queryKey: ["magic-user"],
       queryFn: getCurrentUserInfo,
+      staleTime: 1000 * 60 * 1, // Cache for 1 minutes
     });
 
-    console.log("magicUser", magicUser);
+    const magicUser = magicQuery.data;
 
     const profileQuery = useQuery<ProfileResponse>({
       queryKey: ["user-profile", magicUser?.issuer],
       queryFn: () => getUserProfile({ userId: magicUser?.issuer! }),
       enabled: !!magicUser?.issuer,
+      staleTime: 1000 * 60 * 1, // Cache for 1 minutes
     });
 
+    const combinedData = magicUser && {
+      ...profileQuery.data,
+      issuer: magicUser.issuer,
+      publicAddress: magicUser.publicAddress,
+      email: magicUser.email,
+      phoneNumber: magicUser.phoneNumber,
+      isMfaEnabled: magicUser.isMfaEnabled,
+    };
+
     return {
-      data: profileQuery.data,
+      data: combinedData || null,
       isLoading: magicQuery.isLoading || profileQuery.isLoading,
       error: magicQuery.error || profileQuery.error,
     };
@@ -30,10 +41,14 @@ export function useUserProfile(userId?: string) {
       queryKey: ["user-profile", userId],
       queryFn: () => getUserProfile({ userId: userId! }),
       enabled: !!userId,
+      staleTime: 1000 * 60 * 1, // Cache for 1 minutes
     });
 
     return {
-      data: profileQuery.data,
+      data: profileQuery.data ? {
+        ...profileQuery.data,
+        issuer: userId,
+      } : null,
       isLoading: profileQuery.isLoading,
       error: profileQuery.error,
     };

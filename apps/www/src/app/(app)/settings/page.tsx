@@ -3,7 +3,6 @@
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 
-import { Container } from "@/components/ui/container";
 import {
   Form,
   FormControl,
@@ -80,7 +79,7 @@ export default function SettingsPage() {
   return (
     <>
       <Header showtitle={true} showBackButton={true} />
-      <Container>
+      <div className="space-y-6">
         {user && (
           <Form {...form}>
             <form
@@ -152,7 +151,7 @@ export default function SettingsPage() {
             )}
           </Button>
         </div>
-      </Container>
+      </div>
     </>
   );
 }

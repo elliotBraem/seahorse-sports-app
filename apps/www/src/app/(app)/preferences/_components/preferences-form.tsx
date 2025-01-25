@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Container } from "@/components/ui/container";
 import { addFavoriteTeam } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -74,10 +73,9 @@ export default function PreferencesForm({ preferences }: PreferencesFormProps) {
   };
 
   return (
-    <Container
-      title="Preferences"
-      description="Choose your favorite sports and teams!"
-    >
+    <div>
+      <h1 className="text-2xl font-bold mb-2">Preferences</h1>
+      <p className="text-muted-foreground mb-6">Choose your favorite sports and teams!</p>
       <div className="space-y-6">
         {preferences.map((categoryObj, index) => {
           const key = Object.keys(categoryObj)[0];
@@ -110,6 +108,6 @@ export default function PreferencesForm({ preferences }: PreferencesFormProps) {
           Submit Preferences
         </Button>
       </div>
-    </Container>
+    </div>
   );
 }

@@ -35,8 +35,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-// import { CopyLink } from "@/components/ui/copy-link";
 import { getUserQuests } from "@/lib/api/quests";
 import { getUserPredictions, getUserProfile } from "@/lib/api/user";
 import { listTeams } from "@/lib/api/teams";
@@ -96,8 +94,7 @@ export default async function ProfilePage() {
           </Link>
         }
       />
-      <Container>
-        <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-4">
           <Avatar className="h-20 w-20">
             <AvatarImage
               src={profile.avatar ?? undefined}
@@ -255,7 +252,6 @@ export default async function ProfilePage() {
           description="Earn points for referring friends. Achieved when your referral completes the quest"
           link={`${origin}/refer/${profile.id}`}
         /> */}
-      </Container>
     </>
   );
 }
