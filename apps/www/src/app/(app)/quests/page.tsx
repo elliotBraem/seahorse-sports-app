@@ -49,8 +49,8 @@ export default async function QuestsPage() {
   return (
     <>
       <Header />
-      <Container className="m-4">
-        <div className="grid w-full">
+      <Container>
+        <div className="grid px-2">
           {quests.map((quest) => {
             const verificationData = quest.verificationData as {
               platform?: string;
@@ -62,29 +62,31 @@ export default async function QuestsPage() {
             };
 
             return (
-              <Card key={quest.id}>
-                <CardHeader className="flex flex-row gap-4 items-start justify-between p-3 sm:p-6">
-                  <div className="flex flex-col gap-2 sm:gap-4 min-w-0">
-                    <CardTitle className="text-wrap leading-7 break-words">
+              <Card key={quest.id} className="w-full overflow-hidden">
+                <CardHeader className="flex flex-row items-start justify-between p-4 sm:p-6">
+                  <div className="flex flex-col gap-1.5 sm:gap-2 min-w-0 pr-4">
+                    <CardTitle className="text-lg sm:text-xl leading-tight">
                       {quest.name}
                     </CardTitle>
-                    <CardDescription>{quest.description}</CardDescription>
+                    <CardDescription className="line-clamp-2 sm:line-clamp-none">
+                      {quest.description}
+                    </CardDescription>
                   </div>
 
                   <div
                     title={`You will earn ${quest.pointsValue} points for completing this quest`}
-                    className="flex items-center space-x-2 bg-white/20 px-3 py-1 rounded-full shrink-0"
+                    className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full shrink-0"
                   >
                     <FontAwesomeIcon
                       icon={faTrophy}
                       className="h-4 w-4 text-yellow-500"
                     />
-                    <span className="text-base font-medium">
+                    <span className="font-medium">
                       {quest.pointsValue}
                     </span>
                   </div>
                 </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <CardContent className="p-4 sm:p-6 pt-0">
                   <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-end">
                     {/* Quest-specific actions */}
                     {quest.verificationType === "social_follow" &&

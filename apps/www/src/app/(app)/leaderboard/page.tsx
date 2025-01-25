@@ -34,12 +34,16 @@ export default function LeaderboardPage() {
   return (
     <>
       <Header />
-      <Container className="m-4">
-        <h1 className="text-2xl font-bold mb-2">Leaderboard</h1>
-        <p className="text-muted-foreground mb-6">
-          Top fans competing for Super Bowl tickets
-        </p>
-        <Leaderboard />
+      <Container>
+        <div className="px-2 pb-20">
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Leaderboard</h1>
+            <p className="text-white/60 text-sm sm:text-base">
+              Top fans competing for Super Bowl tickets
+            </p>
+          </div>
+          <Leaderboard />
+        </div>
       </Container>
     </>
   );

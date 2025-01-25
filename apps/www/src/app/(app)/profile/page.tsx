@@ -60,6 +60,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CopyLink } from "@/components/ui/copy-link";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 
 export default async function ProfilePage() {
   const [profile, completedQuests, predictions, teams, games] =
@@ -80,7 +81,6 @@ export default async function ProfilePage() {
     (sum, quest) => sum + quest.pointsEarned,
     0,
   );
-  console.log(predictions);
 
   return (
     <>
@@ -94,60 +94,63 @@ export default async function ProfilePage() {
           </Link>
         }
       />
-      <div className="flex flex-col items-center space-y-4">
-          <Avatar className="h-20 w-20">
-            <AvatarImage
-              src={profile.avatar ?? undefined}
-              alt={profile.username}
-            />
-            <AvatarFallback>{profile.username[0]}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-center">
-            <p className="font-semibold tracking-tight text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-              {profile.username}
-            </p>
-            <p className="text-sm text-muted-foreground overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-              {profile.email}
-            </p>
+      <Container>
+        <div className="px-2 pb-20 space-y-6">
+          <div className="flex flex-col items-center space-y-4 py-4">
+            <Avatar className="h-20 w-20 border-2 border-white/10">
+              <AvatarImage
+                src={profile.avatar ?? undefined}
+                alt={profile.username}
+              />
+              <AvatarFallback className="bg-white/5 text-lg">
+                {profile.username[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col items-center">
+              <p className="font-semibold tracking-tight text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+                {profile.username}
+              </p>
+              <p className="text-sm text-white/60 overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+                {profile.email}
+              </p>
+            </div>
+            <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
+              <FontAwesomeIcon
+                icon={faTrophy}
+                className="h-4 w-4 text-yellow-500"
+              />
+              <span className="font-medium">{totalPoints}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-4 bg-white/20 px-4 p-2 rounded-full">
-            <FontAwesomeIcon
-              icon={faTrophy}
-              className="h-5 w-5 text-yellow-500"
-            />
-            <span className="font-medium">{totalPoints}</span>
-          </div>
-        </div>
 
-        <Card>
-          <CardHeader className="px-2 py-4">
-            <CardTitle>Predictions</CardTitle>
-          </CardHeader>
-          {predictions.length > 0 ? (
-            <p>
-              <Carousel
-                opts={{
-                  align: "start",
-                }}
-                className="w-full max-w-[90%]"
-              >
-                <CarouselContent>
-                  {predictions.map((prediction) => (
-                    <CarouselItem
-                      key={prediction.id}
-                      className="basis-1/2 lg:basis-1/4"
-                    >
-                      <div className="p-1">
-                        <Card className="aspect-square p-0 w-full">
-                          <CardContent className="flex aspect-square flex-col items-center justify-center p-4 text-center">
+          <Card>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle>Predictions</CardTitle>
+            </CardHeader>
+            {predictions.length > 0 ? (
+              <CardContent className="p-0">
+                <Carousel
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-2 sm:-ml-4">
+                    {predictions.map((prediction) => (
+                      <CarouselItem
+                        key={prediction.id}
+                        className="pl-2 sm:pl-4 basis-[280px]"
+                      >
+                        <Card className="overflow-hidden">
+                          <CardContent className="p-4 flex flex-col items-center justify-center text-center space-y-3">
                             <div
                               className={cn(
                                 "mb-2 text-sm font-medium flex items-center gap-1",
                                 prediction.pointsEarned === null
                                   ? "text-yellow-500" // Pending
                                   : prediction.pointsEarned > 0
-                                    ? "text-green-500" // Won
-                                    : "text-red-500", // Lost
+                                  ? "text-green-500" // Won
+                                  : "text-red-500", // Lost
                               )}
                             >
                               {prediction.pointsEarned === null ? (
@@ -183,14 +186,14 @@ export default async function ProfilePage() {
                               </div>
                               {gameMap.get(prediction.gameId) && (
                                 <>
-                                  <div className="text-[10px] text-muted-foreground">
+                                  <div className="text-white/60">
                                     {gameMap.get(prediction.gameId)?.gameType ||
                                       "Game"}
                                   </div>
-                                  <div className="text-[10px] text-muted-foreground">
+                                  <div className="text-white/60">
                                     {new Date(
-                                      gameMap.get(prediction.gameId)
-                                        ?.startTime || "",
+                                      gameMap.get(prediction.gameId)?.startTime ||
+                                        "",
                                     ).toLocaleDateString()}
                                   </div>
                                 </>
@@ -198,60 +201,61 @@ export default async function ProfilePage() {
                             </div>
                           </CardContent>
                         </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselNext className=" h-12 w-12 text-xl border-none m-0 text-white" />
-              </Carousel>
-            </p>
-          ) : (
-            <div className="flex flex-col items-start py-4 px-2 gap-4">
-              <p className="text-md">No predictions yet</p>
-              <Link href={"/games"}>
-                <Button variant={"outline"} className="">
-                  Make Predictions
-                </Button>
-              </Link>
-            </div>
-          )}
-        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselNext className="h-12 w-12 text-xl border-none m-0 text-white" />
+                </Carousel>
+              </CardContent>
+            ) : (
+              <div className="flex flex-col items-start py-4 px-4 sm:px-6 gap-4">
+                <p className="text-white/60">No predictions yet</p>
+                <Link href="/games">
+                  <Button variant="outline">Make Predictions</Button>
+                </Link>
+              </div>
+            )}
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Quest Completions</CardTitle>
-            <CardDescription>
-              Your progress towards Super Bowl tickets
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {completedQuests.length === 0 ? (
-                <p className="text-muted-foreground">
-                  Complete quests to earn achievements!
-                </p>
-              ) : (
-                completedQuests.map((quest) => (
-                  <div key={quest.id} className="flex items-center space-x-2">
-                    <FontAwesomeIcon
-                      icon={faTrophy}
-                      className="h-4 w-4 text-yellow-500"
-                    />
-                    <span>{quest.questName}</span>
-                    <span className="text-sm text-muted-foreground">
-                      +{quest.pointsEarned} points
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        {/* <CopyLink
-          title="Refer a Friend"
-          description="Earn points for referring friends. Achieved when your referral completes the quest"
-          link={`${origin}/refer/${profile.id}`}
-        /> */}
+          <Card>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle>Quest Completions</CardTitle>
+              <CardDescription className="text-white/60">
+                Your progress towards Super Bowl tickets
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 pt-0">
+              <div className="space-y-4">
+                {completedQuests.length === 0 ? (
+                  <p className="text-white/60">
+                    Complete quests to earn achievements!
+                  </p>
+                ) : (
+                  completedQuests.map((quest) => (
+                    <div
+                      key={quest.id}
+                      className="flex items-center justify-between p-3 rounded-xl bg-white/5"
+                    >
+                      <div className="flex items-center gap-3">
+                        <FontAwesomeIcon
+                          icon={faTrophy}
+                          className="h-4 w-4 text-yellow-500"
+                        />
+                        <span className="text-sm">{quest.questName}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
+                        <span className="text-sm font-medium">
+                          +{quest.pointsEarned}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </Container>
     </>
   );
 }

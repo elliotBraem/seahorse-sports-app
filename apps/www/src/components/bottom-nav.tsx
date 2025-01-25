@@ -37,8 +37,8 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-gray-800 bg-background shadow-[0_-4px_0_rgba(0,0,0,1)]">
-      <div className="container mx-auto flex h-20 justify-center items-center gap-4 max-w-sm">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-inset bg-background/80 backdrop-blur-xl shadow-lg">
+      <div className="container mx-auto flex h-16 justify-center items-center gap-3 max-w-sm">
         {links.map((link) => {
           const isActive = currentPath === link.to;
           return (
@@ -46,13 +46,22 @@ export function BottomNav() {
               key={link.to}
               href={link.to}
               className={cn(
-                "flex flex-col items-center justify-center h-14 w-14 rounded-xl bg-white/10 border backdrop-blur-lg shadow-md ",
+                "relative flex flex-col items-center justify-center h-12 w-16 rounded-2xl transition-all duration-200",
+                "hover:scale-105 active:scale-95",
+                "touch-none select-none",
                 isActive
-                  ? " text-white border-white"
-                  : "border-white/20 hover:border-white text-white/80 hover:text-white",
+                  ? "text-white after:absolute after:bottom-0 after:h-1 after:w-8 after:rounded-full after:bg-gradient-to-r after:from-secondary after:to-[#FFA37BB0]"
+                  : "text-white/60 hover:text-white/80",
               )}
             >
-              <FontAwesomeIcon icon={link.icon} size="lg" className="h-6 w-6" />
+              <FontAwesomeIcon 
+                icon={link.icon} 
+                className={cn(
+                  "h-5 w-5 transition-transform duration-200",
+                  isActive && "scale-110"
+                )} 
+              />
+              <span className="mt-1 text-[10px] font-medium">{link.label}</span>
             </Link>
           );
         })}

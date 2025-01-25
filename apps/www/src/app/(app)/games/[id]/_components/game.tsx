@@ -31,7 +31,7 @@ export function Game({ gameId, initialGame }: GameProps) {
 
   return (
     <>
-      <div className="flex justify-center gap-8">
+      <div className="flex justify-center gap-8 mb-8">
         <TeamCard
           teamName={currentGame.homeTeamName}
           teamMetadata={currentGame.homeTeamMetadata}
@@ -47,7 +47,7 @@ export function Game({ gameId, initialGame }: GameProps) {
         {typeof currentGame.apiMetadata === "object" &&
           currentGame.apiMetadata !== null &&
           "conference" in currentGame.apiMetadata && (
-            <div className="text-center">
+            <div className="text-center my-4">
               <h2 className="text-2xl font-bold">
                 {currentGame.apiMetadata.conference as string} Championship
               </h2>
@@ -63,7 +63,7 @@ export function Game({ gameId, initialGame }: GameProps) {
           )}
 
         {currentGame.status === "completed" && (
-          <div className="text-center">
+          <div className="text-center my-8">
             <div className="bg-gray-100 rounded-full px-6 py-3 inline-block">
               <span className="font-semibold text-lg">
                 Winner:{" "}
@@ -75,7 +75,9 @@ export function Game({ gameId, initialGame }: GameProps) {
           </div>
         )}
       </div>
-      <Poll game={currentGame} />
+      <div className="mt-8">
+        <Poll game={currentGame} />
+      </div>
     </>
   );
 }

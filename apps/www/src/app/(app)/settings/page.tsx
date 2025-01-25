@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 
 import {
   Form,
@@ -79,79 +80,75 @@ export default function SettingsPage() {
   return (
     <>
       <Header showtitle={true} showBackButton={true} />
-      <div className="space-y-6">
-        {user && (
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6 w-full"
-            >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          disabled={isLoading}
-                          placeholder="abc@.domain.com"
-                          {...field}
-                          onChange={(e) => handleInputChange(e, field.onChange)}
-                        />
-                      </FormControl>
-                      {isDirty && (
-                        <div className="absolute inset-y-0 right-3 flex items-center">
-                          <button
-                            className="text-gray-500 hover:text-black"
-                            title="Save changes"
-                            type="submit"
-                          >
-                            <FontAwesomeIcon
-                              icon={faArrowRight}
-                              className="w-5 h-5"
+      <Container>
+        <div className="px-2 pb-20 space-y-6">
+          <div className="space-y-6">
+            {user && (
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6 w-full"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-white">Email</FormLabel>
+                        <div className="relative">
+                          <FormControl>
+                            <Input
+                              disabled={isLoading}
+                              placeholder="abc@domain.com"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                              {...field}
+                              onChange={(e) => handleInputChange(e, field.onChange)}
                             />
-                          </button>
+                          </FormControl>
+                          {isDirty && (
+                            <div className="absolute inset-y-0 right-3 flex items-center">
+                              <button
+                                className="text-white/60 hover:text-white transition-colors"
+                                title="Save changes"
+                                type="submit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faArrowRight}
+                                  className="w-4 h-4"
+                                />
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-        )}
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+            )}
 
-        {/* <div className="flex items-center justify-between">
-          <a
-            href="/preferences"
-            className="flex items-center justify-between space-x-2 text-lg font-medium"
-          >
-            <span>Prefrences</span>
-            <FontAwesomeIcon icon={faPenToSquare} className="h-4 w-4" />
-          </a>
-        </div> */}
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">{user.id}</p>
+            <div className="rounded-xl bg-white/5 p-4">
+              <p className="text-sm text-white/60 font-mono break-all">
+                ID: {user.id}
+              </p>
             </div>
+
+            <Button 
+              className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500" 
+              variant="ghost"
+              disabled={isLoading} 
+              onClick={logout}
+            >
+              {isLoading ? (
+                <FontAwesomeIcon icon={faCircleNotch} className="animate-spin h-4 w-4" />
+              ) : (
+                "Logout"
+              )}
+            </Button>
           </div>
         </div>
-
-        <div className="flex items-center ">
-          <Button className="w-full" disabled={isLoading} onClick={logout}>
-            {isLoading ? (
-              <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
-            ) : (
-              "Logout"
-            )}
-          </Button>
-        </div>
-      </div>
+      </Container>
     </>
   );
 }

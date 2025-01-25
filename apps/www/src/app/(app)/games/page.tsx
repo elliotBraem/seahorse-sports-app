@@ -6,8 +6,10 @@ export default async function GamesPage() {
   return (
     <>
       <Header />
-      <Container className="m-4">
-        <GamesList />
+      <Container>
+        <div className="px-2 pb-20">
+          <GamesList />
+        </div>
       </Container>
     </>
   );

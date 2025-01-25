@@ -13,30 +13,24 @@ interface TeamCardProps {
 
 export function TeamCard({ teamName, teamMetadata, isHome }: TeamCardProps) {
   return (
-    <div
-      className="flex flex-col items-center gap-2"
-      style={{ width: "200px", height: "180px" }}
-    >
-      <div
-        style={{
-          filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
-        }}
-      >
-        <FootballHelmet
-          primary={teamMetadata?.colors?.primary || "#666666"}
-          secondary={teamMetadata?.colors?.secondary || "#333333"}
-          size={120}
-          direction={isHome ? "right" : "left"}
-        />
+    <div className="flex flex-col items-center gap-3 w-[160px] sm:w-[180px]">
+      <div className="relative w-[100px] sm:w-[120px] aspect-square">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="transform transition-transform hover:scale-105" style={{
+            filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))",
+          }}>
+            <FootballHelmet
+              primary={teamMetadata?.colors?.primary || "#666666"}
+              secondary={teamMetadata?.colors?.secondary || "#333333"}
+              size={120}
+              direction={isHome ? "right" : "left"}
+            />
+          </div>
+        </div>
       </div>
-      <div
-        className="w-full"
-        style={{
-          textAlign: "center",
-        }}
-      >
-        <h3 className="font-bold text-lg">{teamName}</h3>
-      </div>
+      <h3 className="font-bold text-base sm:text-lg text-center leading-tight">
+        {teamName}
+      </h3>
     </div>
   );
 }
