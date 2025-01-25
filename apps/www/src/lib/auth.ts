@@ -5,7 +5,7 @@ import { toast } from "@/hooks/use-toast";
 // Build the key into the client
 const MAGIC_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MAGIC_API_KEY!;
 const APP_ORIGIN = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
-let CALLBACK_URL = APP_ORIGIN + "/api/auth/callback";
+let CALLBACK_URL = APP_ORIGIN + "/quests";
 
 const createMagic = (key: string) => {
   // We make sure that the window object is available
