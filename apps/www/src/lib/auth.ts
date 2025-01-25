@@ -9,7 +9,8 @@ let CALLBACK_URL = APP_ORIGIN + "/api/auth/callback";
 const createMagic = (key: string) => {
   // We make sure that the window object is available
   if (typeof window !== 'undefined') {
-    CALLBACK_URL = `${window.location}/api/auth/callback`;
+    const baseUrl = new URL(window.location.href);
+    CALLBACK_URL = new URL('/quests', baseUrl.origin).toString();
   }
 
   // Then we create a new instance of Magic using a publishable key
@@ -41,7 +42,7 @@ const handleLogin = async (loginFn: Function) => {
 export async function loginWithGoogle() {
   const magic = createMagic(MAGIC_PUBLISHABLE_KEY);
   if (magic) {
-    await handleLogin(() => magic.oauth2.loginWithRedirect({ provider: "google", redirectURI: CALLBACK_URL }));
+   await handleLogin(() => magic.oauth2.loginWithRedirect({ provider: "google", redirectURI: CALLBACK_URL }));
   }
 }
 

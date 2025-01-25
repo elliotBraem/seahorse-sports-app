@@ -1,7 +1,6 @@
 import {
   type AddFavoriteTeamRequest,
   type AddSocialAccountRequest,
-  type CreateProfileRequest,
   type PredictionResponse,
   type ProfileResponse,
   type SocialAccountResponse,
@@ -10,7 +9,7 @@ import {
 import { type ApiOptions, apiRequest } from "./types";
 
 export async function createUserProfile(
-  data: CreateProfileRequest,
+  data: UpdateProfileRequest,
   options?: ApiOptions,
 ): Promise<ProfileResponse> {
   return apiRequest("/user/profile", {

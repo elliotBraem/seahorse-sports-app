@@ -63,7 +63,6 @@ function LoginContent() {
                 ref={inputRef}
                 type="email"
                 inputMode="email"
-                placeholder="Enter your email"
                 value={value}
                 onChange={(e) => {
                   setValue(e.target.value);
@@ -72,6 +71,8 @@ function LoginContent() {
                 className="h-12 text-lg rounded-full px-6 bg-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none"
                 required
                 disabled={isLoading}
+                autoFocus
+                autoComplete="email"
               />
             ) : (
               <PhoneInput

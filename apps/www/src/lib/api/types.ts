@@ -1,4 +1,4 @@
-import { getAuthCookie } from "@/app/actions";
+import { getAuthToken } from "@/app/actions";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const API_BASE_URL = `${API_URL}/api/v1`;
@@ -30,11 +30,11 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const headers: Record<string, string> = {};
 
-  // Add auth header if required and accountId exists
+  // Add auth header if required and token exists
   if (requiresAuth) {
-    const accountId = await getAuthCookie();
-    if (accountId) {
-      headers.Authorization = `Bearer ${accountId}`;
+    const token = await getAuthToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
     }
   }
 

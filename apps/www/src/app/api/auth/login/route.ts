@@ -1,3 +1,4 @@
+import { createUserProfile } from '@/lib/api';
 import { Magic } from '@magic-sdk/admin';
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
@@ -51,29 +52,16 @@ export async function POST(request: Request) {
       maxAge: 7 * 24 * 60 * 60 // 7 days
     });
 
-    // Create user profile in Cloudflare API
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/profile`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${jwt}`
-      },
-      body: JSON.stringify({
-        username: userMetadata.email?.split('@')[0] || `user_${Date.now()}`,
-        email: userMetadata.email,
-        profileData: {
-          issuer: userMetadata.issuer,
-          publicAddress: userMetadata.publicAddress
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create user profile');
-    }
-
-    const { data: profile } = await response.json();
-
+    // Create or update user profile
+    await createUserProfile({
+      username: userMetadata.email?.split('@')[0] || `user_${Date.now()}`,
+      email: userMetadata.email || undefined,
+      profileData: {
+        issuer: userMetadata.issuer,
+        publicAddress: userMetadata.publicAddress
+      }
+    })
+   
     // Return success and redirect to app
     return NextResponse.json({
       status: 'success',

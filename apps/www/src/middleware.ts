@@ -1,11 +1,13 @@
 import { getUserProfile } from "@/lib/api/user";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getAuthCookie } from "./app/actions";
+import { getAuthToken, verifyToken } from "./app/actions";
 
 export async function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.has("auth");
+  const authToken = await getAuthToken();
   const pathname = request.nextUrl.pathname;
+
+  const isAuthenticated = authToken ? await verifyToken(authToken) : null;
 
   // Admin route protection
   if (pathname.startsWith("/admin")) {
@@ -13,9 +15,8 @@ export async function middleware(request: NextRequest) {
       const url = new URL("/", request.url);
       return NextResponse.redirect(url);
     }
-    const accountId = await getAuthCookie();
-    if (accountId !== "efiz.testnet") {
-      // not an admin
+    // Check isAdmin claim from JWT
+    if (!isAuthenticated.isAdmin) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
@@ -49,5 +50,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.png).*)"],
 };

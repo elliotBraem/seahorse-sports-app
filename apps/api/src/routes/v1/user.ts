@@ -1,12 +1,11 @@
 import {
   AddFavoriteTeamRequest,
   AddSocialAccountRequest,
-  CreateProfileRequest,
   GameStatus,
   PredictionResponse,
   ProfileResponse,
   SocialAccountResponse,
-  UpdateProfileRequest,
+  UpdateProfileRequest
 } from "@renegade-fanclub/types";
 import { requireAuth } from "../../middleware/auth";
 import { createErrorResponse, createSuccessResponse } from "../../types/api";
@@ -21,7 +20,7 @@ export async function handleCreateUserProfile(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const profile: CreateProfileRequest = await request.json();
+    const profile: UpdateProfileRequest = await request.json();
 
     // Validate required fields
     if (!profile.username || !profile.email) {
@@ -33,48 +32,81 @@ export async function handleCreateUserProfile(
       );
     }
 
-    // Check if username or email already exists
+    // Check if user already exists by ID
     const existingUser = await env.DB.prepare(
-      `SELECT id FROM users WHERE username = ? OR email = ?`,
+      `SELECT id FROM users WHERE id = ?`,
     )
-      .bind(profile.username, profile.email)
+      .bind(userId)
       .first();
 
+    let user;
     if (existingUser) {
-      return createErrorResponse(
-        "CONFLICT",
-        "Username or email already exists",
-        409,
-        corsHeaders,
+      // Update existing user
+      const stmt = env.DB.prepare(
+        `
+        UPDATE users 
+        SET 
+          username = ?,
+          email = ?,
+          avatar = ?,
+          profile_data = ?,
+          updated_at = datetime('now')
+        WHERE id = ?
+        RETURNING *
+        `,
+      ).bind(
+        profile.username,
+        profile.email,
+        profile.avatar || null,
+        JSON.stringify(profile.profileData || {}),
+        userId,
       );
+
+      user = await stmt.first();
+    } else {
+      // Check if username or email is taken by another user
+      const takenUser = await env.DB.prepare(
+        `SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?`,
+      )
+        .bind(profile.username, profile.email, userId)
+        .first();
+
+      if (takenUser) {
+        return createErrorResponse(
+          "CONFLICT",
+          "Username or email already taken by another user",
+          409,
+          corsHeaders,
+        );
+      }
+
+      // Insert new user
+      const stmt = env.DB.prepare(
+        `
+        INSERT INTO users (
+          id,
+          username, 
+          email, 
+          avatar,
+          profile_data,
+          created_at,
+          updated_at
+        )
+        VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+        RETURNING *
+      `,
+      ).bind(
+        userId,
+        profile.username,
+        profile.email,
+        profile.avatar || null,
+        JSON.stringify(profile.profileData || {}),
+      );
+
+      user = await stmt.first();
     }
 
-    // Insert new user
-    const stmt = env.DB.prepare(
-      `
-      INSERT INTO users (
-        id,
-        username, 
-        email, 
-        avatar,
-        profile_data,
-        created_at,
-        updated_at
-      )
-      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
-      RETURNING *
-    `,
-    ).bind(
-      userId,
-      profile.username,
-      profile.email,
-      profile.avatar || null,
-      JSON.stringify(profile.profileData || {}),
-    );
-
-    const newUser = await stmt.first();
-
-    if (!newUser) {
+    if (!user) {
       return createErrorResponse(
         "INTERNAL_ERROR",
         "Failed to create user profile",
@@ -85,13 +117,13 @@ export async function handleCreateUserProfile(
 
     // Transform database result to match ProfileResponse type
     const profileResponse: ProfileResponse = {
-      id: newUser.id as string,
-      username: newUser.username as string,
-      email: newUser.email as string,
-      avatar: newUser.avatar as string | null,
-      profileData: newUser.profile_data as Record<string, unknown>,
-      createdAt: newUser.created_at as string,
-      updatedAt: newUser.updated_at as string,
+      id: user.id as string,
+      username: user.username as string,
+      email: user.email as string,
+      avatar: user.avatar as string | null,
+      profileData: user.profile_data as Record<string, unknown>,
+      createdAt: user.created_at as string,
+      updatedAt: user.updated_at as string,
       favoriteTeams: [],
       favoriteSports: [],
     };
