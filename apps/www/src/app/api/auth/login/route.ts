@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     // Return success and redirect to onboarding
     return NextResponse.json({
       status: "success",
-      redirect: "/onboarding",
+      redirect: "/quests",
     });
   } catch (error) {
     console.error("Login error:", error);
