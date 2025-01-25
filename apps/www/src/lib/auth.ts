@@ -139,6 +139,10 @@ export async function isLoggedIn() {
 export async function logout() {
   const magic = createMagic(MAGIC_PUBLISHABLE_KEY);
   if (magic) {
-    return await magic.user.logout();
+    await magic.user.logout();
   }
+  // Call logout endpoint to clear auth token
+  await fetch("/api/auth/logout", {
+    method: "POST",
+  });
 }
