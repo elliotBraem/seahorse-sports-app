@@ -2,15 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { loginWithEmail, loginWithPhoneNumber } from "@/lib/auth";
-import { useSearchParams } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Login } from "../_components/login";
 
 function LoginContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const loginType = searchParams.get("type");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const emailParam = searchParams.get("email");
@@ -24,10 +29,20 @@ function LoginContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginType === "email") {
-      await loginWithEmail(value);
-    } else if (loginType === "phone") {
-      await loginWithPhoneNumber(value);
+    setError("");
+    setIsLoading(true);
+
+    try {
+      if (loginType === "email") {
+        await loginWithEmail(value);
+      } else if (loginType === "phone") {
+        await loginWithPhoneNumber(value);
+      }
+      router.push("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,15 +57,57 @@ function LoginContent() {
           Sign in with {loginType === "email" ? "Email" : "Phone"}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type={loginType === "email" ? "email" : "tel"}
-            placeholder={`Enter your ${loginType === "email" ? "email" : "phone"}`}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            required
-          />
-          <Button type="submit" className="w-full rounded-full" size="lg">
-            Continue
+          <div className="space-y-2 [&_input]:bg-background">
+            {loginType === "email" ? (
+              <Input
+                ref={inputRef}
+                type="email"
+                inputMode="email"
+                placeholder="Enter your email"
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setError("");
+                }}
+                className="h-12 text-lg rounded-full px-6 bg-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none"
+                required
+                disabled={isLoading}
+              />
+            ) : (
+              <PhoneInput
+                value={value}
+                onChange={(value) => {
+                  setValue(value || "");
+                  setError("");
+                }}
+                defaultCountry="US"
+                international
+                countryCallingCodeEditable
+                className="[&>input]:px-6 [&>input]:text-base [&>input]:placeholder:text-muted-foreground [&>input]:appearance-none [&>input]:bg-background"
+                disabled={isLoading}
+                autoFocus
+                placeholder="(555) 555-5555"
+              />
+            )}
+            {error && (
+              <p className="text-sm text-red-500 px-4">{error}</p>
+            )}
+          </div>
+          <Button 
+            type="submit" 
+            className="w-full rounded-full h-12 text-lg"
+            disabled={isLoading}
+          >
+            {isLoading ? (loginType === "email" ? "Sending link..." : "Sending code...") : "Continue"}
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            className="w-full"
+            onClick={() => router.push("/")}
+            disabled={isLoading}
+          >
+            Back
           </Button>
         </form>
       </div>
