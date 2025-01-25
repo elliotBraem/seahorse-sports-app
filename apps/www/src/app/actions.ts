@@ -11,7 +11,6 @@ export async function clearAuthToken() {
   cookies().delete("auth_token");
 }
 
-
 export async function verifyToken(token: string) {
   try {
     const verified = await jwtVerify(

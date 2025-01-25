@@ -6,13 +6,10 @@ export async function POST() {
     clearAuthToken();
     return NextResponse.json({
       status: "success",
-      redirect: "/"
+      redirect: "/",
     });
   } catch (error) {
     console.error("Logout error:", error);
-    return NextResponse.json(
-      { error: "Failed to logout" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
   }
 }

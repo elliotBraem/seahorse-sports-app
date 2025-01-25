@@ -80,11 +80,6 @@ export default function SettingsPage() {
     onChange(event);
   };
 
-  // Show not found if no user is authenticated
-  if (!user) {
-    return <div>Not authenticated</div>;
-  }
-
   return (
     <>
       <Header showtitle={true} showBackButton={true} />
@@ -142,7 +137,7 @@ export default function SettingsPage() {
 
             <div className="rounded-xl bg-white/5 p-4">
               <p className="text-sm text-white/60 font-mono break-all">
-                ID: {user.id}
+                ID: {user?.id}
               </p>
             </div>
 
