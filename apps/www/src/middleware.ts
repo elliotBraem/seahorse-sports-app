@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname !== "/") {
+  if (pathname !== "/" && !pathname.startsWith("/auth")) {
     // Redirect to home for any route except home when not authenticated
     if (!isAuthenticated) {
       const url = new URL("/", request.url);

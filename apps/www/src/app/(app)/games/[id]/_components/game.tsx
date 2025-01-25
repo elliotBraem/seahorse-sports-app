@@ -1,7 +1,7 @@
 "use client";
 
-import Poll from "@/app/(auth)/games/_components/poll";
-import { TeamCard } from "@/app/(auth)/games/_components/team-card";
+import Poll from "@/app/(app)/games/_components/poll";
+import { TeamCard } from "@/app/(app)/games/_components/team-card";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { useGame } from "@/lib/hooks/use-games";

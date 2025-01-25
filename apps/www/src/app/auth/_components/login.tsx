@@ -1,18 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  faApple,
-  faGoogle,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
+import { loginWithGoogle } from "@/lib/auth";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 
 export function Login() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col gap-3 w-full max-w-sm">
       <Button
-        onClick={() => {}}
+        onClick={loginWithGoogle}
         className="rounded-full"
         size="lg"
         variant="secondary"
@@ -25,11 +25,12 @@ export function Login() {
         </div>
       </Button>
 
-      <Button
+      {/* <Button
         onClick={() => {}}
         className="rounded-full"
         size="lg"
         variant="secondary"
+        disabled
       >
         <div className="flex items-center w-full">
           <div className="w-12 flex justify-center">
@@ -44,6 +45,7 @@ export function Login() {
         className="rounded-full"
         size="lg"
         variant="secondary"
+        disabled
       >
         <div className="flex items-center w-full">
           <div className="w-12 flex justify-center">
@@ -51,7 +53,7 @@ export function Login() {
           </div>
           <span className="flex-1 text-left">Continue with X</span>
         </div>
-      </Button>
+      </Button> */}
 
       <div className="relative my-2">
         <div className="absolute inset-0 flex items-center">
@@ -62,8 +64,20 @@ export function Login() {
         </div>
       </div>
 
-      <Button onClick={() => {}} className="rounded-full" size="lg">
+      <Button
+        onClick={() => router.push("/auth/email")}
+        className="rounded-full"
+        size="lg"
+      >
         Continue with Email
+      </Button>
+
+      <Button
+        onClick={() => router.push("/auth/phone")}
+        className="rounded-full"
+        size="lg"
+      >
+        Continue with Phone Number
       </Button>
     </div>
   );

@@ -3,7 +3,7 @@ export interface Env {
   DB: D1Database;
 
   // Environment variables
-  JWT_SECRET: string;
+  JWT_SECRET: string; // Shared secret for JWT verification
   ADMIN_WHITELIST: string; // Comma-separated list of admin account IDs
 
   // CORS Configuration

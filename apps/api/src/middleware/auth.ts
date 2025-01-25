@@ -1,3 +1,4 @@
+import { jwtVerify } from 'jose';
 import { AuthenticatedRequest, createErrorResponse } from "../types/api";
 import { Env } from "../types/env";
 
@@ -13,26 +14,29 @@ export async function authenticateUser(
   const token = authHeader.split(" ")[1];
 
   try {
-    // Verify JWT token here using env.JWT_SECRET
-    // For now, we'll just validate the token exists
-    if (!token) {
-      throw new Error("INVALID_TOKEN");
-    }
+    // Verify JWT
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(env.JWT_SECRET)
+    );
 
-    // Verify the token and get the accountId
-    // This should be replaced with actual JWT verification
-    const accountId = token; // In production, this would come from verified JWT payload
+    if (!payload.sub) {
+      throw new Error("UNAUTHORIZED");
+    }
 
     // Check if user is in admin whitelist
     const adminWhitelist = env.ADMIN_WHITELIST.split(",").map((id) =>
       id.trim(),
     );
-    const isAdmin = adminWhitelist.includes(accountId);
+    const isAdmin = adminWhitelist.includes(payload.sub);
+
     // Add user data to request
     const authenticatedRequest = request as AuthenticatedRequest;
     authenticatedRequest.user = {
-      id: accountId,
+      id: payload.sub,
       isAdmin,
+      email: payload.email as string | undefined,
+      publicAddress: payload.publicAddress as string | undefined
     };
 
     return authenticatedRequest;
