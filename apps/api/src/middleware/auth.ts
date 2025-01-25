@@ -1,4 +1,4 @@
-import { jwtVerify } from 'jose';
+import { jwtVerify } from "jose";
 import { AuthenticatedRequest, createErrorResponse } from "../types/api";
 import { Env } from "../types/env";
 
@@ -18,7 +18,7 @@ export async function authenticateUser(
     // Verify JWT
     const { payload } = await jwtVerify(
       token,
-      new TextEncoder().encode(env.JWT_SECRET)
+      new TextEncoder().encode(env.JWT_SECRET),
     );
 
     if (!payload.sub) {
@@ -39,7 +39,7 @@ export async function authenticateUser(
       id: payload.sub,
       isAdmin,
       email: payload.email as string | undefined,
-      publicAddress: payload.publicAddress as string | undefined
+      publicAddress: payload.publicAddress as string | undefined,
     };
 
     return authenticatedRequest;

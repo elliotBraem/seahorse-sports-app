@@ -10,10 +10,6 @@ export default function LoginError({
   reset: () => void;
 }) {
   return (
-    <ErrorBoundary
-      error={error}
-      reset={reset}
-      title="Failed to load login"
-    />
+    <ErrorBoundary error={error} reset={reset} title="Failed to load login" />
   );
 }

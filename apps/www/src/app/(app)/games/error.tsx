@@ -10,10 +10,6 @@ export default function GamesError({
   reset: () => void;
 }) {
   return (
-    <ErrorBoundary
-      error={error}
-      reset={reset}
-      title="Failed to load games"
-    />
+    <ErrorBoundary error={error} reset={reset} title="Failed to load games" />
   );
 }

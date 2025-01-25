@@ -90,16 +90,18 @@ function LoginContent() {
                 placeholder="(555) 555-5555"
               />
             )}
-            {error && (
-              <p className="text-sm text-red-500 px-4">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-500 px-4">{error}</p>}
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full rounded-full h-12 text-lg"
             disabled={isLoading}
           >
-            {isLoading ? (loginType === "email" ? "Sending link..." : "Sending code...") : "Continue"}
+            {isLoading
+              ? loginType === "email"
+                ? "Sending link..."
+                : "Sending code..."
+              : "Continue"}
           </Button>
           <Button
             type="button"
@@ -118,7 +120,13 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          Loading...
+        </div>
+      }
+    >
       <LoginContent />
     </Suspense>
   );

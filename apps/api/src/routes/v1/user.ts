@@ -5,7 +5,7 @@ import {
   PredictionResponse,
   ProfileResponse,
   SocialAccountResponse,
-  UpdateProfileRequest
+  UpdateProfileRequest,
 } from "@renegade-fanclub/types";
 import { requireAuth } from "../../middleware/auth";
 import { createErrorResponse, createSuccessResponse } from "../../types/api";

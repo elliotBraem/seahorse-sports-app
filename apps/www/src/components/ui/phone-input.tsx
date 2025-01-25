@@ -63,7 +63,10 @@ const InputComponent = React.forwardRef<
   React.ComponentProps<"input">
 >(({ className, ...props }, ref) => (
   <Input
-    className={cn("h-12 text-lg rounded-e-lg rounded-s-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}
+    className={cn(
+      "h-12 text-lg rounded-e-lg rounded-s-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+      className,
+    )}
     {...props}
     ref={ref}
   />
@@ -107,15 +110,20 @@ const CountrySelect = ({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 bg-background/95 border border-border backdrop-blur-sm" align="start">
+      <PopoverContent
+        className="w-[300px] p-0 bg-background/95 border border-border backdrop-blur-sm"
+        align="start"
+      >
         <Command className="bg-transparent">
-          <CommandInput 
-            placeholder="Search country..." 
-            className="border-0 focus:ring-0 text-white placeholder:text-white/60" 
+          <CommandInput
+            placeholder="Search country..."
+            className="border-0 focus:ring-0 text-white placeholder:text-white/60"
           />
           <CommandList>
             <ScrollArea className="h-72">
-              <CommandEmpty className="text-sm text-white/60 py-6">No country found.</CommandEmpty>
+              <CommandEmpty className="text-sm text-white/60 py-6">
+                No country found.
+              </CommandEmpty>
               <CommandGroup className="p-1">
                 {countryList.map(({ value, label }) =>
                   value ? (
@@ -149,12 +157,14 @@ const CountrySelectOption = ({
   onChange,
 }: CountrySelectOptionProps) => {
   return (
-    <CommandItem 
-      className="group gap-2 rounded-md data-[highlighted]:bg-accent/40 data-[highlighted]:text-white px-2 py-2" 
+    <CommandItem
+      className="group gap-2 rounded-md data-[highlighted]:bg-accent/40 data-[highlighted]:text-white px-2 py-2"
       onSelect={() => onChange(country)}
     >
       <FlagComponent country={country} countryName={countryName} />
-      <span className="flex-1 text-sm text-white/90 group-data-[highlighted]:text-white">{countryName}</span>
+      <span className="flex-1 text-sm text-white/90 group-data-[highlighted]:text-white">
+        {countryName}
+      </span>
       <span className="text-sm text-white/50 group-data-[highlighted]:text-white/80">{`+${RPNInput.getCountryCallingCode(country)}`}</span>
       <FontAwesomeIcon
         icon={faCheck}

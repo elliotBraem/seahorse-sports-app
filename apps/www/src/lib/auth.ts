@@ -2,15 +2,15 @@ import { OAuthExtension } from "@magic-ext/oauth2";
 import { Magic, RPCError, RPCErrorCode } from "magic-sdk";
 
 // Build the key into the client
-const MAGIC_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MAGIC_API_KEY!
+const MAGIC_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MAGIC_API_KEY!;
 const APP_ORIGIN = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
 let CALLBACK_URL = APP_ORIGIN + "/api/auth/callback";
 
 const createMagic = (key: string) => {
   // We make sure that the window object is available
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const baseUrl = new URL(window.location.href);
-    CALLBACK_URL = new URL('/quests', baseUrl.origin).toString();
+    CALLBACK_URL = new URL("/quests", baseUrl.origin).toString();
   }
 
   // Then we create a new instance of Magic using a publishable key
@@ -37,12 +37,17 @@ const handleLogin = async (loginFn: Function) => {
     }
     console.error("Login failed:", error);
   }
-}
+};
 
 export async function loginWithGoogle() {
   const magic = createMagic(MAGIC_PUBLISHABLE_KEY);
   if (magic) {
-   await handleLogin(() => magic.oauth2.loginWithRedirect({ provider: "google", redirectURI: CALLBACK_URL }));
+    await handleLogin(() =>
+      magic.oauth2.loginWithRedirect({
+        provider: "google",
+        redirectURI: CALLBACK_URL,
+      }),
+    );
   }
 }
 
@@ -52,10 +57,10 @@ export async function loginWithEmail(email: string) {
     // Log in using our email with Magic and store the returned DID token in a variable
     const didToken = await magic.auth.loginWithMagicLink({ email });
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
         Authorization: `Bearer ${didToken}`,
       },
     });
@@ -74,10 +79,10 @@ export async function loginWithPhoneNumber(phoneNumber: string) {
     // Log in using phone number with Magic and store the returned DID token
     const didToken = await magic.auth.loginWithSMS({ phoneNumber });
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
         Authorization: `Bearer ${didToken}`,
       },
     });

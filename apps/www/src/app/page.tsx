@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-    {/* Background layers */}
+      {/* Background layers */}
       <div className="fixed inset-0 z-5">
         {/* Base background image */}
         <BackgroundImage />
