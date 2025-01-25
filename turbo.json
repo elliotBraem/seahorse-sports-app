@@ -14,6 +14,12 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "start": {
+      "dependsOn": ["build"]
+    },
+    "preview": {
+      "dependsOn": ["build"]
+    },
     "deploy": {
       "dependsOn": ["build"]
     },

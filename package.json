@@ -5,9 +5,10 @@
     "init": "turbo run init && bun install",
     "build": "turbo build",
     "dev": "turbo dev",
+    "preview": "turbo run start --filter=@renegade-fanclub/www",
+    "deploy": "turbo run deploy --filter=@renegade-fanclub/api",
     "lint": "turbo lint",
     "clean": "turbo clean",
-    "deploy": "turbo run deploy --filter=@renegade-fanclub/api",
     "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
     "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },

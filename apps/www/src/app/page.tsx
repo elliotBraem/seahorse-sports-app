@@ -43,12 +43,13 @@ export default function HomePage() {
         <div className="flex h-screen overflow-hidden flex-col items-center px-4 py-12 z-20">
           <div className="w-64 h-64">
             <Image
-              src={"/images/rngfanclub-logo-white.png"}
+              src={"https://www.rngfan.club/wp-content/uploads/white.png"}
               alt="Renegade Fan Club"
               width={256}
               height={256}
               className="w-full h-full object-contain"
               priority
+              unoptimized
             />
           </div>
           <div className="space-y-6">
