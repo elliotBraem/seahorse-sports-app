@@ -7,24 +7,27 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 
 interface UserInfoProps {
+  initialEmail?: string;
   onNext: (username: string, email: string) => void;
 }
 
-export function UserInfo({ onNext }: UserInfoProps) {
+export function UserInfo({ initialEmail, onNext }: UserInfoProps) {
   const { data: profile, isLoading } = useUserProfile();
   const [username, setUsername] = useState(profile?.username || "");
-  const [email, setEmail] = useState(profile?.email || "");
+  const [email, setEmail] = useState(initialEmail || profile?.email || "");
   const { toast } = useToast();
 
-  // Update fields if profile loads after component mount
+  // Update fields if profile or initialEmail loads after component mount
   useEffect(() => {
-    if (profile?.email && !email) {
+    if (initialEmail && !email) {
+      setEmail(initialEmail);
+    } else if (profile?.email && !email) {
       setEmail(profile.email);
     }
     if (profile?.username && !username) {
       setUsername(profile.username);
     }
-  }, [profile, email, username]);
+  }, [profile, initialEmail, email, username]);
 
   const handleSubmit = () => {
     if (!username.trim()) {
@@ -53,7 +56,7 @@ export function UserInfo({ onNext }: UserInfoProps) {
       <div className="space-y-4">
         <div>
           <Input
-            placeholder="Username"
+            placeholder="Choose a username"
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
@@ -63,7 +66,9 @@ export function UserInfo({ onNext }: UserInfoProps) {
         <div>
           <Input
             type="email"
-            placeholder="Email"
+            placeholder={
+              initialEmail ? "Confirm your email" : "Enter your email"
+            }
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);

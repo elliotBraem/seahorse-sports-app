@@ -6,7 +6,7 @@ import { createUserProfile } from "@/lib/api/user";
 import { getCurrentUserInfo } from "@/lib/auth";
 import { Sport } from "@renegade-fanclub/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserInfo } from "./_components/user-info";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +16,23 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("userInfo");
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
+  const [initialData, setInitialData] = useState<{ email?: string }>({});
   const { toast } = useToast();
+
+  // Get initial data from Magic SDK
+  useEffect(() => {
+    async function getInitialData() {
+      try {
+        const userInfo = await getCurrentUserInfo();
+        if (userInfo?.email) {
+          setInitialData({ email: userInfo.email });
+        }
+      } catch (error) {
+        console.error("Failed to get user info:", error);
+      }
+    }
+    getInitialData();
+  }, []);
 
   // const handleSportsNext = (sports: Sport[]) => {
   //   setSelectedSports(sports);
@@ -50,22 +66,18 @@ export default function OnboardingPage() {
           <CardContent>
             {currentStep === "userInfo" && (
               <UserInfo
+                initialEmail={initialData.email}
                 onNext={async (username, email) => {
                   try {
                     const userInfo = await getCurrentUserInfo();
 
-                    const finalUsername =
-                      username ||
-                      userInfo?.email?.split("@")[0] ||
-                      `user_${Date.now()}`;
-                    const finalEmail = email || userInfo?.email;
-
+                    // Both fields are required and validated by UserInfo component
                     await createUserProfile({
-                      username: finalUsername,
-                      email: finalEmail || undefined,
+                      username,
+                      email,
                       profileData: {
                         issuer: userInfo?.issuer,
-                        onboardingComplete: !!(finalUsername && finalEmail), // Only complete if both are provided
+                        onboardingComplete: true,
                       },
                     });
 

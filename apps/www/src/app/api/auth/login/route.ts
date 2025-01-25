@@ -1,4 +1,3 @@
-import { createUserProfile } from "@/lib/api";
 import { Magic } from "@magic-sdk/admin";
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";
@@ -45,23 +44,10 @@ export async function POST(request: Request) {
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
-    // Create or update user profile
-    await createUserProfile({
-      username: userMetadata.email?.split("@")[0] || `user_${Date.now()}`,
-      email: userMetadata.email || undefined,
-      profileData: {
-        issuer: userMetadata.issuer,
-        publicAddress: userMetadata.publicAddress,
-        oauthProvider: userMetadata.oauthProvider,
-        wallets: userMetadata.wallets,
-        phoneNumber: userMetadata.phoneNumber,
-      },
-    });
-
-    // Return success and redirect to app
+    // Return success and redirect to onboarding
     return NextResponse.json({
       status: "success",
-      redirect: "/quests",
+      redirect: "/onboarding",
     });
   } catch (error) {
     console.error("Login error:", error);
