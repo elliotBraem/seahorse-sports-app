@@ -81,9 +81,7 @@ export default async function QuestsPage() {
                       icon={faTrophy}
                       className="h-4 w-4 text-yellow-500"
                     />
-                    <span className="font-medium">
-                      {quest.pointsValue}
-                    </span>
+                    <span className="font-medium">{quest.pointsValue}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6 pt-0">

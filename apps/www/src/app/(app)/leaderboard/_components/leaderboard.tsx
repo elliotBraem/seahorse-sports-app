@@ -16,10 +16,7 @@ export function Leaderboard() {
     return (
       <div className="grid">
         {[...Array(5)].map((_, i) => (
-          <Card
-            key={i}
-            className="p-4 flex items-center gap-4 animate-pulse"
-          >
+          <Card key={i} className="p-4 flex items-center gap-4 animate-pulse">
             <div className="flex items-center justify-center w-8 h-8">
               <div className="h-6 w-4 bg-white/10 rounded" />
             </div>
@@ -68,7 +65,8 @@ export function Leaderboard() {
               </div>
             </div>
             <p className="text-xs text-white/60 mt-1">
-              Predictions: {ranking.predictionPoints} · Quests: {ranking.questPoints}
+              Predictions: {ranking.predictionPoints} · Quests:{" "}
+              {ranking.questPoints}
             </p>
           </div>
         </Card>

@@ -54,12 +54,12 @@ export function BottomNav() {
                   : "text-white/60 hover:text-white/80",
               )}
             >
-              <FontAwesomeIcon 
-                icon={link.icon} 
+              <FontAwesomeIcon
+                icon={link.icon}
                 className={cn(
                   "h-5 w-5 transition-transform duration-200",
-                  isActive && "scale-110"
-                )} 
+                  isActive && "scale-110",
+                )}
               />
               <span className="mt-1 text-[10px] font-medium">{link.label}</span>
             </Link>

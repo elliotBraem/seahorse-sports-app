@@ -45,10 +45,12 @@ export function useUserProfile(userId?: string) {
     });
 
     return {
-      data: profileQuery.data ? {
-        ...profileQuery.data,
-        issuer: userId,
-      } : null,
+      data: profileQuery.data
+        ? {
+            ...profileQuery.data,
+            issuer: userId,
+          }
+        : null,
       isLoading: profileQuery.isLoading,
       error: profileQuery.error,
     };

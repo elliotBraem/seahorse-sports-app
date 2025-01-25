@@ -79,7 +79,8 @@ export function GamesList() {
                 {game.status === "completed" ? (
                   <div className="flex items-center justify-center space-x-2 bg-white/20 px-4 py-1.5 rounded-full mt-2 w-fit mx-auto">
                     <span className="font-medium text-sm">
-                      Winner: {game.winnerTeamId === game.homeTeamId
+                      Winner:{" "}
+                      {game.winnerTeamId === game.homeTeamId
                         ? game.homeTeamName
                         : game.awayTeamName}
                     </span>
@@ -90,9 +91,7 @@ export function GamesList() {
                       icon={faTrophy}
                       className="h-4 w-4 text-yellow-500"
                     />
-                    <span className="font-medium">
-                      {game.pointsValue}
-                    </span>
+                    <span className="font-medium">{game.pointsValue}</span>
                   </div>
                 )}
               </div>

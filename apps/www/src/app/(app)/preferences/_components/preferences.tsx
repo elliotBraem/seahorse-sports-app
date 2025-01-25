@@ -84,7 +84,9 @@ export default function Preferences({ preferences }: PrrferencesProps) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-2">Preferences</h1>
-      <p className="text-muted-foreground mb-6">Choose Favorite Sports, Teams, Leagues, Athletes!</p>
+      <p className="text-muted-foreground mb-6">
+        Choose Favorite Sports, Teams, Leagues, Athletes!
+      </p>
       <div className="space-y-6">
         {preferences.map((categoryObj, index) => {
           const key = Object.keys(categoryObj)[0];

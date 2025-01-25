@@ -18,14 +18,14 @@ export function Game({ gameId, initialGame }: GameProps) {
   if (isLoading && !initialGame) {
     return (
       <div className="py-8">
-          <div className="animate-pulse">
-            <Card className="p-6 mb-8">
-              <div className="h-48 bg-gray-200 rounded-lg"></div>
-            </Card>
-            <div className="h-32 bg-gray-200 rounded-lg mb-8"></div>
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
-          </div>
+        <div className="animate-pulse">
+          <Card className="p-6 mb-8">
+            <div className="h-48 bg-gray-200 rounded-lg"></div>
+          </Card>
+          <div className="h-32 bg-gray-200 rounded-lg mb-8"></div>
+          <div className="h-64 bg-gray-200 rounded-lg"></div>
         </div>
+      </div>
     );
   }
 

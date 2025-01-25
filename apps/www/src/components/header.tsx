@@ -38,9 +38,9 @@ export function Header({
               onClick={() => router.back()}
               className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all duration-200"
             >
-              <FontAwesomeIcon 
-                icon={faArrowLeft} 
-                className="h-5 w-5 text-white/90" 
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                className="h-5 w-5 text-white/90"
               />
             </button>
           )}
@@ -67,9 +67,7 @@ export function Header({
 
         <div className="flex items-center min-w-9">
           {rightChildren && (
-            <div className="flex items-center space-x-2">
-              {rightChildren}
-            </div>
+            <div className="flex items-center space-x-2">{rightChildren}</div>
           )}
         </div>
       </div>

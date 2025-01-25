@@ -116,7 +116,7 @@ module.exports = {
         "fade-out": "fade-out 0.2s ease-in",
       },
       transitionTimingFunction: {
-        "spring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        spring: "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       },
     },
   },

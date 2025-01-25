@@ -75,7 +75,9 @@ export default function PreferencesForm({ preferences }: PreferencesFormProps) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-2">Preferences</h1>
-      <p className="text-muted-foreground mb-6">Choose your favorite sports and teams!</p>
+      <p className="text-muted-foreground mb-6">
+        Choose your favorite sports and teams!
+      </p>
       <div className="space-y-6">
         {preferences.map((categoryObj, index) => {
           const key = Object.keys(categoryObj)[0];

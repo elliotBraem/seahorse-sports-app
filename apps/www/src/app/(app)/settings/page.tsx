@@ -94,7 +94,9 @@ export default function SettingsPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-white">Email</FormLabel>
+                        <FormLabel className="text-sm font-medium text-white">
+                          Email
+                        </FormLabel>
                         <div className="relative">
                           <FormControl>
                             <Input
@@ -102,7 +104,9 @@ export default function SettingsPage() {
                               placeholder="abc@domain.com"
                               className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
                               {...field}
-                              onChange={(e) => handleInputChange(e, field.onChange)}
+                              onChange={(e) =>
+                                handleInputChange(e, field.onChange)
+                              }
                             />
                           </FormControl>
                           {isDirty && (
@@ -134,14 +138,17 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <Button 
-              className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500" 
+            <Button
+              className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
               variant="ghost"
-              disabled={isLoading} 
+              disabled={isLoading}
               onClick={logout}
             >
               {isLoading ? (
-                <FontAwesomeIcon icon={faCircleNotch} className="animate-spin h-4 w-4" />
+                <FontAwesomeIcon
+                  icon={faCircleNotch}
+                  className="animate-spin h-4 w-4"
+                />
               ) : (
                 "Logout"
               )}

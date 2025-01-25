@@ -51,16 +51,19 @@ export default function OnboardingPage() {
                 onNext={async (username, email) => {
                   try {
                     const userInfo = await getCurrentUserInfo();
-                    
+
                     await createUserProfile({
-                      username: username || userInfo?.email?.split("@")[0] || `user_${Date.now()}`,
+                      username:
+                        username ||
+                        userInfo?.email?.split("@")[0] ||
+                        `user_${Date.now()}`,
                       email: email || userInfo?.email || undefined,
                       profileData: {
                         issuer: userInfo?.issuer,
                         onboardingComplete: true,
                       },
                     });
-                    
+
                     router.replace("/quests");
                   } catch (error) {
                     console.error("Failed to create profile:", error);

@@ -149,8 +149,8 @@ export default async function ProfilePage() {
                                 prediction.pointsEarned === null
                                   ? "text-yellow-500" // Pending
                                   : prediction.pointsEarned > 0
-                                  ? "text-green-500" // Won
-                                  : "text-red-500", // Lost
+                                    ? "text-green-500" // Won
+                                    : "text-red-500", // Lost
                               )}
                             >
                               {prediction.pointsEarned === null ? (
@@ -192,8 +192,8 @@ export default async function ProfilePage() {
                                   </div>
                                   <div className="text-white/60">
                                     {new Date(
-                                      gameMap.get(prediction.gameId)?.startTime ||
-                                        "",
+                                      gameMap.get(prediction.gameId)
+                                        ?.startTime || "",
                                     ).toLocaleDateString()}
                                   </div>
                                 </>

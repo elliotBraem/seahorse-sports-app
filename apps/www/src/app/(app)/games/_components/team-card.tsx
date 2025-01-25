@@ -16,9 +16,12 @@ export function TeamCard({ teamName, teamMetadata, isHome }: TeamCardProps) {
     <div className="flex flex-col items-center gap-3 w-[160px] sm:w-[180px]">
       <div className="relative w-[100px] sm:w-[120px] aspect-square">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="transform transition-transform hover:scale-105" style={{
-            filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))",
-          }}>
+          <div
+            className="transform transition-transform hover:scale-105"
+            style={{
+              filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))",
+            }}
+          >
             <FootballHelmet
               primary={teamMetadata?.colors?.primary || "#666666"}
               secondary={teamMetadata?.colors?.secondary || "#333333"}
