@@ -6,7 +6,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GameResponse } from "@renegade-fanclub/types";
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Poll({ game }: { game: GameResponse }) {
   const {
@@ -19,6 +19,7 @@ export default function Poll({ game }: { game: GameResponse }) {
     awayTeamMetadata,
   } = game;
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+  const { toast } = useToast();
   const { mutate: createPrediction, isPending: submitting } =
     useCreatePrediction();
   const { data: predictions = [] } = useGamePredictions(gameId);
@@ -64,10 +65,17 @@ export default function Poll({ game }: { game: GameResponse }) {
       {
         onSuccess: () => {
           setSelectedTeamId(teamId);
-          toast.success("Prediction submitted successfully!");
+          toast({
+            title: "Success",
+            description: "Prediction submitted successfully!",
+          });
         },
         onError: (error) => {
-          toast.error("Failed to submit prediction. Please try again.");
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to submit prediction. Please try again.",
+          });
           console.error("Failed to submit prediction:", error);
         },
       },

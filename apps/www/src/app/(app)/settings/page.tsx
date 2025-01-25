@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
 const FormSchema = z.object({
@@ -41,6 +41,7 @@ export default function SettingsPage() {
   const { data: user } = useUserProfile();
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -55,10 +56,17 @@ export default function SettingsPage() {
       await updateUserProfile({
         email: data.email,
       });
-      toast.success("Profile updated successfully!");
+      toast({
+        title: "Success",
+        description: "Profile updated successfully!",
+      });
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -142,7 +150,17 @@ export default function SettingsPage() {
               className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
               variant="ghost"
               disabled={isLoading}
-              onClick={logout}
+              onClick={async () => {
+                try {
+                  await logout();
+                } catch (error) {
+                  toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Failed to logout. Please try again.",
+                  });
+                }
+              }}
             >
               {isLoading ? (
                 <FontAwesomeIcon

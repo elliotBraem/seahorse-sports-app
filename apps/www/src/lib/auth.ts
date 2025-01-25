@@ -1,5 +1,6 @@
 import { OAuthExtension } from "@magic-ext/oauth2";
 import { Magic, RPCError, RPCErrorCode } from "magic-sdk";
+import { toast } from "@/hooks/use-toast";
 
 // Build the key into the client
 const MAGIC_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MAGIC_API_KEY!;
@@ -31,11 +32,20 @@ const handleLogin = async (loginFn: Function) => {
         case RPCErrorCode.UserAlreadyLoggedIn:
         case RPCErrorCode.AccessDeniedToUser:
         case RPCErrorCode.UserAlreadyLoggedIn:
-          // handle errors
+          toast({
+            variant: "destructive",
+            title: "Authentication Error",
+            description: error.message,
+          });
           break;
       }
     }
     console.error("Login failed:", error);
+    toast({
+      variant: "destructive",
+      title: "Login Failed",
+      description: "An unexpected error occurred. Please try again.",
+    });
   }
 };
 
@@ -68,8 +78,16 @@ export async function loginWithEmail(email: string) {
 
     if (res.ok) {
       const userMetadata = await magic.user.getMetadata();
-      // setUser(userMetadata );
-      // router.push('/dashboard');
+      toast({
+        title: "Success",
+        description: "Logged in successfully!",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Failed to authenticate. Please try again.",
+      });
     }
   }
 }
@@ -90,6 +108,16 @@ export async function loginWithPhoneNumber(phoneNumber: string) {
 
     if (res.ok) {
       const userMetadata = await magic.user.getMetadata();
+      toast({
+        title: "Success",
+        description: "Logged in successfully!",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Failed to authenticate. Please try again.",
+      });
     }
   }
 }

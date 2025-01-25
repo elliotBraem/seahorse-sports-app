@@ -8,6 +8,7 @@ import { Sport } from "@renegade-fanclub/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { UserInfo } from "./_components/user-info";
+import { useToast } from "@/hooks/use-toast";
 
 type OnboardingStep = "userInfo";
 
@@ -15,6 +16,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("userInfo");
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
+  const { toast } = useToast();
 
   // const handleSportsNext = (sports: Sport[]) => {
   //   setSelectedSports(sports);
@@ -67,6 +69,12 @@ export default function OnboardingPage() {
                     router.replace("/quests");
                   } catch (error) {
                     console.error("Failed to create profile:", error);
+                    toast({
+                      variant: "destructive",
+                      title: "Error",
+                      description:
+                        "Failed to create profile. Please try again.",
+                    });
                   }
                 }}
               />

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserProfile } from "@/lib/hooks/use-user-profile";
+import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 
 interface UserInfoProps {
@@ -13,7 +14,7 @@ export function UserInfo({ onNext }: UserInfoProps) {
   const { data: profile, isLoading } = useUserProfile();
   const [username, setUsername] = useState(profile?.username || "");
   const [email, setEmail] = useState(profile?.email || "");
-  const [error, setError] = useState("");
+  const { toast } = useToast();
 
   // Update fields if profile loads after component mount
   useEffect(() => {
@@ -27,12 +28,20 @@ export function UserInfo({ onNext }: UserInfoProps) {
 
   const handleSubmit = () => {
     if (!username.trim()) {
-      setError("Username is required");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Username is required",
+      });
       return;
     }
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Valid email is required");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Valid email is required",
+      });
       return;
     }
 
@@ -48,7 +57,6 @@ export function UserInfo({ onNext }: UserInfoProps) {
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              setError("");
             }}
           />
         </div>
@@ -59,17 +67,16 @@ export function UserInfo({ onNext }: UserInfoProps) {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setError("");
             }}
           />
         </div>
-        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       </div>
 
-      <div className="flex justify-end">
+      <div>
         <Button
           onClick={handleSubmit}
           disabled={!username.trim() || !email.trim()}
+          className="w-full"
         >
           Next
         </Button>
