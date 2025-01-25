@@ -25,7 +25,10 @@ const getCorsHeaders = (request: Request, env: Env): Record<string, string> => {
       headers["Access-Control-Allow-Credentials"] = "true";
       headers["Access-Control-Max-Age"] = "86400";
     } else {
-      console.error(`[CORS Error] Origin "${origin}" not allowed. Allowed origins:`, allowedOrigins);
+      console.error(
+        `[CORS Error] Origin "${origin}" not allowed. Allowed origins:`,
+        allowedOrigins,
+      );
     }
   }
 
@@ -51,7 +54,7 @@ export default {
         "CORS_ERROR",
         "Origin not allowed",
         403,
-        corsHeaders
+        corsHeaders,
       );
     }
 
