@@ -22,15 +22,8 @@ export async function handleCreateUserProfile(
     const userId = authenticatedRequest.user?.id;
     const profile: UpdateProfileRequest = await request.json();
 
-    // Validate required fields
-    if (!profile.username || !profile.email) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Username and email are required",
-        400,
-        corsHeaders,
-      );
-    }
+    // No validation needed for initial profile creation
+    // The middleware will handle redirecting to onboarding if needed
 
     // Check if user already exists by ID
     const existingUser = await env.DB.prepare(

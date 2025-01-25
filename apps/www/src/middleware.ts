@@ -31,10 +31,12 @@ export async function middleware(request: NextRequest) {
       try {
         const profile = await getUserProfile();
 
-        // Check if profile exists and has required fields
-        const isProfileComplete = profile && profile.username && profile.email;
+        // Check if profile exists and onboarding is complete
+        const needsOnboarding =
+          !profile?.profileData?.onboardingComplete ||
+          (!profile?.username && !profile?.email);
 
-        if (!isProfileComplete && pathname !== "/onboarding") {
+        if (needsOnboarding && pathname !== "/onboarding") {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
       } catch (error) {

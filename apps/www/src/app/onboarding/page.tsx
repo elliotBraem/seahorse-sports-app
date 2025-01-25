@@ -54,15 +54,18 @@ export default function OnboardingPage() {
                   try {
                     const userInfo = await getCurrentUserInfo();
 
+                    const finalUsername =
+                      username ||
+                      userInfo?.email?.split("@")[0] ||
+                      `user_${Date.now()}`;
+                    const finalEmail = email || userInfo?.email;
+
                     await createUserProfile({
-                      username:
-                        username ||
-                        userInfo?.email?.split("@")[0] ||
-                        `user_${Date.now()}`,
-                      email: email || userInfo?.email || undefined,
+                      username: finalUsername,
+                      email: finalEmail || undefined,
                       profileData: {
                         issuer: userInfo?.issuer,
-                        onboardingComplete: true,
+                        onboardingComplete: !!(finalUsername && finalEmail), // Only complete if both are provided
                       },
                     });
 
