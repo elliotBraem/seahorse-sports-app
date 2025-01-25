@@ -13,15 +13,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { updateUserProfile } from "@/lib/api/user";
 import { logout } from "@/lib/auth";
 import { useUserProfile } from "@/lib/hooks/use-user-profile";
 import { faArrowRight, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
 const FormSchema = z.object({
@@ -39,6 +40,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function SettingsPage() {
   const { data: user } = useUserProfile();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const { toast } = useToast();
@@ -148,6 +150,7 @@ export default function SettingsPage() {
               onClick={async () => {
                 try {
                   await logout();
+                  router.replace("/");
                 } catch (error) {
                   toast({
                     variant: "destructive",
