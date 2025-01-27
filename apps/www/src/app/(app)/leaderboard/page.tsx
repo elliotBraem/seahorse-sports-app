@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Container } from "@/components/ui/container";
 import { Metadata } from "next";
 import { Leaderboard } from "./_components/leaderboard";
+import { getUserProfile, getUserQuests } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Leaderboard | RNG Fan Club",
@@ -30,10 +31,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LeaderboardPage() {
+export default async function LeaderboardPage() {
+  const [profile, completedQuests] = await Promise.all([
+    getUserProfile(),
+    getUserQuests(),
+  ]);
+
+  const totalPoints = completedQuests.reduce(
+    (sum, quest) => sum + quest.pointsEarned,
+    0,
+  );
   return (
     <>
-      <Header />
+      <Header profile={profile} totalPoints={totalPoints} />
       <Container>
         <div className="px-2 pb-20">
           <div className="mb-8">

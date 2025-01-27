@@ -85,6 +85,7 @@ export default async function ProfilePage() {
   return (
     <>
       <Header
+        showBackButton={true}
         rightChildren={
           <Link
             href="/settings"

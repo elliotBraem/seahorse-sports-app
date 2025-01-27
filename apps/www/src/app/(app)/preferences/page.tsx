@@ -31,9 +31,20 @@ export const metadata: Metadata = {
 import { listTeams } from "@/lib/api/teams";
 import PreferencesForm from "./_components/preferences-form";
 import { Header } from "@/components/header";
+import { getUserProfile, getUserQuests } from "@/lib/api";
 
 export default async function PreferencesPage() {
   const [sports, teams] = await Promise.all([listSports(), listTeams()]);
+
+  const [profile, completedQuests] = await Promise.all([
+    getUserProfile(),
+    getUserQuests(),
+  ]);
+
+  const totalPoints = completedQuests.reduce(
+    (sum, quest) => sum + quest.pointsEarned,
+    0,
+  );
 
   // Transform the data to match the expected format
   const preferences = [
@@ -59,7 +70,7 @@ export default async function PreferencesPage() {
 
   return (
     <>
-      <Header />
+      <Header profile={profile} totalPoints={totalPoints} />
       <PreferencesForm preferences={preferences} />
     </>
   );

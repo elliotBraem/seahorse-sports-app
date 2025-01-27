@@ -10,8 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { createUserProfile } from "@/lib/api";
-import { listQuests } from "@/lib/api/quests";
+import { createUserProfile, getUserProfile } from "@/lib/api";
+import { getUserQuests, listQuests } from "@/lib/api/quests";
 import { getCurrentUserInfo } from "@/lib/auth";
 import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -45,10 +45,19 @@ export const metadata: Metadata = {
 
 export default async function QuestsPage() {
   const quests = await listQuests();
+  const [profile, completedQuests] = await Promise.all([
+    getUserProfile(),
+    getUserQuests(),
+  ]);
+
+  const totalPoints = completedQuests.reduce(
+    (sum, quest) => sum + quest.pointsEarned,
+    0,
+  );
 
   return (
     <>
-      <Header />
+      <Header profile={profile} totalPoints={totalPoints} />
       <Container>
         <div className="grid px-2">
           {quests.map((quest) => {
