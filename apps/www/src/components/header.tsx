@@ -36,7 +36,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-4 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl pt-safe">
+    <header className="sticky top-4 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl">
       <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
         {/* Left Section */}
         <div className="flex items-center justify-center min-w-[64px]">

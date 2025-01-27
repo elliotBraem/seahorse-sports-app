@@ -73,7 +73,7 @@ export default function RootLayout({
       <body>
         <div
           className={cn(
-            "min-h-[100dvh] w-screen overflow-x-hidden relative ",
+            "min-h-[100dvh] px-2 w-screen overflow-x-hidden relative ",
             "bg-[radial-gradient(circle_at_center,_#2C0F40,_#01030E,_#000000)]",
           )}
         >
