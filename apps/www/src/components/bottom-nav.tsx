@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBasketShopping,
   faFootball,
+  faHouse,
   faMedal,
   faTrophy,
   faUser,
@@ -15,30 +17,30 @@ export function BottomNav() {
   const currentPath = usePathname();
   const links = [
     {
+      to: "/quests",
+      icon: faHouse,
+      label: "Home",
+    },
+    {
       to: "/games",
       icon: faFootball,
       label: "Games",
     },
     {
-      to: "/quests",
-      icon: faMedal,
-      label: "Quests",
+      to: "/shop",
+      icon: faBasketShopping,
+      label: "Shop",
     },
     {
       to: "/leaderboard",
       icon: faTrophy,
       label: "Leaderboard",
     },
-    {
-      to: "/profile",
-      icon: faUser,
-      label: "Profile",
-    },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-inset bg-background/80 backdrop-blur-xl shadow-lg">
-      <div className="container mx-auto flex h-16 justify-center items-center gap-3 max-w-sm">
+      <div className="container mx-auto flex h-16 justify-center items-center gap-6 max-w-sm">
         {links.map((link) => {
           const isActive = currentPath === link.to;
           return (
