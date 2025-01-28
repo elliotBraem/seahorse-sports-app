@@ -31,18 +31,6 @@ export function Game({ gameId, initialGame }: GameProps) {
 
   return (
     <>
-      <div className="flex justify-center gap-8 mb-8">
-        <TeamCard
-          teamName={currentGame.homeTeamName}
-          teamMetadata={currentGame.homeTeamMetadata}
-          isHome={true}
-        />
-        <TeamCard
-          teamName={currentGame.awayTeamName}
-          teamMetadata={currentGame.awayTeamMetadata}
-          isHome={false}
-        />
-      </div>
       <div className="flex flex-col">
         {typeof currentGame.apiMetadata === "object" &&
           currentGame.apiMetadata !== null &&
@@ -74,6 +62,18 @@ export function Game({ gameId, initialGame }: GameProps) {
             </div>
           </div>
         )}
+      </div>
+      <div className="flex justify-center gap-8 mb-8">
+        <TeamCard
+          teamName={currentGame.homeTeamName}
+          teamMetadata={currentGame.homeTeamMetadata}
+          isHome={true}
+        />
+        <TeamCard
+          teamName={currentGame.awayTeamName}
+          teamMetadata={currentGame.awayTeamMetadata}
+          isHome={false}
+        />
       </div>
       <div className="mt-8">
         <Poll game={currentGame} />
