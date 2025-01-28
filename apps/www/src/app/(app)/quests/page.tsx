@@ -13,7 +13,8 @@ import { Container } from "@/components/ui/container";
 import { createUserProfile, getUserProfile } from "@/lib/api";
 import { getUserQuests, listQuests } from "@/lib/api/quests";
 import { getCurrentUserInfo } from "@/lib/auth";
-import { faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faFootball, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -59,7 +60,7 @@ export default async function QuestsPage() {
     <>
       <Header profile={profile} totalPoints={totalPoints} />
       <Container>
-        <div className="grid px-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {quests.map((quest) => {
             const verificationData = quest.verificationData as {
               platform?: string;
@@ -71,53 +72,61 @@ export default async function QuestsPage() {
             };
 
             return (
-              <Card key={quest.id} className="w-full overflow-hidden">
-                <CardHeader className="flex flex-row items-start justify-between p-4 sm:p-6">
-                  <div className="flex flex-col gap-1.5 sm:gap-2 min-w-0 pr-4">
-                    <CardTitle className="text-lg sm:text-xl leading-tight">
-                      {quest.name}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-2 sm:line-clamp-none">
-                      {quest.description}
-                    </CardDescription>
-                  </div>
-
+              <Card
+                key={quest.id}
+                className="w-full overflow-hidden px-5 pt-6 pb-4 md:px-5 md:pb-2 md:pt-6 flex flex-col justify-between"
+              >
+                <div className="flex flex-col items-start justify-start gap-2 flex-grow">
                   <div
                     title={`You will earn ${quest.pointsValue} points for completing this quest`}
-                    className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full shrink-0"
+                    className="flex items-center space-x-1"
                   >
                     <FontAwesomeIcon
                       icon={faTrophy}
-                      className="h-4 w-4 text-yellow-500"
+                      className="h-5 w-5 text-yellow-500"
                     />
-                    <span className="font-medium">{quest.pointsValue}</span>
+                    <span className="font-medium text-lg">
+                      {quest.pointsValue}
+                    </span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-4 sm:p-6 pt-0">
-                  <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-end">
+                  <div className="flex flex-col gap-1.5 sm:gap-2 pt-2">
+                    <CardTitle className="text-white/70 text-xs sm:text-sm leading-tight font-thin">
+                      {quest.name}
+                    </CardTitle>
+                    <CardDescription className="text-xs text-white/70 sm:text-sm leading-tight font-thin line-clamp-2 sm:line-clamp-none">
+                      {quest.description}
+                    </CardDescription>
+                  </div>
+                </div>
+
+                <CardContent className="pt-4">
+                  <div className="flex flex-col">
                     {/* Quest-specific actions */}
                     {quest.verificationType === "social_follow" &&
                       verificationData.platform === "twitter" && (
-                        <Button asChild>
-                          <a
-                            href={verificationData.intent_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full sm:w-auto"
-                          >
-                            Follow on Twitter
-                          </a>
-                        </Button>
+                        <a
+                          href={verificationData.intent_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center space-x-2 h-9 w-28 text-sm px-5 py-2 bg-white rounded-full text-purple-900 mt-auto"
+                        >
+                          <FontAwesomeIcon icon={faXTwitter} />
+                          <span>Follow</span>
+                        </a>
                       )}
 
                     {quest.verificationType === "prediction" &&
                       verificationData.game_link && (
-                        <Button asChild>
+                        <Button
+                          asChild
+                          className="flex items-center space-x-1 text-sm px-5 py-2 h-9 w-28 mt-auto"
+                        >
                           <Link
                             href={verificationData.game_link}
                             className="w-full sm:w-auto"
                           >
-                            Make Prediction
+                            <FontAwesomeIcon icon={faFootball} />
+                            <span>Predict</span>
                           </Link>
                         </Button>
                       )}
