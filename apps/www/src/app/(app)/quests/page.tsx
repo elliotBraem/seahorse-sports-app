@@ -6,18 +6,18 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { createUserProfile, getUserProfile } from "@/lib/api";
+import { createUserProfile, getGame, getUserProfile } from "@/lib/api";
 import { getUserQuests, listQuests } from "@/lib/api/quests";
 import { getCurrentUserInfo } from "@/lib/auth";
-import { faTwitter, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faFootball, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Metadata } from "next";
 import Link from "next/link";
+import { Game } from "../games/[id]/_components/game";
 
 export const metadata: Metadata = {
   title: "Quests | RNG Fan Club",
@@ -46,6 +46,9 @@ export const metadata: Metadata = {
 
 export default async function QuestsPage() {
   const quests = await listQuests();
+  const gameId = 1;
+  const initialGame = await getGame(1);
+
   const [profile, completedQuests] = await Promise.all([
     getUserProfile(),
     getUserQuests(),
@@ -60,6 +63,9 @@ export default async function QuestsPage() {
     <>
       <Header profile={profile} totalPoints={totalPoints} />
       <Container>
+        {/*game pridictions*/}
+        <Game gameId={gameId} initialGame={initialGame} />
+        {/* Quests List */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {quests.map((quest) => {
             const verificationData = quest.verificationData as {

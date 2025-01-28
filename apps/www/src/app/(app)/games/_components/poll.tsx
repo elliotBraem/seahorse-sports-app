@@ -114,7 +114,7 @@ export default function Poll({ game }: { game: GameResponse }) {
       </div>
 
       {/* Main Game voting */}
-      <Card className="flex flex-col items-center justify-center space-y-10 p-9">
+      {/* <Card className="flex flex-col items-center justify-center space-y-10 p-9">
         <h3 className="text-2xl font-bold mb-4">Who is gonna win?</h3>
         <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-2xl">
           {teams.map((team) => (
@@ -150,7 +150,7 @@ export default function Poll({ game }: { game: GameResponse }) {
             </div>
           ))}
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 }
