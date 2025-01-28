@@ -39,7 +39,7 @@ export function Game({ gameId, initialGame }: GameProps) {
               <h2 className="text-2xl font-bold">
                 {currentGame.apiMetadata.conference as string} Championship
               </h2>
-              <p className="text-md font-medium text-gray-300 mt-2">
+              <p className="text-base font-medium text-white mt-2">
                 {new Date(currentGame.startTime).toLocaleDateString(undefined, {
                   weekday: "long",
                   year: "numeric",
@@ -63,6 +63,7 @@ export function Game({ gameId, initialGame }: GameProps) {
           </div>
         )}
       </div>
+      <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
       <div className="flex justify-center gap-8 mb-8">
         <TeamCard
           teamName={currentGame.homeTeamName}
