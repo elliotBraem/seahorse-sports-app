@@ -5,13 +5,16 @@ import { TeamCard } from "@/app/(app)/games/_components/team-card";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useCurrentUser } from "@/lib/hooks/use-current-user";
+import { useUserProfile } from "@/lib/hooks/use-user-profile";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useCreatePrediction,
   useGame,
   useCurrentUserGamePrediction,
   useGamePredictions,
 } from "@/lib/hooks/use-games";
-import { type GameResponse } from "@renegade-fanclub/types";
+import { listQuests, completeQuest } from "@/lib/api/quests";
+import { type GameResponse, type QuestResponse } from "@renegade-fanclub/types";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash/debounce";
@@ -19,15 +22,17 @@ import debounce from "lodash/debounce";
 interface GameProps {
   gameId: number;
   initialGame: GameResponse;
+  predictionQuest?: QuestResponse;
 }
 
-export function Game({ gameId, initialGame }: GameProps) {
+export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   const { data: game, isLoading: gameLoading } = useGame(gameId);
   const { data: userPrediction, isLoading: userPredictionLoading } =
     useCurrentUserGamePrediction(gameId);
   const { data: predictions = [], isLoading: predictionsLoading } =
     useGamePredictions(gameId);
   const { user: currentUser, isLoading: userLoading } = useCurrentUser();
+  const queryClient = useQueryClient();
   const currentGame = game || initialGame;
   const [localPrediction, setLocalPrediction] = useState<number | null>(
     userPrediction?.predictedWinnerId || null,
@@ -57,6 +62,13 @@ export function Game({ gameId, initialGame }: GameProps) {
               title: "Success",
               description: "Prediction updated successfully!",
             });
+            // Invalidate both the user's prediction and all predictions for this game
+            queryClient.invalidateQueries({
+              queryKey: ["game-prediction", gameId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["game-predictions", gameId],
+            });
           },
           onError: (error) => {
             const errorMessage =
@@ -81,7 +93,7 @@ export function Game({ gameId, initialGame }: GameProps) {
   );
 
   const handleVote = useCallback(
-    (teamId: number, teamTitle: string) => {
+    async (teamId: number, teamTitle: string) => {
       if (currentGame.status === "completed") {
         toast({
           variant: "destructive",
@@ -114,9 +126,27 @@ export function Game({ gameId, initialGame }: GameProps) {
 
       // Update local state immediately for quick UI feedback
       setLocalPrediction(teamId);
-
+      
       // Use debounced prediction update
       debouncedCreatePrediction(teamId);
+
+      // If this is the first prediction, complete the quest
+      if (!userPrediction && predictionQuest) {
+        try {
+          await completeQuest(predictionQuest.id, { verificationProof: {} });
+          toast({
+            title: "Quest Completed!",
+            description: `You earned ${predictionQuest.pointsValue} points!`,
+          });
+          // Invalidate the user profile query to refresh points
+          queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+        } catch (error: any) {
+          // Ignore already completed quest errors
+          if (!error?.message?.includes("already completed")) {
+            console.error("Failed to complete quest:", error);
+          }
+        }
+      }
 
       // If not already submitting, submit immediately
       if (!submitting) {
@@ -131,6 +161,13 @@ export function Game({ gameId, initialGame }: GameProps) {
               toast({
                 title: "Success",
                 description: "Prediction submitted successfully!",
+              });
+              // Invalidate both the user's prediction and all predictions for this game
+              queryClient.invalidateQueries({
+                queryKey: ["game-prediction", gameId],
+              });
+              queryClient.invalidateQueries({
+                queryKey: ["game-predictions", gameId],
               });
             },
             onError: (error) => {
@@ -161,6 +198,8 @@ export function Game({ gameId, initialGame }: GameProps) {
       debouncedCreatePrediction,
       toast,
       currentUser,
+      predictionQuest,
+      userPrediction,
     ],
   );
 

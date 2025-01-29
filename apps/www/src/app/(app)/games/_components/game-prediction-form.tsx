@@ -1,14 +1,25 @@
 "use client";
 
 import { useCreatePrediction } from "@/lib/hooks/use-games";
-import { type GameResponse } from "@renegade-fanclub/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { completeQuest } from "@/lib/api/quests";
+import { type GameResponse, type QuestResponse } from "@renegade-fanclub/types";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-export function GamePredictionForm({ game }: { game: GameResponse }) {
+interface GamePredictionFormProps {
+  game: GameResponse;
+  predictionQuest?: QuestResponse;
+}
+
+export function GamePredictionForm({
+  game,
+  predictionQuest,
+}: GamePredictionFormProps) {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const { mutate: createPrediction, isPending: submitting } =
     useCreatePrediction();
+  const queryClient = useQueryClient();
 
   // Ensure metadata is properly structured with fallbacks
   const homeTeamColor = game.homeTeamMetadata?.colors?.primary || "#666666";
@@ -23,9 +34,28 @@ export function GamePredictionForm({ game }: { game: GameResponse }) {
         predictedWinnerId: selectedTeamId,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           toast.success("Prediction submitted successfully!");
           setSelectedTeamId(null);
+
+          // Complete prediction quest if it exists
+          if (predictionQuest) {
+            try {
+              await completeQuest(predictionQuest.id, {
+                verificationProof: {},
+              });
+              toast.success(
+                `Quest completed! You earned ${predictionQuest.pointsValue} points!`,
+              );
+              // Invalidate the user profile query to refresh points
+              queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+            } catch (error: any) {
+              // Ignore already completed quest errors
+              if (!error?.message?.includes("already completed")) {
+                console.error("Failed to complete quest:", error);
+              }
+            }
+          }
         },
         onError: (error) => {
           toast.error("Failed to submit prediction. Please try again.");

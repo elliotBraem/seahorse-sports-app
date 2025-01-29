@@ -10,5 +10,5 @@ export default function ShopPage() {
         </p>
       </div>
     </Container>
-  )
+  );
 }
