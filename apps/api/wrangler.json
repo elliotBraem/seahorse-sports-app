@@ -6,8 +6,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_id": "2c2ce214-e14c-406d-9ead-8bf2308e05a7",
-      "database_name": "seahorse-sports-dev",
+      "database_id": "7023ee16-8ff9-4869-a91e-2c699e3d30ae",
+      "database_name": "rngfanclub-dev",
       "migrations_table": "<d1_migrations>",
       "migrations_dir": "migrations/"
     }
