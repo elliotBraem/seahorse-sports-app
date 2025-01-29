@@ -13,6 +13,7 @@
     "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.15",
     "prettier": "^3.3.3",
     "turbo": "latest"
   },
@@ -22,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "jose": "^5.9.6"
+    "jose": "^5.9.6",
+    "lodash": "^4.17.21"
   }
 }

@@ -46,9 +46,9 @@ export default async function LeaderboardPage() {
       <Header profile={profile} totalPoints={totalPoints} />
       <Container>
         <div className="px-2 pb-20">
-          <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Leaderboard</h1>
-            <p className="text-white/60 text-sm sm:text-base">
+          <div className="mb-8 flex items-center flex-col gap-2 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">Leaderboard</h1>
+            <p className="text-white text-sm sm:text-base">
               Top fans competing for Super Bowl tickets
             </p>
           </div>

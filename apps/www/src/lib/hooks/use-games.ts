@@ -4,6 +4,7 @@ import {
   getGame,
   getGamePredictions,
   createPrediction,
+  getCurrentUserGamePrediction,
 } from "@/lib/api/games";
 import type {
   CreatePredictionRequest,
@@ -43,6 +44,16 @@ export function useCreatePrediction() {
       queryClient.invalidateQueries({
         queryKey: ["game-predictions", variables.gameId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["current-user-game-prediction", variables.gameId],
+      });
     },
+  });
+}
+
+export function useCurrentUserGamePrediction(gameId: number) {
+  return useQuery({
+    queryKey: ["current-user-game-prediction", gameId],
+    queryFn: () => getCurrentUserGamePrediction(gameId),
   });
 }

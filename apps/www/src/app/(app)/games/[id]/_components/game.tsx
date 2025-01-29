@@ -3,8 +3,18 @@
 import Poll from "@/app/(app)/games/_components/poll";
 import { TeamCard } from "@/app/(app)/games/_components/team-card";
 import { Card } from "@/components/ui/card";
-import { useGame } from "@/lib/hooks/use-games";
+import { useToast } from "@/hooks/use-toast";
+import { useCurrentUser } from "@/lib/hooks/use-current-user";
+import {
+  useCreatePrediction,
+  useGame,
+  useCurrentUserGamePrediction,
+  useGamePredictions,
+} from "@/lib/hooks/use-games";
 import { type GameResponse } from "@renegade-fanclub/types";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import debounce from "lodash/debounce";
 
 interface GameProps {
   gameId: number;
@@ -12,10 +22,155 @@ interface GameProps {
 }
 
 export function Game({ gameId, initialGame }: GameProps) {
-  const { data: game, isLoading } = useGame(gameId);
+  const { data: game, isLoading: gameLoading } = useGame(gameId);
+  const { data: userPrediction, isLoading: userPredictionLoading } =
+    useCurrentUserGamePrediction(gameId);
+  const { data: predictions = [], isLoading: predictionsLoading } =
+    useGamePredictions(gameId);
+  const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const currentGame = game || initialGame;
+  const [localPrediction, setLocalPrediction] = useState<number | null>(
+    userPrediction?.predictedWinnerId || null,
+  );
 
-  if (isLoading && !initialGame) {
+  // Update localPrediction when userPrediction changes
+  useEffect(() => {
+    if (userPrediction?.predictedWinnerId) {
+      setLocalPrediction(userPrediction.predictedWinnerId);
+    }
+  }, [userPrediction]);
+
+  const { toast } = useToast();
+  const { mutate: createPrediction, isPending: submitting } =
+    useCreatePrediction();
+
+  const debouncedCreatePrediction = useRef(
+    debounce((teamId: number) => {
+      createPrediction(
+        {
+          gameId,
+          predictedWinnerId: teamId,
+        },
+        {
+          onSuccess: () => {
+            toast({
+              title: "Success",
+              description: "Prediction updated successfully!",
+            });
+          },
+          onError: (error) => {
+            const errorMessage =
+              error instanceof Error ? error.message : "Unknown error";
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: errorMessage.includes("UNAUTHORIZED")
+                ? "Please sign in to make predictions"
+                : "Failed to update prediction. Please try again.",
+            });
+            console.error("Failed to update prediction:", error);
+          },
+        },
+      );
+    }, 5000),
+  ).current;
+
+  const currentPrediction = useMemo(
+    () => (localPrediction ? { predictedWinnerId: localPrediction } : null),
+    [localPrediction],
+  );
+
+  const handleVote = useCallback(
+    (teamId: number, teamTitle: string) => {
+      if (currentGame.status === "completed") {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Cannot make predictions for completed games",
+        });
+        return;
+      }
+
+      const gameStartTime = new Date(currentGame.startTime);
+      const currentTime = new Date();
+
+      if (currentTime > gameStartTime) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Cannot change predictions after the game has started",
+        });
+        return;
+      }
+
+      if (!currentUser || !currentUser.issuer) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please sign in to make predictions",
+        });
+        return;
+      }
+
+      // Update local state immediately for quick UI feedback
+      setLocalPrediction(teamId);
+
+      // Use debounced prediction update
+      debouncedCreatePrediction(teamId);
+
+      // If not already submitting, submit immediately
+      if (!submitting) {
+        debouncedCreatePrediction.cancel(); // Cancel any pending debounced updates
+        createPrediction(
+          {
+            gameId,
+            predictedWinnerId: teamId,
+          },
+          {
+            onSuccess: () => {
+              toast({
+                title: "Success",
+                description: "Prediction submitted successfully!",
+              });
+            },
+            onError: (error) => {
+              // Revert local state on error
+              setLocalPrediction(null);
+              const errorMessage =
+                error instanceof Error ? error.message : "Unknown error";
+              toast({
+                variant: "destructive",
+                title: "Error",
+                description: errorMessage.includes("UNAUTHORIZED")
+                  ? "Please sign in to make predictions"
+                  : "Failed to submit prediction. Please try again.",
+              });
+              console.error("Failed to submit prediction:", error);
+            },
+          },
+        );
+      } else {
+        console.log("Submission in progress, updating local state only");
+      }
+    },
+    [
+      gameId,
+      currentGame,
+      submitting,
+      createPrediction,
+      debouncedCreatePrediction,
+      toast,
+      currentUser,
+    ],
+  );
+
+  if (
+    (gameLoading ||
+      userPredictionLoading ||
+      predictionsLoading ||
+      userLoading) &&
+    !initialGame
+  ) {
     return (
       <div className="py-8">
         <div className="animate-pulse">
@@ -31,18 +186,6 @@ export function Game({ gameId, initialGame }: GameProps) {
 
   return (
     <>
-      <div className="flex justify-center gap-8 mb-8">
-        <TeamCard
-          teamName={currentGame.homeTeamName}
-          teamMetadata={currentGame.homeTeamMetadata}
-          isHome={true}
-        />
-        <TeamCard
-          teamName={currentGame.awayTeamName}
-          teamMetadata={currentGame.awayTeamMetadata}
-          isHome={false}
-        />
-      </div>
       <div className="flex flex-col">
         {typeof currentGame.apiMetadata === "object" &&
           currentGame.apiMetadata !== null &&
@@ -51,7 +194,7 @@ export function Game({ gameId, initialGame }: GameProps) {
               <h2 className="text-2xl font-bold">
                 {currentGame.apiMetadata.conference as string} Championship
               </h2>
-              <p className="text-md font-medium text-gray-300 mt-2">
+              <p className="text-base font-medium text-white mt-2">
                 {new Date(currentGame.startTime).toLocaleDateString(undefined, {
                   weekday: "long",
                   year: "numeric",
@@ -75,8 +218,85 @@ export function Game({ gameId, initialGame }: GameProps) {
           </div>
         )}
       </div>
-      <div className="mt-8">
-        <Poll game={currentGame} />
+      <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
+      <div className="flex justify-center gap-8 mb-8">
+        <motion.div
+          animate={{
+            scale:
+              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
+                ? 1.02
+                : 1,
+            filter:
+              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
+                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                : currentPrediction?.predictedWinnerId ===
+                    currentGame.awayTeamId
+                  ? "brightness(0.8)"
+                  : "brightness(1)",
+          }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <TeamCard
+            teamName={currentGame.homeTeamName}
+            teamMetadata={currentGame.homeTeamMetadata}
+            isHome={true}
+            selected={
+              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
+            }
+            onClick={() =>
+              handleVote(currentGame.homeTeamId, currentGame.homeTeamName)
+            }
+          />
+        </motion.div>
+        <motion.div
+          animate={{
+            scale:
+              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
+                ? 1.02
+                : 1,
+            filter:
+              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
+                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                : currentPrediction?.predictedWinnerId ===
+                    currentGame.homeTeamId
+                  ? "brightness(0.8)"
+                  : "brightness(1)",
+          }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <TeamCard
+            teamName={currentGame.awayTeamName}
+            teamMetadata={currentGame.awayTeamMetadata}
+            isHome={false}
+            selected={
+              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
+            }
+            onClick={() =>
+              handleVote(currentGame.awayTeamId, currentGame.awayTeamName)
+            }
+          />
+        </motion.div>
+      </div>
+      {currentPrediction !== null && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          {new Date() < new Date(currentGame.startTime) && (
+            <p className="text-sm text-gray-400 mt-2">
+              You can change your prediction until the game starts.
+            </p>
+          )}
+        </motion.div>
+      )}
+      <div className="pt-8">
+        <Poll
+          game={currentGame}
+          selectedTeamId={localPrediction}
+          predictions={predictions}
+        />
       </div>
     </>
   );

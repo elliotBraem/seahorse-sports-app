@@ -223,3 +223,27 @@ CREATE INDEX idx_games_home_team_id ON games(home_team_id);
 CREATE INDEX idx_games_away_team_id ON games(away_team_id);
 CREATE INDEX idx_games_sport_id ON games(sport_id);
 CREATE INDEX idx_teams_sport_id ON teams(sport_id);
+
+-- New composite index for efficient user prediction queries
+CREATE INDEX idx_user_predictions_user_game ON user_predictions(user_id, game_id);
+
+-- New view for user predictions with game details
+CREATE VIEW user_predictions_with_game_details AS
+SELECT 
+    up.id,
+    up.user_id,
+    up.game_id,
+    up.predicted_winner_id,
+    up.points_earned,
+    up.created_at,
+    g.start_time,
+    g.status as game_status,
+    g.points_value,
+    ht.name as home_team_name,
+    at.name as away_team_name,
+    wt.name as predicted_winner_name
+FROM user_predictions up
+JOIN games g ON up.game_id = g.id
+JOIN teams ht ON g.home_team_id = ht.id
+JOIN teams at ON g.away_team_id = at.id
+JOIN teams wt ON up.predicted_winner_id = wt.id;

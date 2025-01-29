@@ -21,11 +21,11 @@ export function BottomNav() {
       icon: faHouse,
       label: "Home",
     },
-    {
-      to: "/games",
-      icon: faFootball,
-      label: "Games",
-    },
+    // {
+    //   to: "/games",
+    //   icon: faFootball,
+    //   label: "Games",
+    // },
     {
       to: "/shop",
       icon: faBasketShopping,

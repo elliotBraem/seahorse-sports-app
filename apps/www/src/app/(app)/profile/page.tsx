@@ -205,7 +205,7 @@ export default async function ProfilePage() {
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselNext className="h-12 w-12 text-xl border-none m-0 text-white" />
+                  {/* <CarouselNext className="h-12 w-12 text-xl border-none m-0 text-white" /> */}
                 </Carousel>
               </CardContent>
             ) : (
