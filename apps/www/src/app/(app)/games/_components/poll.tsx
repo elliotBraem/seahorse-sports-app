@@ -1,15 +1,14 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { useGamePredictions } from "@/lib/hooks/use-games";
-import { GameResponse } from "@renegade-fanclub/types";
+import { GameResponse, PredictionResponse } from "@renegade-fanclub/types";
 
 interface PollProps {
   game: GameResponse;
   selectedTeamId?: number | null;
+  predictions: PredictionResponse[];
 }
 
-export default function Poll({ game, selectedTeamId }: PollProps) {
+export default function Poll({ game, selectedTeamId, predictions }: PollProps) {
   const {
     id: gameId,
     homeTeamId,
@@ -19,7 +18,6 @@ export default function Poll({ game, selectedTeamId }: PollProps) {
     homeTeamMetadata,
     awayTeamMetadata,
   } = game;
-  const { data: predictions = [] } = useGamePredictions(gameId);
 
   // Calculate votes for each team, including the local prediction
   const homeTeamVotes = predictions.filter(

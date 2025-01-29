@@ -10,6 +10,66 @@ import { requireAuth } from "../../middleware/auth";
 import { createErrorResponse, createSuccessResponse } from "../../types/api";
 import { Env } from "../../types/env";
 
+// GET /api/v1/games/:id/current-user-prediction
+export async function handleGetCurrentUserGamePrediction(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const userId = authenticatedRequest.user?.id;
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split("/");
+    const gameId = pathParts[pathParts.length - 2]; // Get the second to last segment
+
+    if (!gameId || isNaN(Number(gameId))) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    // Use the optimized view we created
+    const stmt = env.DB.prepare(
+      `SELECT * FROM user_predictions_with_game_details WHERE user_id = ? AND game_id = ?`
+    ).bind(userId, gameId);
+
+    const prediction = await stmt.first();
+
+    if (!prediction) {
+      return createSuccessResponse(null, corsHeaders);
+    }
+
+    const predictionResponse: PredictionResponse = {
+      id: prediction.id as number,
+      userId: prediction.user_id as string,
+      gameId: prediction.game_id as number,
+      predictedWinnerId: prediction.predicted_winner_id as number,
+      pointsEarned: prediction.points_earned as number | null,
+      createdAt: prediction.created_at as string,
+      gameStartTime: prediction.start_time as string,
+      gameStatus: prediction.game_status as GameStatus,
+      pointsValue: prediction.points_value as number,
+      homeTeamName: prediction.home_team_name as string,
+      awayTeamName: prediction.away_team_name as string,
+      predictedWinnerName: prediction.predicted_winner_name as string,
+    };
+
+    return createSuccessResponse(predictionResponse, corsHeaders);
+  } catch (error) {
+    console.error("[Get Current User Game Prediction Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch current user's game prediction",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
 // GET /api/v1/games
 export async function handleListGames(
   request: Request,
@@ -318,163 +378,6 @@ export async function handleGetCurrentGames(
   }
 }
 
-// POST /api/v1/games/
-
-// Admin Routes
-
-// POST /api/v1/admin/games
-export async function handleCreateGame(
-  request: Request,
-  env: Env,
-  corsHeaders: Record<string, string>,
-): Promise<Response> {
-  try {
-    const authenticatedRequest = await requireAuth(request, env, true);
-    const game: CreateGameRequest = await request.json();
-
-    // Validate required fields
-    if (
-      !game.campaignId ||
-      !game.sportId ||
-      !game.homeTeamId ||
-      !game.awayTeamId ||
-      !game.startTime ||
-      !game.pointsValue
-    ) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Missing required fields",
-        400,
-        corsHeaders,
-      );
-    }
-
-    const stmt = env.DB.prepare(
-      `
-      INSERT INTO games (
-        campaign_id, sport_id, home_team_id, away_team_id, 
-        start_time, end_time, game_type, points_value, 
-        status, external_id, api_metadata
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `,
-    ).bind(
-      game.campaignId,
-      game.sportId,
-      game.homeTeamId,
-      game.awayTeamId,
-      game.startTime,
-      game.endTime || null,
-      game.gameType,
-      game.pointsValue,
-      game.status || "upcoming",
-      game.externalId || null,
-      game.apiMetadata || "{}",
-    );
-
-    const result = await stmt.run();
-
-    return createSuccessResponse({ id: result.meta.last_row_id }, corsHeaders);
-  } catch (error) {
-    console.error("[Create Game Error]", error);
-    return createErrorResponse(
-      "INTERNAL_ERROR",
-      "Failed to create game",
-      500,
-      corsHeaders,
-    );
-  }
-}
-
-// PATCH /api/v1/admin/games/:id
-export async function handleUpdateGame(
-  request: Request,
-  env: Env,
-  corsHeaders: Record<string, string>,
-): Promise<Response> {
-  try {
-    const authenticatedRequest = await requireAuth(request, env, true);
-    const id = request.url.split("/").pop();
-    const updates: UpdateGameRequest = await request.json();
-
-    if (!id) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Game ID is required",
-        400,
-        corsHeaders,
-      );
-    }
-
-    // Build dynamic update query
-    const updateFields: string[] = [];
-    const values: any[] = [];
-
-    Object.entries(updates).forEach(([key, value]) => {
-      if (key !== "id" && key !== "created_at") {
-        // Convert camelCase to snake_case for database
-        const dbKey = key.replace(
-          /[A-Z]/g,
-          (letter) => `_${letter.toLowerCase()}`,
-        );
-        updateFields.push(`${dbKey} = ?`);
-        values.push(value);
-      }
-    });
-
-    if (updateFields.length === 0) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "No valid fields to update",
-        400,
-        corsHeaders,
-      );
-    }
-
-    values.push(id); // Add id for WHERE clause
-
-    const stmt = env.DB.prepare(
-      `
-      UPDATE games 
-      SET ${updateFields.join(", ")} 
-      WHERE id = ?
-    `,
-    ).bind(...values);
-
-    await stmt.run();
-
-    // If winner is set, update user predictions points
-    if (updates.winnerTeamId && updates.status === "completed") {
-      await env.DB.prepare(
-        `
-        UPDATE user_predictions
-        SET points_earned = CASE 
-          WHEN predicted_winner_id = ? THEN (
-            SELECT points_value 
-            FROM games 
-            WHERE id = ?
-          )
-          ELSE 0
-        END
-        WHERE game_id = ?
-      `,
-      )
-        .bind(updates.winnerTeamId, id, id)
-        .run();
-    }
-
-    return createSuccessResponse({ success: true }, corsHeaders);
-  } catch (error) {
-    console.error("[Update Game Error]", error);
-    return createErrorResponse(
-      "INTERNAL_ERROR",
-      "Failed to update game",
-      500,
-      corsHeaders,
-    );
-  }
-}
-
 // POST /api/v1/games/predict
 export async function handleCreatePrediction(
   request: Request,
@@ -651,6 +554,159 @@ export async function handleGetGamePredictions(
   }
 }
 
+// POST /api/v1/admin/games
+export async function handleCreateGame(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env, true);
+    const game: CreateGameRequest = await request.json();
+
+    // Validate required fields
+    if (
+      !game.campaignId ||
+      !game.sportId ||
+      !game.homeTeamId ||
+      !game.awayTeamId ||
+      !game.startTime ||
+      !game.pointsValue
+    ) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Missing required fields",
+        400,
+        corsHeaders,
+      );
+    }
+
+    const stmt = env.DB.prepare(
+      `
+      INSERT INTO games (
+        campaign_id, sport_id, home_team_id, away_team_id, 
+        start_time, end_time, game_type, points_value, 
+        status, external_id, api_metadata
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+    ).bind(
+      game.campaignId,
+      game.sportId,
+      game.homeTeamId,
+      game.awayTeamId,
+      game.startTime,
+      game.endTime || null,
+      game.gameType,
+      game.pointsValue,
+      game.status || "upcoming",
+      game.externalId || null,
+      game.apiMetadata || "{}",
+    );
+
+    const result = await stmt.run();
+
+    return createSuccessResponse({ id: result.meta.last_row_id }, corsHeaders);
+  } catch (error) {
+    console.error("[Create Game Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to create game",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
+// PATCH /api/v1/admin/games/:id
+export async function handleUpdateGame(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env, true);
+    const id = request.url.split("/").pop();
+    const updates: UpdateGameRequest = await request.json();
+
+    if (!id) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    // Build dynamic update query
+    const updateFields: string[] = [];
+    const values: any[] = [];
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (key !== "id" && key !== "created_at") {
+        // Convert camelCase to snake_case for database
+        const dbKey = key.replace(
+          /[A-Z]/g,
+          (letter) => `_${letter.toLowerCase()}`,
+        );
+        updateFields.push(`${dbKey} = ?`);
+        values.push(value);
+      }
+    });
+
+    if (updateFields.length === 0) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "No valid fields to update",
+        400,
+        corsHeaders,
+      );
+    }
+
+    values.push(id); // Add id for WHERE clause
+
+    const stmt = env.DB.prepare(
+      `
+      UPDATE games 
+      SET ${updateFields.join(", ")} 
+      WHERE id = ?
+    `,
+    ).bind(...values);
+
+    await stmt.run();
+
+    // If winner is set, update user predictions points
+    if (updates.winnerTeamId && updates.status === "completed") {
+      await env.DB.prepare(
+        `
+        UPDATE user_predictions
+        SET points_earned = CASE 
+          WHEN predicted_winner_id = ? THEN (
+            SELECT points_value 
+            FROM games 
+            WHERE id = ?
+          )
+          ELSE 0
+        END
+        WHERE game_id = ?
+      `,
+      )
+        .bind(updates.winnerTeamId, id, id)
+        .run();
+    }
+
+    return createSuccessResponse({ success: true }, corsHeaders);
+  } catch (error) {
+    console.error("[Update Game Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to update game",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
 // DELETE /api/v1/admin/games/:id
 export async function handleDeleteGame(
   request: Request,
@@ -684,66 +740,6 @@ export async function handleDeleteGame(
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to delete game",
-      500,
-      corsHeaders,
-    );
-  }
-}
-
-// GET /api/v1/games/:id/current-user-prediction
-export async function handleGetCurrentUserGamePrediction(
-  request: Request,
-  env: Env,
-  corsHeaders: Record<string, string>,
-): Promise<Response> {
-  try {
-    const authenticatedRequest = await requireAuth(request, env);
-    const userId = authenticatedRequest.user?.id;
-    const url = new URL(request.url);
-    const pathParts = url.pathname.split("/");
-    const gameId = pathParts[pathParts.length - 2]; // Get the second to last segment
-
-    if (!gameId || isNaN(Number(gameId))) {
-      return createErrorResponse(
-        "INVALID_PARAMS",
-        "Game ID is required",
-        400,
-        corsHeaders,
-      );
-    }
-
-    // Use the optimized view we created
-    const stmt = env.DB.prepare(
-      `SELECT * FROM user_predictions_with_game_details WHERE user_id = ? AND game_id = ?`
-    ).bind(userId, gameId);
-
-    const prediction = await stmt.first();
-
-    if (!prediction) {
-      return createSuccessResponse(null, corsHeaders);
-    }
-
-    const predictionResponse: PredictionResponse = {
-      id: prediction.id as number,
-      userId: prediction.user_id as string,
-      gameId: prediction.game_id as number,
-      predictedWinnerId: prediction.predicted_winner_id as number,
-      pointsEarned: prediction.points_earned as number | null,
-      createdAt: prediction.created_at as string,
-      gameStartTime: prediction.start_time as string,
-      gameStatus: prediction.game_status as GameStatus,
-      pointsValue: prediction.points_value as number,
-      homeTeamName: prediction.home_team_name as string,
-      awayTeamName: prediction.away_team_name as string,
-      predictedWinnerName: prediction.predicted_winner_name as string,
-    };
-
-    return createSuccessResponse(predictionResponse, corsHeaders);
-  } catch (error) {
-    console.error("[Get Current User Game Prediction Error]", error);
-    return createErrorResponse(
-      "INTERNAL_ERROR",
-      "Failed to fetch current user's game prediction",
       500,
       corsHeaders,
     );

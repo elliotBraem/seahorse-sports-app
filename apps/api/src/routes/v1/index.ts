@@ -29,6 +29,7 @@ import {
   handleCreateGame,
   handleUpdateGame,
   handleDeleteGame,
+  handleGetCurrentUserGamePrediction,
 } from "./games";
 import { handleListTeams, handleGetTeam, handleGetTeamFans } from "./teams";
 import { handleListSports, handleGetSport } from "./sports";
@@ -137,6 +138,9 @@ export async function handleV1Routes(
   }
   if (path.match(/^\/games\/\d+\/predictions$/) && method === "GET") {
     return await handleGetGamePredictions(request, env, corsHeaders);
+  }
+  if (path.match(/^\/games\/\d+\/current-user-prediction$/) && method === "GET") {
+    return await handleGetCurrentUserGamePrediction(request, env, corsHeaders);
   }
 
   // User Predictions

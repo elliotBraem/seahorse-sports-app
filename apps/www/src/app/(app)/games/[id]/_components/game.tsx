@@ -4,16 +4,16 @@ import Poll from "@/app/(app)/games/_components/poll";
 import { TeamCard } from "@/app/(app)/games/_components/team-card";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { getCurrentUserInfo } from "@/lib/auth";
+import { useCurrentUser } from "@/lib/hooks/use-current-user";
 import {
   useCreatePrediction,
   useGame,
   useCurrentUserGamePrediction,
+  useGamePredictions,
 } from "@/lib/hooks/use-games";
 import { type GameResponse } from "@renegade-fanclub/types";
 import { motion } from "framer-motion";
-import { MagicUserMetadata } from "magic-sdk";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import debounce from 'lodash/debounce';
 
 interface GameProps {
@@ -23,17 +23,24 @@ interface GameProps {
 
 export function Game({ gameId, initialGame }: GameProps) {
   const { data: game, isLoading: gameLoading } = useGame(gameId);
-  const { data: userPrediction } = useCurrentUserGamePrediction(gameId);
+  const { data: userPrediction, isLoading: userPredictionLoading } = useCurrentUserGamePrediction(gameId);
+  const { data: predictions = [], isLoading: predictionsLoading } = useGamePredictions(gameId);
+  const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const currentGame = game || initialGame;
   const [localPrediction, setLocalPrediction] = useState<number | null>(
     userPrediction?.predictedWinnerId || null
   );
+
+  // Update localPrediction when userPrediction changes
+  useEffect(() => {
+    if (userPrediction?.predictedWinnerId) {
+      setLocalPrediction(userPrediction.predictedWinnerId);
+    }
+  }, [userPrediction]);
+
   const { toast } = useToast();
   const { mutate: createPrediction, isPending: submitting } =
     useCreatePrediction();
-  const [currentUser, setCurrentUser] = useState<MagicUserMetadata | null>(
-    null,
-  );
 
   const debouncedCreatePrediction = useRef(
     debounce((teamId: number) => {
@@ -65,14 +72,6 @@ export function Game({ gameId, initialGame }: GameProps) {
       );
     }, 5000)
   ).current;
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const userInfo = await getCurrentUserInfo();
-      setCurrentUser(userInfo);
-    };
-    fetchCurrentUser();
-  }, []);
 
   const currentPrediction = useMemo(() => 
     localPrediction ? { predictedWinnerId: localPrediction } : null
@@ -162,7 +161,7 @@ export function Game({ gameId, initialGame }: GameProps) {
     ],
   );
 
-  if ((gameLoading) && !initialGame) {
+  if ((gameLoading || userPredictionLoading || predictionsLoading || userLoading) && !initialGame) {
     return (
       <div className="py-8">
         <div className="animate-pulse">
@@ -216,14 +215,16 @@ export function Game({ gameId, initialGame }: GameProps) {
           animate={{
             scale:
               currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-                ? 1.05
+                ? 1.02
                 : 1,
-            boxShadow:
+            filter:
               currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-                ? "0px 0px 8px 2px rgba(0, 255, 0, 0.5)"
-                : "none",
+                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                : currentPrediction?.predictedWinnerId === currentGame.awayTeamId
+                ? "brightness(0.8)"
+                : "brightness(1)",
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           <TeamCard
             teamName={currentGame.homeTeamName}
@@ -241,14 +242,16 @@ export function Game({ gameId, initialGame }: GameProps) {
           animate={{
             scale:
               currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-                ? 1.05
+                ? 1.02
                 : 1,
-            boxShadow:
+            filter:
               currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-                ? "0px 0px 8px 2px rgba(0, 255, 0, 0.5)"
-                : "none",
+                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                : currentPrediction?.predictedWinnerId === currentGame.homeTeamId
+                ? "brightness(0.8)"
+                : "brightness(1)",
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           <TeamCard
             teamName={currentGame.awayTeamName}
@@ -278,7 +281,7 @@ export function Game({ gameId, initialGame }: GameProps) {
         </motion.div>
       )}
       <div className="pt-8">
-        <Poll game={currentGame} selectedTeamId={localPrediction} />
+        <Poll game={currentGame} selectedTeamId={localPrediction} predictions={predictions} />
       </div>
     </>
   );
