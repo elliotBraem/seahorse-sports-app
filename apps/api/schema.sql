@@ -12,8 +12,8 @@ CREATE TABLE users (
 -- User favorite teams
 CREATE TABLE user_favorite_teams (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
-    team_id INTEGER REFERENCES teams(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
+    team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     created_at DATETIME DEFAULT (datetime('now')),
     UNIQUE(user_id, team_id)
 );
@@ -21,8 +21,8 @@ CREATE TABLE user_favorite_teams (
 -- User favorite sports
 CREATE TABLE user_favorite_sports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
-    sport_id INTEGER REFERENCES sports(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
+    sport_id INTEGER REFERENCES sports(id) ON DELETE CASCADE,
     created_at DATETIME DEFAULT (datetime('now')),
     UNIQUE(user_id, sport_id)
 );
@@ -30,7 +30,7 @@ CREATE TABLE user_favorite_sports (
 -- User social accounts
 CREATE TABLE user_social_accounts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
     platform VARCHAR(50) NOT NULL, -- twitter, discord, etc.
     platform_user_id VARCHAR(255) NOT NULL,
     username VARCHAR(255),
@@ -67,7 +67,7 @@ CREATE TABLE sports (
 -- Teams table with external API integration
 CREATE TABLE teams (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sport_id INTEGER REFERENCES sports(id),
+    sport_id INTEGER REFERENCES sports(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     abbreviation VARCHAR(10),
     external_id VARCHAR(255), -- For external API mapping
@@ -79,7 +79,7 @@ CREATE TABLE teams (
 -- Team social accounts
 CREATE TABLE team_social_accounts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    team_id INTEGER REFERENCES teams(id),
+    team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     platform VARCHAR(50) NOT NULL,
     platform_user_id VARCHAR(255) NOT NULL,
     username VARCHAR(255),
@@ -91,13 +91,13 @@ CREATE TABLE team_social_accounts (
 -- Games table with enhanced constraints
 CREATE TABLE games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    campaign_id INTEGER REFERENCES campaigns(id),
-    sport_id INTEGER REFERENCES sports(id),
-    home_team_id INTEGER REFERENCES teams(id),
-    away_team_id INTEGER REFERENCES teams(id),
+    campaign_id INTEGER REFERENCES campaigns(id) ON DELETE CASCADE,
+    sport_id INTEGER REFERENCES sports(id) ON DELETE CASCADE,
+    home_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
+    away_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     start_time DATETIME NOT NULL,
     end_time DATETIME,
-    winner_team_id INTEGER REFERENCES teams(id),
+    winner_team_id INTEGER REFERENCES teams(id) ON DELETE SET NULL,
     game_type VARCHAR(50), -- conference_championship, superbowl, regular_season, etc.
     points_value INTEGER NOT NULL DEFAULT 10,
     status VARCHAR(20) DEFAULT 'upcoming',
@@ -113,9 +113,9 @@ CREATE TABLE games (
 -- User Predictions table with enhanced constraints
 CREATE TABLE user_predictions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
-    game_id INTEGER REFERENCES games(id),
-    predicted_winner_id INTEGER REFERENCES teams(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
+    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+    predicted_winner_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     points_earned INTEGER,
     created_at DATETIME DEFAULT (datetime('now')),
     CHECK (points_earned >= 0),
@@ -125,7 +125,7 @@ CREATE TABLE user_predictions (
 -- Quests table with enhanced validation
 CREATE TABLE quests (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    campaign_id INTEGER REFERENCES campaigns(id),
+    campaign_id INTEGER REFERENCES campaigns(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     points_value INTEGER NOT NULL,
@@ -141,8 +141,8 @@ CREATE TABLE quests (
 -- User Quest Completions table with enhanced constraints
 CREATE TABLE user_quest_completions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
-    quest_id INTEGER REFERENCES quests(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
+    quest_id INTEGER REFERENCES quests(id) ON DELETE CASCADE,
     points_earned INTEGER NOT NULL,
     completed_at DATETIME DEFAULT (datetime('now')),
     verification_proof TEXT, -- JSON string
@@ -153,8 +153,8 @@ CREATE TABLE user_quest_completions (
 -- User Points table with enhanced constraints
 CREATE TABLE user_points (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id VARCHAR(42) REFERENCES users(id),
-    campaign_id INTEGER REFERENCES campaigns(id),
+    user_id VARCHAR(42) REFERENCES users(id) ON DELETE CASCADE,
+    campaign_id INTEGER REFERENCES campaigns(id) ON DELETE CASCADE,
     total_points INTEGER NOT NULL DEFAULT 0,
     prediction_points INTEGER NOT NULL DEFAULT 0,
     quest_points INTEGER NOT NULL DEFAULT 0,

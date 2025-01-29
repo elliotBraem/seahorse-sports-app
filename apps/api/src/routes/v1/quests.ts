@@ -88,7 +88,18 @@ export async function handleCompleteQuest(
   try {
     const authenticatedRequest = await requireAuth(request, env);
     const userId = authenticatedRequest.user?.id;
-    const questId = request.url.split("/")[3]; // quests/:questId/complete
+    const url = new URL(request.url);
+    const path = url.pathname.replace("/api/v1", "");
+    const match = path.match(/^\/quests\/(\d+)\/complete$/);
+    if (!match) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Invalid quest ID",
+        400,
+        corsHeaders,
+      );
+    }
+    const questId = match[1];
     const { verificationProof } =
       (await request.json()) as CompleteQuestRequest;
 
@@ -144,29 +155,22 @@ export async function handleCompleteQuest(
       );
     }
 
-    // Start transaction
-    await env.DB.prepare("BEGIN TRANSACTION").run();
-
-    try {
-      // Insert completion
-      await env.DB.prepare(
+    // Use D1 batch for atomic operations
+    await env.DB.batch([
+      env.DB.prepare(
         `
         INSERT INTO user_quest_completions (
           user_id, quest_id, points_earned, verification_proof
         )
         VALUES (?, ?, ?, ?)
       `,
-      )
-        .bind(
-          userId,
-          questId,
-          quest.points_value,
-          verificationProof ? JSON.stringify(verificationProof) : null,
-        )
-        .run();
-
-      // Update user points
-      await env.DB.prepare(
+      ).bind(
+        userId,
+        questId,
+        quest.points_value,
+        verificationProof ? JSON.stringify(verificationProof) : null,
+      ),
+      env.DB.prepare(
         `
         INSERT INTO user_points (
           user_id, campaign_id, total_points, prediction_points, quest_points
@@ -177,18 +181,15 @@ export async function handleCompleteQuest(
           quest_points = quest_points + ?,
           last_updated = datetime('now')
       `,
-      )
-        .bind(
-          userId,
-          quest.campaign_id,
-          quest.points_value,
-          quest.points_value,
-          quest.points_value,
-          quest.points_value,
-        )
-        .run();
-
-      await env.DB.prepare("COMMIT").run();
+      ).bind(
+        userId,
+        quest.campaign_id,
+        quest.points_value,
+        quest.points_value,
+        quest.points_value,
+        quest.points_value,
+      ),
+    ]);
 
       return createSuccessResponse(
         {
@@ -197,10 +198,6 @@ export async function handleCompleteQuest(
         },
         corsHeaders,
       );
-    } catch (error) {
-      await env.DB.prepare("ROLLBACK").run();
-      throw error;
-    }
   } catch (error) {
     console.error("[Complete Quest Error]", error);
     return createErrorResponse(
