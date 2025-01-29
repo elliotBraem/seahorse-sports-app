@@ -15,7 +15,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
   ]);
 
   // Find prediction quest for the game
-  const predictionQuest = quests.find(q => {
+  const predictionQuest = quests.find((q) => {
     if (q.verificationType !== "prediction") return false;
     const verificationData = q.verificationData as {
       game_id?: number;
@@ -32,9 +32,9 @@ export default async function GamePage({ params }: { params: { id: string } }) {
     <>
       <Header profile={profile} totalPoints={totalPoints} />
       <div className="-mt-24 relative z-10 m-4">
-        <Game 
-          gameId={gameId} 
-          initialGame={initialGame} 
+        <Game
+          gameId={gameId}
+          initialGame={initialGame}
           predictionQuest={predictionQuest || undefined}
         />
       </div>

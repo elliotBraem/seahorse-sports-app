@@ -37,9 +37,9 @@ export default async function QuestsPage() {
   const quests = await listQuests();
   const gameId = 1;
   const initialGame = await getGame(1);
-  
+
   // Find prediction quest for the game
-  const predictionQuest = quests.find(q => {
+  const predictionQuest = quests.find((q) => {
     if (q.verificationType !== "prediction") return false;
     const verificationData = q.verificationData as {
       game_id?: number;
@@ -62,9 +62,9 @@ export default async function QuestsPage() {
       <Header profile={profile} totalPoints={totalPoints} />
       <Container>
         {/*game predictions*/}
-        <Game 
-          gameId={gameId} 
-          initialGame={initialGame} 
+        <Game
+          gameId={gameId}
+          initialGame={initialGame}
           predictionQuest={predictionQuest || undefined}
         />
         {/* Quests List */}

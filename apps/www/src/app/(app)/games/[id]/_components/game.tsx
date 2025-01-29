@@ -62,8 +62,12 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
               description: "Prediction updated successfully!",
             });
             // Invalidate both the user's prediction and all predictions for this game
-            queryClient.invalidateQueries({ queryKey: ["game-prediction", gameId] });
-            queryClient.invalidateQueries({ queryKey: ["game-predictions", gameId] });
+            queryClient.invalidateQueries({
+              queryKey: ["game-prediction", gameId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["game-predictions", gameId],
+            });
           },
           onError: (error) => {
             const errorMessage =
@@ -158,8 +162,12 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
                 description: "Prediction submitted successfully!",
               });
               // Invalidate both the user's prediction and all predictions for this game
-              queryClient.invalidateQueries({ queryKey: ["game-prediction", gameId] });
-              queryClient.invalidateQueries({ queryKey: ["game-predictions", gameId] });
+              queryClient.invalidateQueries({
+                queryKey: ["game-prediction", gameId],
+              });
+              queryClient.invalidateQueries({
+                queryKey: ["game-predictions", gameId],
+              });
             },
             onError: (error) => {
               // Revert local state on error

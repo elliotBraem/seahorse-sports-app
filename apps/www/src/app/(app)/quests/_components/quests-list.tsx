@@ -1,7 +1,10 @@
 "use client";
 
 import { QuestCard } from "./quest-card";
-import { QuestResponse, QuestCompletionResponse } from "@renegade-fanclub/types";
+import {
+  QuestResponse,
+  QuestCompletionResponse,
+} from "@renegade-fanclub/types";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface QuestsListProps {
@@ -16,7 +19,7 @@ export function QuestsList({ quests, completedQuests }: QuestsListProps) {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       {quests.map((quest) => {
         const isCompleted = completedQuests.some(
-          (completed) => completed.questId === quest.id
+          (completed) => completed.questId === quest.id,
         );
         return (
           <QuestCard

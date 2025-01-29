@@ -12,9 +12,13 @@ interface GamePredictionFormProps {
   predictionQuest?: QuestResponse;
 }
 
-export function GamePredictionForm({ game, predictionQuest }: GamePredictionFormProps) {
+export function GamePredictionForm({
+  game,
+  predictionQuest,
+}: GamePredictionFormProps) {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-  const { mutate: createPrediction, isPending: submitting } = useCreatePrediction();
+  const { mutate: createPrediction, isPending: submitting } =
+    useCreatePrediction();
   const queryClient = useQueryClient();
 
   // Ensure metadata is properly structured with fallbacks
@@ -37,8 +41,12 @@ export function GamePredictionForm({ game, predictionQuest }: GamePredictionForm
           // Complete prediction quest if it exists
           if (predictionQuest) {
             try {
-              await completeQuest(predictionQuest.id, { verificationProof: {} });
-              toast.success(`Quest completed! You earned ${predictionQuest.pointsValue} points!`);
+              await completeQuest(predictionQuest.id, {
+                verificationProof: {},
+              });
+              toast.success(
+                `Quest completed! You earned ${predictionQuest.pointsValue} points!`,
+              );
               // Invalidate the user profile query to refresh points
               queryClient.invalidateQueries({ queryKey: ["user-profile"] });
             } catch (error: any) {

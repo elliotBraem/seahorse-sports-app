@@ -191,13 +191,13 @@ export async function handleCompleteQuest(
       ),
     ]);
 
-      return createSuccessResponse(
-        {
-          success: true,
-          pointsEarned: quest.points_value,
-        },
-        corsHeaders,
-      );
+    return createSuccessResponse(
+      {
+        success: true,
+        pointsEarned: quest.points_value,
+      },
+      corsHeaders,
+    );
   } catch (error) {
     console.error("[Complete Quest Error]", error);
     return createErrorResponse(

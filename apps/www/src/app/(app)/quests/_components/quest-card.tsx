@@ -55,8 +55,8 @@ export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
           description: errorMessage.includes("not active")
             ? "This quest is not currently active"
             : errorMessage.includes("Campaign is not active")
-            ? "This campaign is not currently active"
-            : "Failed to complete quest. Please try again.",
+              ? "This campaign is not currently active"
+              : "Failed to complete quest. Please try again.",
         });
       }
     }
