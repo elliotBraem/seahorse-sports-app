@@ -46,7 +46,6 @@ export default async function QuestsPage() {
     };
     return verificationData?.game_id === gameId;
   });
-
   const [profile, completedQuests] = await Promise.all([
     getUserProfile(),
     getUserQuests(),

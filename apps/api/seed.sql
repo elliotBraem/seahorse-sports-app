@@ -11,15 +11,7 @@ INSERT INTO campaigns (name, description, start_date, end_date, status) VALUES (
 -- Insert the big game
 INSERT INTO games (campaign_id, sport_id, home_team_id, away_team_id, start_time, game_type, points_value, status, api_metadata) 
 VALUES (1, 1, 1, 2, '2025-02-09 18:30:00', 'superbowl', 30, 'upcoming',
-  '{"location": "Caesars Superdome, New Orleans, Louisiana"}');
 
--- Insert quests
-INSERT INTO quests (campaign_id, name, description, points_value, verification_type, verification_data, start_date, end_date) 
-VALUES (1, 'Follow us', 'Follow @rngfanclub on X', 10, 'social_follow', 
-  '{"platform": "twitter", "action": "follow", "intent_url": "https://twitter.com/intent/follow?screen_name=rngfanclub"}',
-  '2025-01-01', '2025-02-09');
-
-INSERT INTO quests (campaign_id, name, description, points_value, verification_type, verification_data, start_date, end_date) 
 VALUES (1, 'Predict the winner', 'Who will win the big game?', 30, 'prediction',
   '{"game_id": 1, "game_link": "/games/1", "game_type": "superbowl"}',
   '2025-01-01', '2025-02-09');

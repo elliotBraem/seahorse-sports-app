@@ -37,6 +37,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   const [localPrediction, setLocalPrediction] = useState<number | null>(
     userPrediction?.predictedWinnerId || null,
   );
+
   // Update localPrediction when userPrediction changes
   useEffect(() => {
     if (userPrediction?.predictedWinnerId) {
@@ -125,7 +126,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
 
       // Update local state immediately for quick UI feedback
       setLocalPrediction(teamId);
-
+      
       // Use debounced prediction update
       debouncedCreatePrediction(teamId);
 
