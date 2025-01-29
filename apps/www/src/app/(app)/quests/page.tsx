@@ -9,9 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { createUserProfile, getGame, getUserProfile } from "@/lib/api";
+import { getGame, getUserProfile } from "@/lib/api";
 import { getUserQuests, listQuests } from "@/lib/api/quests";
-import { getCurrentUserInfo } from "@/lib/auth";
 import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faFootball, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

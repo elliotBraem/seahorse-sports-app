@@ -42,6 +42,13 @@ export async function getGamePredictions(
   return apiRequest(`/games/${gameId}/predictions`, { options });
 }
 
+export async function getCurrentUserGamePrediction(
+  gameId: number,
+  options?: ApiOptions,
+): Promise<PredictionResponse | null> {
+  return apiRequest(`/games/${gameId}/current-user-prediction`, { options });
+}
+
 // Admin endpoints
 
 export async function createGame(

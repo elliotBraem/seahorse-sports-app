@@ -534,21 +534,45 @@ export async function handleCreatePrediction(
       );
     }
 
-    const stmt = env.DB.prepare(
+    // Check if a prediction already exists for this user and game
+    const existingPredictionStmt = env.DB.prepare(
       `
-      INSERT INTO user_predictions (user_id, game_id, predicted_winner_id)
-      VALUES (?, ?, ?)
+      SELECT id FROM user_predictions
+      WHERE user_id = ? AND game_id = ?
     `,
-    ).bind(userId, gameId, predictedWinnerId);
+    ).bind(userId, gameId);
 
-    await stmt.run();
+    const existingPrediction = await existingPredictionStmt.first();
 
-    return createSuccessResponse({ success: true }, corsHeaders);
+    if (existingPrediction) {
+      // Update existing prediction
+      const updateStmt = env.DB.prepare(
+        `
+        UPDATE user_predictions
+        SET predicted_winner_id = ?
+        WHERE id = ?
+      `,
+      ).bind(predictedWinnerId, existingPrediction.id);
+
+      await updateStmt.run();
+    } else {
+      // Create new prediction
+      const insertStmt = env.DB.prepare(
+        `
+        INSERT INTO user_predictions (user_id, game_id, predicted_winner_id)
+        VALUES (?, ?, ?)
+      `,
+      ).bind(userId, gameId, predictedWinnerId);
+
+      await insertStmt.run();
+    }
+
+    return createSuccessResponse({ success: true, predictedWinnerId }, corsHeaders);
   } catch (error) {
-    console.error("[Create Prediction Error]", error);
+    console.error("[Create/Update Prediction Error]", error);
     return createErrorResponse(
       "INTERNAL_ERROR",
-      "Failed to create prediction",
+      "Failed to create/update prediction",
       500,
       corsHeaders,
     );
@@ -660,6 +684,66 @@ export async function handleDeleteGame(
     return createErrorResponse(
       "INTERNAL_ERROR",
       "Failed to delete game",
+      500,
+      corsHeaders,
+    );
+  }
+}
+
+// GET /api/v1/games/:id/current-user-prediction
+export async function handleGetCurrentUserGamePrediction(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const userId = authenticatedRequest.user?.id;
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split("/");
+    const gameId = pathParts[pathParts.length - 2]; // Get the second to last segment
+
+    if (!gameId || isNaN(Number(gameId))) {
+      return createErrorResponse(
+        "INVALID_PARAMS",
+        "Game ID is required",
+        400,
+        corsHeaders,
+      );
+    }
+
+    // Use the optimized view we created
+    const stmt = env.DB.prepare(
+      `SELECT * FROM user_predictions_with_game_details WHERE user_id = ? AND game_id = ?`
+    ).bind(userId, gameId);
+
+    const prediction = await stmt.first();
+
+    if (!prediction) {
+      return createSuccessResponse(null, corsHeaders);
+    }
+
+    const predictionResponse: PredictionResponse = {
+      id: prediction.id as number,
+      userId: prediction.user_id as string,
+      gameId: prediction.game_id as number,
+      predictedWinnerId: prediction.predicted_winner_id as number,
+      pointsEarned: prediction.points_earned as number | null,
+      createdAt: prediction.created_at as string,
+      gameStartTime: prediction.start_time as string,
+      gameStatus: prediction.game_status as GameStatus,
+      pointsValue: prediction.points_value as number,
+      homeTeamName: prediction.home_team_name as string,
+      awayTeamName: prediction.away_team_name as string,
+      predictedWinnerName: prediction.predicted_winner_name as string,
+    };
+
+    return createSuccessResponse(predictionResponse, corsHeaders);
+  } catch (error) {
+    console.error("[Get Current User Game Prediction Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch current user's game prediction",
       500,
       corsHeaders,
     );
