@@ -126,7 +126,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
 
       // Update local state immediately for quick UI feedback
       setLocalPrediction(teamId);
-      
+
       // Use debounced prediction update
       debouncedCreatePrediction(teamId);
 
