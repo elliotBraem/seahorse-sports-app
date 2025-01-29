@@ -34,7 +34,7 @@ export async function handleGetCurrentUserGamePrediction(
 
     // Use the optimized view we created
     const stmt = env.DB.prepare(
-      `SELECT * FROM user_predictions_with_game_details WHERE user_id = ? AND game_id = ?`
+      `SELECT * FROM user_predictions_with_game_details WHERE user_id = ? AND game_id = ?`,
     ).bind(userId, gameId);
 
     const prediction = await stmt.first();
@@ -470,7 +470,10 @@ export async function handleCreatePrediction(
       await insertStmt.run();
     }
 
-    return createSuccessResponse({ success: true, predictedWinnerId }, corsHeaders);
+    return createSuccessResponse(
+      { success: true, predictedWinnerId },
+      corsHeaders,
+    );
   } catch (error) {
     console.error("[Create/Update Prediction Error]", error);
     return createErrorResponse(

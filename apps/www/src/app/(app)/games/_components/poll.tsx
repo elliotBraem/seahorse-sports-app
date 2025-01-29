@@ -20,12 +20,12 @@ export default function Poll({ game, selectedTeamId, predictions }: PollProps) {
   } = game;
 
   // Calculate votes for each team, including the local prediction
-  const homeTeamVotes = predictions.filter(
-    (p) => p.predictedWinnerId === homeTeamId,
-  ).length + (selectedTeamId === homeTeamId ? 1 : 0);
-  const awayTeamVotes = predictions.filter(
-    (p) => p.predictedWinnerId === awayTeamId,
-  ).length + (selectedTeamId === awayTeamId ? 1 : 0);
+  const homeTeamVotes =
+    predictions.filter((p) => p.predictedWinnerId === homeTeamId).length +
+    (selectedTeamId === homeTeamId ? 1 : 0);
+  const awayTeamVotes =
+    predictions.filter((p) => p.predictedWinnerId === awayTeamId).length +
+    (selectedTeamId === awayTeamId ? 1 : 0);
   const totalVotes = homeTeamVotes + awayTeamVotes;
 
   // Calculate percentage widths

@@ -14,7 +14,7 @@ import {
 import { type GameResponse } from "@renegade-fanclub/types";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 
 interface GameProps {
   gameId: number;
@@ -23,12 +23,14 @@ interface GameProps {
 
 export function Game({ gameId, initialGame }: GameProps) {
   const { data: game, isLoading: gameLoading } = useGame(gameId);
-  const { data: userPrediction, isLoading: userPredictionLoading } = useCurrentUserGamePrediction(gameId);
-  const { data: predictions = [], isLoading: predictionsLoading } = useGamePredictions(gameId);
+  const { data: userPrediction, isLoading: userPredictionLoading } =
+    useCurrentUserGamePrediction(gameId);
+  const { data: predictions = [], isLoading: predictionsLoading } =
+    useGamePredictions(gameId);
   const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const currentGame = game || initialGame;
   const [localPrediction, setLocalPrediction] = useState<number | null>(
-    userPrediction?.predictedWinnerId || null
+    userPrediction?.predictedWinnerId || null,
   );
 
   // Update localPrediction when userPrediction changes
@@ -70,12 +72,13 @@ export function Game({ gameId, initialGame }: GameProps) {
           },
         },
       );
-    }, 5000)
+    }, 5000),
   ).current;
 
-  const currentPrediction = useMemo(() => 
-    localPrediction ? { predictedWinnerId: localPrediction } : null
-  , [localPrediction]);
+  const currentPrediction = useMemo(
+    () => (localPrediction ? { predictedWinnerId: localPrediction } : null),
+    [localPrediction],
+  );
 
   const handleVote = useCallback(
     (teamId: number, teamTitle: string) => {
@@ -161,7 +164,13 @@ export function Game({ gameId, initialGame }: GameProps) {
     ],
   );
 
-  if ((gameLoading || userPredictionLoading || predictionsLoading || userLoading) && !initialGame) {
+  if (
+    (gameLoading ||
+      userPredictionLoading ||
+      predictionsLoading ||
+      userLoading) &&
+    !initialGame
+  ) {
     return (
       <div className="py-8">
         <div className="animate-pulse">
@@ -220,9 +229,10 @@ export function Game({ gameId, initialGame }: GameProps) {
             filter:
               currentPrediction?.predictedWinnerId === currentGame.homeTeamId
                 ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
-                : currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-                ? "brightness(0.8)"
-                : "brightness(1)",
+                : currentPrediction?.predictedWinnerId ===
+                    currentGame.awayTeamId
+                  ? "brightness(0.8)"
+                  : "brightness(1)",
           }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
@@ -247,9 +257,10 @@ export function Game({ gameId, initialGame }: GameProps) {
             filter:
               currentPrediction?.predictedWinnerId === currentGame.awayTeamId
                 ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
-                : currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-                ? "brightness(0.8)"
-                : "brightness(1)",
+                : currentPrediction?.predictedWinnerId ===
+                    currentGame.homeTeamId
+                  ? "brightness(0.8)"
+                  : "brightness(1)",
           }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
@@ -281,7 +292,11 @@ export function Game({ gameId, initialGame }: GameProps) {
         </motion.div>
       )}
       <div className="pt-8">
-        <Poll game={currentGame} selectedTeamId={localPrediction} predictions={predictions} />
+        <Poll
+          game={currentGame}
+          selectedTeamId={localPrediction}
+          predictions={predictions}
+        />
       </div>
     </>
   );
