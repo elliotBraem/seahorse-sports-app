@@ -48,10 +48,15 @@ export function Leaderboard() {
           const ranking = leaderboard.rankings.find((r) => r.rank === rank);
           if (!ranking) return null;
 
-          const rankColors = {
-            1: "yellow-500",
-            2: "[#C0C0C0]",
-            3: "[#CE8946]",
+          const rankColorsBg = {
+            1: "bg-yellow-500",
+            2: "bg-[#C0C0C0]",
+            3: "bg-[#CE8946]",
+          };
+          const rankColorsText = {
+            1: "text-yellow-500",
+            2: "text-[#C0C0C0]",
+            3: "text-[#CE8946]",
           };
 
           return (
@@ -84,7 +89,7 @@ export function Leaderboard() {
                       </AvatarFallback>
                     </Avatar>
                     <div
-                      className={`bg-${rankColors[ranking.rank as 1 | 2 | 3]} h-5 w-5 md:w-6 md:h-6 md:-mt-4 -mt-3 z-10 rotate-45 rounded-md flex items-center justify-center border border-white/20`}
+                      className={`${rankColorsBg[ranking.rank as 1 | 2 | 3]} h-5 w-5 md:w-6 md:h-6 md:-mt-4 -mt-3 z-10 rotate-45 rounded-md flex items-center justify-center border border-white/20`}
                     >
                       <p className="-rotate-45 text-xs text-white">
                         {ranking.rank}
@@ -100,7 +105,7 @@ export function Leaderboard() {
                       {ranking.username}
                     </p>
                     <span
-                      className={`font-bold text-${rankColors[ranking.rank as 1 | 2 | 3]} text-lg md:text-xl`}
+                      className={`font-bold ${rankColorsText[ranking.rank as 1 | 2 | 3]} text-lg md:text-xl`}
                     >
                       {ranking.totalPoints}
                     </span>
