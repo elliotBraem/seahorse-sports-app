@@ -37,6 +37,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   const [localPrediction, setLocalPrediction] = useState<number | null>(
     userPrediction?.predictedWinnerId || null,
   );
+  const [isSubmitting, setisSubmitting] = useState(false);
 
   // Update localPrediction when userPrediction changes
   useEffect(() => {
@@ -103,6 +104,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
         return;
       }
 
+      setisSubmitting(true);
       const gameStartTime = new Date(currentGame.startTime);
       const currentTime = new Date();
 
@@ -189,6 +191,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
       } else {
         console.log("Submission in progress, updating local state only");
       }
+      setisSubmitting(false);
     },
     [
       gameId,
@@ -225,7 +228,7 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className={`flex flex-col `}>
         {typeof currentGame.apiMetadata === "object" &&
           currentGame.apiMetadata !== null &&
           "conference" in currentGame.apiMetadata && (
@@ -258,7 +261,9 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
         )}
       </div>
       <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
-      <div className="flex justify-center gap-8 mb-8">
+      <div
+        className={`flex justify-center gap-8 mb-8 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
         <motion.div
           animate={{
             scale:
