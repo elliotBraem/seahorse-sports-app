@@ -18,6 +18,7 @@ import { type GameResponse, type QuestResponse } from "@renegade-fanclub/types";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash/debounce";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GameProps {
   gameId: number;
@@ -34,17 +35,18 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const queryClient = useQueryClient();
   const currentGame = game || initialGame;
-  const [localPrediction, setLocalPrediction] = useState<number | null>(
-    userPrediction?.predictedWinnerId || null,
-  );
+  const [localPrediction, setLocalPrediction] = useState<number | null>(null);
   const [isSubmitting, setisSubmitting] = useState(false);
 
-  // Update localPrediction when userPrediction changes
+  // Update localPrediction when userPrediction changes or initially loads
   useEffect(() => {
-    if (userPrediction?.predictedWinnerId) {
+    if (
+      !userPredictionLoading &&
+      userPrediction?.predictedWinnerId !== undefined // Avoid updating while loading
+    ) {
       setLocalPrediction(userPrediction.predictedWinnerId);
     }
-  }, [userPrediction]);
+  }, [userPrediction, userPredictionLoading]);
 
   const { toast } = useToast();
   const { mutate: createPrediction, isPending: submitting } =
@@ -206,142 +208,159 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
     ],
   );
 
-  if (
-    (gameLoading ||
-      userPredictionLoading ||
-      predictionsLoading ||
-      userLoading) &&
-    !initialGame
-  ) {
-    return (
-      <div className="py-8">
-        <div className="animate-pulse">
-          <Card className="p-6 mb-8">
-            <div className="h-48 bg-gray-200 rounded-lg"></div>
-          </Card>
-          <div className="h-32 bg-gray-200 rounded-lg mb-8"></div>
-          <div className="h-64 bg-gray-200 rounded-lg"></div>
-        </div>
-      </div>
-    );
-  }
+  // Show loading state when game data or user prediction is loading
+  // if ((gameLoading && !initialGame) || userPredictionLoading) {
+  //   return (
+  //     <>
+  //       <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
+  //       <div className="flex items-center justify-evenly py-8">
+  //         <Skeleton className="bg-white/10 h-32 w-44 rounded-xl" />
+  //         <Skeleton className="bg-white/10 h-32 w-44 rounded-xl" />
+  //       </div>
+  //       <Skeleton className="bg-white/10 h-12 w-full rounded-xl" />
+  //     </>
+  //   );
+  // }
 
   return (
     <>
-      <div className={`flex flex-col `}>
-        {typeof currentGame.apiMetadata === "object" &&
-          currentGame.apiMetadata !== null &&
-          "conference" in currentGame.apiMetadata && (
-            <div className="text-center my-4">
-              <h2 className="text-2xl font-bold">
-                {currentGame.apiMetadata.conference as string} Championship
-              </h2>
-              <p className="text-base font-medium text-white mt-2">
-                {new Date(currentGame.startTime).toLocaleDateString(undefined, {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-            </div>
-          )}
-
-        {currentGame.status === "completed" && (
-          <div className="text-center my-8">
-            <div className="bg-gray-100 rounded-full px-6 py-3 inline-block">
-              <span className="font-semibold text-lg">
-                Winner:{" "}
-                {currentGame.winnerTeamId === currentGame.homeTeamId
-                  ? currentGame.homeTeamName
-                  : currentGame.awayTeamName}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
       <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
-      <div
-        className={`flex justify-center gap-8 mb-8 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-      >
-        <motion.div
-          animate={{
-            scale:
-              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-                ? 1.02
-                : 1,
-            filter:
-              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
-                : currentPrediction?.predictedWinnerId ===
-                    currentGame.awayTeamId
-                  ? "brightness(0.8)"
-                  : "brightness(1)",
-          }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        >
-          <TeamCard
-            teamName={currentGame.homeTeamName}
-            teamMetadata={currentGame.homeTeamMetadata}
-            isHome={true}
-            selected={
-              currentPrediction?.predictedWinnerId === currentGame.homeTeamId
-            }
-            onClick={() =>
-              handleVote(currentGame.homeTeamId, currentGame.homeTeamName)
-            }
-          />
-        </motion.div>
-        <motion.div
-          animate={{
-            scale:
-              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-                ? 1.02
-                : 1,
-            filter:
-              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-                ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
-                : currentPrediction?.predictedWinnerId ===
-                    currentGame.homeTeamId
-                  ? "brightness(0.8)"
-                  : "brightness(1)",
-          }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        >
-          <TeamCard
-            teamName={currentGame.awayTeamName}
-            teamMetadata={currentGame.awayTeamMetadata}
-            isHome={false}
-            selected={
-              currentPrediction?.predictedWinnerId === currentGame.awayTeamId
-            }
-            onClick={() =>
-              handleVote(currentGame.awayTeamId, currentGame.awayTeamName)
-            }
-          />
-        </motion.div>
-      </div>
-      {currentPrediction !== null && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-8"
-        >
-          {new Date() < new Date(currentGame.startTime) && (
-            <p className="text-sm text-gray-400 mt-2">
-              You can change your prediction until the game starts.
-            </p>
+      {(gameLoading && !initialGame) || userPredictionLoading ? (
+        <>
+          <div className="flex items-center justify-evenly py-8">
+            <Skeleton className="bg-white/10 h-32 w-44 rounded-xl" />
+            <Skeleton className="bg-white/10 h-32 w-44 rounded-xl" />
+          </div>
+          <Skeleton className="bg-white/10 h-12 w-full rounded-xl" />
+        </>
+      ) : (
+        <>
+          <div className={`flex flex-col `}>
+            {typeof currentGame.apiMetadata === "object" &&
+              currentGame.apiMetadata !== null &&
+              "conference" in currentGame.apiMetadata && (
+                <div className="text-center my-4">
+                  <h2 className="text-2xl font-bold">
+                    {currentGame.apiMetadata.conference as string} Championship
+                  </h2>
+                  <p className="text-base font-medium text-white mt-2">
+                    {new Date(currentGame.startTime).toLocaleDateString(
+                      undefined,
+                      {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )}
+                  </p>
+                </div>
+              )}
+
+            {currentGame.status === "completed" && (
+              <div className="text-center my-8">
+                <div className="bg-gray-100 rounded-full px-6 py-3 inline-block">
+                  <span className="font-semibold text-lg">
+                    Winner:{" "}
+                    {currentGame.winnerTeamId === currentGame.homeTeamId
+                      ? currentGame.homeTeamName
+                      : currentGame.awayTeamName}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Show loading state when game data or user prediction is loading */}
+
+          <div
+            className={`flex justify-center gap-8 mb-8 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <motion.div
+              animate={{
+                scale:
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.homeTeamId
+                    ? 1.02
+                    : 1,
+                filter:
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.homeTeamId
+                    ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                    : currentPrediction?.predictedWinnerId ===
+                        currentGame.awayTeamId
+                      ? "brightness(0.8)"
+                      : "brightness(1)",
+              }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <TeamCard
+                teamName={currentGame.homeTeamName}
+                teamMetadata={currentGame.homeTeamMetadata}
+                isHome={true}
+                selected={
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.homeTeamId
+                }
+                onClick={() =>
+                  handleVote(currentGame.homeTeamId, currentGame.homeTeamName)
+                }
+              />
+            </motion.div>
+            <motion.div
+              animate={{
+                scale:
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.awayTeamId
+                    ? 1.02
+                    : 1,
+                filter:
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.awayTeamId
+                    ? "brightness(1.2) drop-shadow(0 0 15px rgba(74, 222, 128, 0.4))"
+                    : currentPrediction?.predictedWinnerId ===
+                        currentGame.homeTeamId
+                      ? "brightness(0.8)"
+                      : "brightness(1)",
+              }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <TeamCard
+                teamName={currentGame.awayTeamName}
+                teamMetadata={currentGame.awayTeamMetadata}
+                isHome={false}
+                selected={
+                  currentPrediction?.predictedWinnerId ===
+                  currentGame.awayTeamId
+                }
+                onClick={() =>
+                  handleVote(currentGame.awayTeamId, currentGame.awayTeamName)
+                }
+              />
+            </motion.div>
+          </div>
+          {currentPrediction !== null && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-center mb-8"
+            >
+              {new Date() < new Date(currentGame.startTime) && (
+                <p className="text-sm text-gray-400 mt-2">
+                  You can change your prediction until the game starts.
+                </p>
+              )}
+            </motion.div>
           )}
-        </motion.div>
+          <div className="pt-8">
+            <Poll
+              game={currentGame}
+              selectedTeamId={localPrediction}
+              predictions={predictions}
+            />
+          </div>
+        </>
       )}
-      <div className="pt-8">
-        <Poll
-          game={currentGame}
-          selectedTeamId={localPrediction}
-          predictions={predictions}
-        />
-      </div>
     </>
   );
 }
