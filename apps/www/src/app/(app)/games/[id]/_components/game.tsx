@@ -28,11 +28,11 @@ interface GameProps {
 
 export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   const { data: game, isLoading: gameLoading } = useGame(gameId);
+  const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const { data: userPrediction, isLoading: userPredictionLoading } =
     useCurrentUserGamePrediction(gameId);
   const { data: predictions = [], isLoading: predictionsLoading } =
     useGamePredictions(gameId);
-  const { user: currentUser, isLoading: userLoading } = useCurrentUser();
   const queryClient = useQueryClient();
   const currentGame = game || initialGame;
   const [localPrediction, setLocalPrediction] = useState<number | null>(null);
@@ -225,7 +225,9 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
   return (
     <>
       <h3 className="text-2xl py-4 font-bold text-center">Who Will Win?</h3>
-      {(gameLoading && !initialGame) || userPredictionLoading ? (
+      {(gameLoading && !initialGame) ||
+      userPredictionLoading ||
+      !currentUser ? (
         <>
           <div className="flex items-center justify-evenly py-8">
             <Skeleton className="bg-white/10 h-32 w-44 rounded-xl" />
