@@ -1,6 +1,7 @@
 "use client";
 
 import { GameResponse, PredictionResponse } from "@renegade-fanclub/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PollProps {
   game: GameResponse;
@@ -54,42 +55,73 @@ export default function Poll({ game, selectedTeamId, predictions }: PollProps) {
   return (
     <div className="">
       {/* Dynamic Bar */}
-      <div className="relative bg-gray-200 rounded-lg h-12 transition-all overflow-hidden flex items-center">
-        <div
-          className="h-full transition-all"
+      <div className="relative rounded-lg h-12 overflow-hidden flex items-center">
+        <motion.div
+          className="h-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${homeTeamWidth}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           style={{
-            width: `${homeTeamWidth}%`,
             backgroundColor: `${teams[0].color}`,
           }}
-        ></div>
+        />
 
         {/* VS Sign on Bar */}
-        <div
+        <motion.div
           className="absolute top-0 flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border-2 border-gray-300 text-lg font-extrabold text-red-500"
-          style={{
+          animate={{
             left: `calc(${homeTeamWidth}% - 24px)`,
           }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
           VS
-        </div>
+        </motion.div>
 
-        <div
-          className="h-full transition-all"
+        <motion.div
+          className="h-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${awayTeamWidth}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           style={{
-            width: `${awayTeamWidth}%`,
             backgroundColor: `${teams[1].color}`,
           }}
-        ></div>
+        />
       </div>
 
       {/* Vote counts display */}
       <div className="flex justify-between mt-4 px-4">
-        <div className="text-center">
-          <p className="text-lg font-bold">{homeTeamVotes} votes</p>
-        </div>
-        <div className="text-center">
-          <p className="text-lg font-bold">{awayTeamVotes} votes</p>
-        </div>
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <motion.p
+            className="text-lg font-bold"
+            key={homeTeamVotes}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {homeTeamVotes} votes
+          </motion.p>
+        </motion.div>
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <motion.p
+            className="text-lg font-bold"
+            key={awayTeamVotes}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {awayTeamVotes} votes
+          </motion.p>
+        </motion.div>
       </div>
     </div>
   );

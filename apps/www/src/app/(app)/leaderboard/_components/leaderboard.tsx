@@ -7,6 +7,7 @@ import { getAllTimeLeaderboard } from "@/lib/api/leaderboard";
 import { LeaderboardRankingResponse } from "@renegade-fanclub/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Leaderboard() {
   const { data: leaderboard, isLoading } = useQuery({
@@ -18,20 +19,17 @@ export function Leaderboard() {
     return (
       <div className="grid">
         {[...Array(5)].map((_, i) => (
-          <Card
-            key={i}
-            className="p-4 flex items-center gap-4 animate-pulse duration-1000"
-          >
+          <Card key={i} className="p-4 flex items-center gap-4">
             <div className="flex items-center justify-center w-8 h-8">
-              <div className="h-6 w-4 bg-white/10 rounded" />
+              <Skeleton className="h-6 w-4 bg-white/10 rounded" />
             </div>
-            <div className="h-10 w-10 rounded-full bg-white/10" />
+            <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-4">
-                <div className="h-4 w-24 bg-white/10 rounded" />
-                <div className="h-6 w-16 bg-white/10 rounded-full shrink-0" />
+                <Skeleton className="h-4 w-24 bg-white/10 rounded" />
+                <Skeleton className="h-6 w-16 bg-white/10 rounded-full shrink-0" />
               </div>
-              <div className="h-3 w-32 bg-white/10 rounded mt-2" />
+              <Skeleton className="h-3 w-32 bg-white/10 rounded mt-2" />
             </div>
           </Card>
         ))}
