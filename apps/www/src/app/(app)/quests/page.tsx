@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import { Header } from "@/components/header";
 import { Container } from "@/components/ui/container";
@@ -51,14 +52,9 @@ export default async function QuestsPage() {
     getUserQuests(),
   ]);
 
-  const totalPoints = completedQuests.reduce(
-    (sum, quest) => sum + quest.pointsEarned,
-    0,
-  );
-
   return (
     <>
-      <Header profile={profile} totalPoints={totalPoints} />
+      <Header profile={profile} />
       <Container>
         {/*game predictions*/}
         <Game

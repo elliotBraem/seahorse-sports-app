@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileInfo } from "./_components/profile-info";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,7 +47,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
 } from "@/components/ui/carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -77,10 +76,6 @@ export default async function ProfilePage() {
   const gameMap = new Map(games.map((game) => [game.id, game]));
 
   const origin = headers().get("origin") || "";
-  const totalPoints = completedQuests.reduce(
-    (sum, quest) => sum + quest.pointsEarned,
-    0,
-  );
 
   return (
     <>
@@ -97,32 +92,7 @@ export default async function ProfilePage() {
       />
       <Container>
         <div className="px-2 pb-20 space-y-6">
-          <div className="flex flex-col items-center space-y-4 py-4">
-            <Avatar className="h-20 w-20 border-2 border-white/10">
-              <AvatarImage
-                src={profile.avatar ?? undefined}
-                alt={profile.username}
-              />
-              <AvatarFallback className="bg-white/5 text-lg">
-                {profile.username[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col items-center">
-              <p className="font-semibold tracking-tight text-2xl overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-                {profile.username}
-              </p>
-              <p className="text-sm text-white/60 overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
-                {profile.email}
-              </p>
-            </div>
-            <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
-              <FontAwesomeIcon
-                icon={faTrophy}
-                className="h-4 w-4 text-yellow-500"
-              />
-              <span className="font-medium">{totalPoints}</span>
-            </div>
-          </div>
+          <ProfileInfo profile={profile} />
 
           <Card>
             <CardHeader className="p-4 sm:p-6">

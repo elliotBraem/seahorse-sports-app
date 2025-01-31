@@ -43,7 +43,7 @@ export default async function LeaderboardPage() {
   );
   return (
     <>
-      <Header profile={profile} totalPoints={totalPoints} />
+      <Header profile={profile} />
       <Container>
         <div className="px-2 pb-20">
           <div className="mb-8 flex items-center flex-col gap-2 text-center">

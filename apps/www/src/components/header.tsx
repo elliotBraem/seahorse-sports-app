@@ -6,13 +6,13 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ProfileResponse } from "@renegade-fanclub/types";
+import { useUserPoints } from "@/lib/hooks/use-user-points";
 
 interface HeaderProps {
   showtitle?: boolean;
   showBackButton?: boolean;
   rightChildren?: React.ReactNode;
   profile?: ProfileResponse;
-  totalPoints?: number;
 }
 
 export function Header({
@@ -20,8 +20,8 @@ export function Header({
   showBackButton = false,
   rightChildren,
   profile,
-  totalPoints,
 }: HeaderProps) {
+  const { data: totalPoints } = useUserPoints();
   const router = useRouter();
   const pathname = usePathname();
 
