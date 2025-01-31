@@ -70,7 +70,7 @@ export default async function PreferencesPage() {
 
   return (
     <>
-      <Header profile={profile} totalPoints={totalPoints} />
+      <Header profile={profile} />
       <PreferencesForm preferences={preferences} />
     </>
   );

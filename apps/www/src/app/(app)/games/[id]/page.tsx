@@ -30,7 +30,7 @@ export default async function GamePage({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <Header profile={profile} totalPoints={totalPoints} />
+      <Header profile={profile} />
       <div className="-mt-24 relative z-10 m-4">
         <Game
           gameId={gameId}

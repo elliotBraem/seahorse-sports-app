@@ -15,7 +15,7 @@ export default async function GamesPage() {
   );
   return (
     <>
-      <Header profile={profile} totalPoints={totalPoints} />
+      <Header profile={profile} />
       <Container>
         <div className="px-2 pb-20">
           <GamesList />
