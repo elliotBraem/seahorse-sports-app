@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface QuestCardProps {
   quest: QuestResponse;
@@ -24,6 +25,7 @@ interface QuestCardProps {
 
 export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const verificationData = quest.verificationData as {
     platform?: string;
     action?: string;
@@ -35,13 +37,36 @@ export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
 
   const handleQuestComplete = useCallback(async () => {
     try {
+      // Optimistically update points
+      const currentPoints =
+        queryClient.getQueryData<number>(["user-points"]) ?? 0;
+      queryClient.setQueryData(
+        ["user-points"],
+        currentPoints + quest.pointsValue,
+      );
+
+      // Make API call
       await completeQuest(quest.id, { verificationProof: {} });
+
+      // Ensure data is refetched before showing toast
+      await queryClient.invalidateQueries({ queryKey: ["quests"] });
+      await queryClient.invalidateQueries({ queryKey: ["user-points"] });
+
       toast({
         title: "Quest Completed!",
         description: `You earned ${quest.pointsValue} points!`,
       });
+
       onComplete?.();
     } catch (error: any) {
+      // Revert optimistic update on error
+
+      const currentPoints =
+        queryClient.getQueryData<number>(["user-points"]) ?? 0;
+      queryClient.setQueryData(
+        ["user-points"],
+        currentPoints - quest.pointsValue,
+      );
       const errorMessage = error?.message || "Unknown error";
       // If error includes specific messages, show appropriate message
       if (errorMessage.includes("already completed")) {

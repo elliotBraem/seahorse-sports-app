@@ -134,10 +134,24 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
       // Use debounced prediction update
       debouncedCreatePrediction(teamId);
 
-      // If this is the first prediction, complete the quest
+      // If this is the first prediction and there's a quest, handle it with optimistic update
       if (!userPrediction && predictionQuest) {
         try {
+          // Optimistically update points
+          const currentPoints =
+            queryClient.getQueryData<number>(["user-points"]) ?? 0;
+          queryClient.setQueryData(
+            ["user-points"],
+            currentPoints + predictionQuest.pointsValue,
+          );
+
+          // Complete the quest
           await completeQuest(predictionQuest.id, { verificationProof: {} });
+
+          // Invalidate queries to get fresh data
+          queryClient.invalidateQueries({ queryKey: ["quests"] });
+          queryClient.invalidateQueries({ queryKey: ["user-points"] });
+
           toast({
             title: "Quest Completed!",
             description: `You earned ${predictionQuest.pointsValue} points!`,
@@ -145,6 +159,14 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
           // Invalidate the user profile query to refresh points
           queryClient.invalidateQueries({ queryKey: ["user-profile"] });
         } catch (error: any) {
+          // On error, revert the optimistic update
+          const currentPoints =
+            queryClient.getQueryData<number>(["user-points"]) ?? 0;
+          queryClient.setQueryData(
+            ["user-points"],
+            currentPoints - predictionQuest.pointsValue,
+          );
+
           // Ignore already completed quest errors
           if (!error?.message?.includes("already completed")) {
             console.error("Failed to complete quest:", error);
