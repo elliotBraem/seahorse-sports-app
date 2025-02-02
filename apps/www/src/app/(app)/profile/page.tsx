@@ -106,14 +106,14 @@ export default async function ProfilePage() {
                   }}
                   className="w-full"
                 >
-                  <CarouselContent className="-ml-2 sm:-ml-4">
+                  <CarouselContent className="-ml-0">
                     {predictions.map((prediction) => (
                       <CarouselItem
                         key={prediction.id}
-                        className="pl-2 sm:pl-4 basis-[280px]"
+                        className="p-0 basis-[200px]"
                       >
                         <Card className="overflow-hidden">
-                          <CardContent className="p-4 flex flex-col items-center justify-center text-center space-y-3">
+                          <CardContent className="p-0 flex flex-col items-center justify-center text-center space-y-3">
                             <div
                               className={cn(
                                 "mb-2 text-sm font-medium flex items-center gap-1",
