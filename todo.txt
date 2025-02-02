@@ -1,8 +1,0 @@
-- header
-- footer
-- better match up page (game 1)
-- comment out onboarding
-- use magic link?
-- handle predictions (set prediction)
-- games, this weekend and superbowl
-- hard code colors, location, name

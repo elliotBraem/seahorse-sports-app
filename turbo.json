@@ -25,6 +25,16 @@
     },
     "lint": {
       "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["test-results/**", "playwright-report/**"],
+      "passThroughEnv": ["PLAYWRIGHT_*", "JWT_SECRET", "NEXT_PUBLIC_*"]
+    },
+    "test:ui": {
+      "dependsOn": ["^build"],
+      "outputs": ["test-results/**", "playwright-report/**"],
+      "passThroughEnv": ["PLAYWRIGHT_*", "JWT_SECRET", "NEXT_PUBLIC_*"]
     }
   }
 }

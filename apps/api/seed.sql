@@ -1,3 +1,7 @@
+-- Insert test users
+INSERT INTO users (id, username, email) VALUES ('test-user-id', 'testuser', 'test@example.com');
+-- Note: test-user-no-profile is not inserted, so it will trigger the no profile flow
+
 -- Insert sports
 INSERT INTO sports (id, name, description, abbreviation, external_id) VALUES (1, 'Football', 'American Football', 'NFL', 'NFL');
 
