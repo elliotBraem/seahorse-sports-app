@@ -30,13 +30,15 @@ export async function setupAuthState(options: CreateTestTokenOptions = {}) {
   return setupTokenState(options);
 }
 
-export async function setupAdminAuthState(options: Omit<CreateTestTokenOptions, 'isAdmin'> = {}) {
+export async function setupAdminAuthState(
+  options: Omit<CreateTestTokenOptions, "isAdmin"> = {},
+) {
   return setupTokenState({ ...options, isAdmin: true });
 }
 
 async function setupTokenState(options: CreateTestTokenOptions = {}) {
   const token = await createTestToken(options);
-  
+
   return {
     cookies: [
       {
@@ -46,14 +48,14 @@ async function setupTokenState(options: CreateTestTokenOptions = {}) {
         path: "/",
         httpOnly: true,
         secure: false,
-        sameSite: "Lax" as const
-      }
+        sameSite: "Lax" as const,
+      },
     ],
     origins: [
       {
         origin: "http://localhost:3000",
-        localStorage: []
-      }
-    ]
+        localStorage: [],
+      },
+    ],
   };
 }

@@ -70,7 +70,7 @@ export default defineConfig({
       timeout: 30000,
       stderr: "pipe",
       gracefulShutdown: {
-        signal: 'SIGTERM',
+        signal: "SIGTERM",
         timeout: 1000,
       },
     },
@@ -81,9 +81,9 @@ export default defineConfig({
       timeout: 30000,
       stderr: "pipe",
       gracefulShutdown: {
-        signal: 'SIGTERM',
+        signal: "SIGTERM",
         timeout: 1000,
       },
-    }
+    },
   ],
 });
