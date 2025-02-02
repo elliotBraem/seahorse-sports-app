@@ -23,6 +23,8 @@ jobs:
   playwright-tests:
     name: Playwright tests
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: your_jwt_secret_key
     steps:
       - uses: actions/checkout@v4
       - name: Setup Bun
@@ -34,6 +36,4 @@ jobs:
       - name: Install Playwright dependencies
         run: bunx playwright install --with-deps
       - name: Run tests
-        env:
-          JWT_SECRET: your_jwt_secret_key
         run: bun run test
