@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "bunx playwright test ../../e2e-tests/tests/",
+    "test:ui": "bunx playwright test --ui ../../e2e-tests/tests/"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

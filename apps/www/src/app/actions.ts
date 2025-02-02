@@ -12,6 +12,8 @@ export async function clearAuthToken() {
 }
 
 export async function verifyToken(token: string) {
+  console.log("token", token);
+  console.log("secret", process.env.JWT_SECRET);
   try {
     const verified = await jwtVerify(
       token,
