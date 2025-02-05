@@ -22,12 +22,12 @@ test.describe("Social Follow Quest", () => {
       const initialPoints = await page.getByTestId("user-points").textContent();
 
       // Find and click the social follow quest button
-      const followButton = page.getByRole("button", { name: "Follow"});
+      const followButton = page.getByRole("button", { name: "Follow" });
       await expect(followButton).toBeVisible();
 
       // Create a promise to wait for new page/popup
       const popupPromise = context.waitForEvent("page");
-      
+
       // Click the follow button
       await followButton.click();
 
