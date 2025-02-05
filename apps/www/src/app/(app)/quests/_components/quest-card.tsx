@@ -13,7 +13,7 @@ import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faTrophy, faFootball } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -25,6 +25,7 @@ interface QuestCardProps {
 
 export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
   const { toast } = useToast();
+  const [isQuestCompleted, setQuestCompleted] = useState(isCompleted);
   const queryClient = useQueryClient();
   const verificationData = quest.verificationData as {
     platform?: string;
@@ -57,6 +58,8 @@ export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
         description: `You earned ${quest.pointsValue} points!`,
       });
 
+      setQuestCompleted(true);
+
       onComplete?.();
     } catch (error: any) {
       // Revert optimistic update on error
@@ -88,12 +91,12 @@ export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
   }, [quest.id, quest.pointsValue, onComplete, toast]);
 
   const handleSocialFollow = useCallback(async () => {
-    // Complete quest when social follow button is clicked
-    await handleQuestComplete();
-    // Open social link in new tab
+    // Open social link in new tab first to ensure it's directly tied to user interaction
     if (verificationData.intent_url) {
       window.open(verificationData.intent_url, "_blank");
     }
+    // Then complete the quest
+    await handleQuestComplete();
   }, [handleQuestComplete, verificationData.intent_url]);
 
   return (
@@ -125,10 +128,11 @@ export function QuestCard({ quest, onComplete, isCompleted }: QuestCardProps) {
           {quest.verificationType === "social_follow" &&
             verificationData.platform === "twitter" && (
               <button
+                name={quest.verificationType}
                 onClick={handleSocialFollow}
-                disabled={isCompleted}
+                disabled={isQuestCompleted}
                 className={`flex items-center justify-center space-x-2 h-9 w-28 text-sm px-5 py-2 rounded-full mt-auto ${
-                  isCompleted
+                  isQuestCompleted
                     ? "bg-gray-500 cursor-not-allowed"
                     : "bg-white text-purple-900 hover:bg-gray-200"
                 }`}

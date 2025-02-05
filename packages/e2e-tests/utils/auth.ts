@@ -1,6 +1,6 @@
 import { SignJWT } from "jose";
 
-const TEST_JWT_SECRET = "your_jwt_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
 interface CreateTestTokenOptions {
   userId?: string;
@@ -21,7 +21,7 @@ export async function createTestToken({
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(new TextEncoder().encode(TEST_JWT_SECRET));
+    .sign(new TextEncoder().encode(JWT_SECRET));
 
   return token;
 }

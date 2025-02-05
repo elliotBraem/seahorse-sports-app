@@ -605,3 +605,37 @@ export async function handleGetSocialAccounts(
     );
   }
 }
+
+// GET /api/v1/user/points
+export async function handleGetUserPoints(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>,
+): Promise<Response> {
+  try {
+    const authenticatedRequest = await requireAuth(request, env);
+    const userId = authenticatedRequest.user?.id;
+
+    const stmt = env.DB.prepare(
+      `
+      SELECT SUM(quest_points) as total_quest_points
+      FROM user_points
+      WHERE user_id = ?
+      GROUP BY user_id
+    `,
+    ).bind(userId);
+
+    const result = await stmt.first();
+    const totalPoints = result?.total_quest_points ?? 0;
+
+    return createSuccessResponse({ points: totalPoints }, corsHeaders);
+  } catch (error) {
+    console.error("[Get User Points Error]", error);
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "Failed to fetch user points",
+      500,
+      corsHeaders,
+    );
+  }
+}

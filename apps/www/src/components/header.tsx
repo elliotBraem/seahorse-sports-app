@@ -98,7 +98,7 @@ export function Header({
                 icon={faTrophy}
                 className="h-4 w-4 text-yellow-500"
               />
-              <span className="text-sm font-medium">{totalPoints}</span>
+              <span className="text-sm font-medium" data-testid="user-points">{totalPoints}</span>
             </div>
           ) : (
             <div className="w-10" />

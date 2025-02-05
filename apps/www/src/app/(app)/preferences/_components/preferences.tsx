@@ -59,8 +59,6 @@ export default function Preferences({ preferences }: PrrferencesProps) {
       athletes: selectedItems.athletes || [],
     };
 
-    console.log("Selected preferences:", userPreferences);
-
     // Save preferences to local storage or backend
     localStorage.setItem("userPreferences", JSON.stringify(userPreferences));
 

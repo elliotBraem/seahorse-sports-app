@@ -18,9 +18,7 @@ export function SportsSelection({ onNext }: SportsSelectionProps) {
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        console.log("getting sports...");
         const sportsList = await listSports();
-        console.log("got sports", sportsList);
         setSports(sportsList);
       } catch (error) {
         console.error("Failed to fetch sports:", error);
