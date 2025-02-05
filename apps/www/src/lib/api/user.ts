@@ -9,6 +9,12 @@ import {
 } from "@renegade-fanclub/types";
 import { type ApiOptions, apiRequest } from "./types";
 
+export async function getUserPoints(
+  options?: ApiOptions,
+): Promise<{ points: number }> {
+  return apiRequest("/user/points", { options });
+}
+
 export async function createUserProfile(
   data: CreateProfileRequest,
   options?: ApiOptions,

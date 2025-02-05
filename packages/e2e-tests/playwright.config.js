@@ -1,6 +1,9 @@
 // @ts-check
 import { defineConfig, devices } from "@playwright/test";
 
+// Set test environment variables
+process.env.JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
+
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 

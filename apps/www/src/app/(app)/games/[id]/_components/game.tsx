@@ -212,8 +212,6 @@ export function Game({ gameId, initialGame, predictionQuest }: GameProps) {
             },
           },
         );
-      } else {
-        console.log("Submission in progress, updating local state only");
       }
       setisSubmitting(false);
     },

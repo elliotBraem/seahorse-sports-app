@@ -44,6 +44,7 @@ import {
   handleAddSocialAccount,
   handleRemoveSocialAccount,
   handleGetSocialAccounts,
+  handleGetUserPoints,
 } from "./user";
 
 export async function handleV1Routes(
@@ -174,6 +175,11 @@ export async function handleV1Routes(
   }
   if (path === "/user/social" && method === "GET") {
     return await handleGetSocialAccounts(request, env, corsHeaders);
+  }
+
+  // User Points
+  if (path === "/user/points" && method === "GET") {
+    return await handleGetUserPoints(request, env, corsHeaders);
   }
 
   // Admin Endpoints
