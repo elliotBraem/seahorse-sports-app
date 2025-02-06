@@ -75,16 +75,14 @@ export function Header({
               {formatTitle(pathname)}
             </h1>
           ) : (
-            <div className="relative h-20 w-16 ">
-              <Image
-                src="/images/rngfanclub-logo-white.png"
-                alt="RNG Fan Club"
-                fill
-                className="object-contain"
-                sizes="(max-width: 640px) 60px, 68px"
-                priority
-              />
-            </div>
+            <Image
+              src="/images/rngfanclub-logo-white.png"
+              alt="RNG Fan Club"
+              width={100}
+              height={64}
+              className="object-contain"
+              priority
+            />
           )}
         </div>
 
