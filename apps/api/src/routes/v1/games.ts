@@ -680,22 +680,40 @@ export async function handleUpdateGame(
 
     // If winner is set, update user predictions points
     if (updates.winnerTeamId && updates.status === "completed") {
-      await env.DB.prepare(
-        `
-        UPDATE user_predictions
-        SET points_earned = CASE 
-          WHEN predicted_winner_id = ? THEN (
-            SELECT points_value 
-            FROM games 
-            WHERE id = ?
-          )
-          ELSE 0
-        END
-        WHERE game_id = ?
-      `,
-      )
-        .bind(updates.winnerTeamId, id, id)
-        .run();
+      // Begin transaction to ensure data consistency
+      await env.DB.prepare("BEGIN TRANSACTION").run();
+      try {
+        // Update points for predictions
+        await env.DB.prepare(
+          `
+          UPDATE user_predictions
+          SET points_earned = CASE 
+            WHEN predicted_winner_id = ? THEN (
+              SELECT points_value 
+              FROM games 
+              WHERE id = ?
+            )
+            ELSE 0
+          END
+          WHERE game_id = ?
+        `,
+        )
+          .bind(updates.winnerTeamId, id, id)
+          .run();
+
+        // Refresh materialized views to update leaderboards
+        await env.DB.prepare(
+          "REFRESH MATERIALIZED VIEW all_time_leaderboard",
+        ).run();
+        await env.DB.prepare(
+          "REFRESH MATERIALIZED VIEW campaign_leaderboard",
+        ).run();
+
+        await env.DB.prepare("COMMIT").run();
+      } catch (error) {
+        await env.DB.prepare("ROLLBACK").run();
+        throw error;
+      }
     }
 
     return createSuccessResponse({ success: true }, corsHeaders);
