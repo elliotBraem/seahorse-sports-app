@@ -702,9 +702,13 @@ export async function handleUpdateGame(
           .run();
 
         // Refresh materialized views to update leaderboards
-        await env.DB.prepare("REFRESH MATERIALIZED VIEW all_time_leaderboard").run();
-        await env.DB.prepare("REFRESH MATERIALIZED VIEW campaign_leaderboard").run();
-        
+        await env.DB.prepare(
+          "REFRESH MATERIALIZED VIEW all_time_leaderboard",
+        ).run();
+        await env.DB.prepare(
+          "REFRESH MATERIALIZED VIEW campaign_leaderboard",
+        ).run();
+
         await env.DB.prepare("COMMIT").run();
       } catch (error) {
         await env.DB.prepare("ROLLBACK").run();
